@@ -39,7 +39,7 @@ class MusicQuiz:
         self.message = "message object"
         self.t_channel = ctx.channel
         self.v_channel = "voice channel"
-        self.log = ["Bot started, react <:KokoroYay:727683024526770222> to start playing"]
+        self.log = ["React <:KokoroYay:727683024526770222> to start! Type the answer in chat below <:SayoYay:714494329779126392>"]
         self.hint_timer = "timer object"
         self.answer_timer = "timer object"
         self.auto_play = False
@@ -51,13 +51,14 @@ class MusicQuiz:
 
     def get_embed(self):
         '''create the embed object and return it'''
-        embed = discord.Embed(title='BanG Dream Music Quiz', description='\uFEFF')
-        embed.add_field(inline=False, name = "Instructions",value='''Welcome, you can press/react <:KokoroYay:727683024526770222> to start playing!
-        <:AyaPointUp:727496890693976066>: vote skip, <:RinkoHide:727683091182649457>: toggle auto play, <:StarGem:727683091337838633>: check star, <:MocaStarNom:727683091409404005>: save data, <:YukinaDab:727683091350421605>: LEAVE
-        You have to guess what song is playing, English or Japanese name will get you 2 <:StarGem:727683091337838633>, while Band name will get you 1 <:StarGem:727683091337838633>
-        You can type the answer in the chat below <:SayoYay:714494329779126392> ''')
-        embed.add_field(name="English Name: ", value=self.display_eng)
-        embed.add_field(name='Japanese Name:', value=self.display_jp)
+        embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description='\uFEFF')
+        embed.add_field(inline=False, name = "Instructions",value='''
+        Guess the song/band of the playing song and earn <:StarGem:727683091337838633>s!
+        Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star''')
+        embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
+        {self.display_jp}''')
+#        embed.add_field(name="English Name: ", value=self.display_eng)
+#        embed.add_field(name='Japanese Name:', value=self.display_jp)
         embed.add_field(name='Band: ', value=self.display_band)
         embed.add_field(name="Difficulty", value=f"Expert: {self.display_expert} - Special: {self.display_special}")
         # embed.add_field(name='Special difficulty: ', value=self.display_special)
@@ -73,8 +74,9 @@ class MusicQuiz:
         log_msg = log_msg[:-1]
         embed.add_field(inline=False, name='Log: ', value=log_msg)
 
-        embed.set_footer(text="Made by TheLegendaryPro#6810")
-        embed.set_author(name="TheApprenticeBot", icon_url="https://cdn.discordapp.com/avatars/650352975839100947/f56a0ae424c90621126fc7a3331b2da7.webp?size=1024")
+        # embed.set_footer(text="Below, you can chat, answer song name and answer band name")
+        embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
+        embed.set_author(name="Made by TheLegendaryPro#6810", icon_url="https://cdn.discordapp.com/avatars/298986102495248386/c36840dfbed5e0e27253ada30eb1dedf.webp?size=128")
 
         return embed
 
@@ -88,6 +90,9 @@ class MusicQuiz:
 
 
     async def play_song(self, user):
+        # Try to save data
+        await self.save_data()
+
         try:
             voice_channel = user.voice.channel
         except:
@@ -274,7 +279,6 @@ class MusicQuiz:
             await self.v_client.disconnect()
             self.v_client = "voice client object"
             self.v_channel = "voice channel"
-            await self.update_log(f"I disconnected because {user.name} asked me to leave")
         else:
             await self.update_log(f"{user.name} asked me to leave, but I'm not in a voice channel")
             return
@@ -296,7 +300,11 @@ class MusicQuiz:
             pass
 
 
-    async def save_data(self, user):
+    async def save_data(self, user=None):
+        if user == None:
+            cogs._json.write_json(song_usage_data, "song_usage_data")
+            cogs._json.write_json(song_points, "song_points")
+            return
         key = str(self.t_channel.id) + "save"
         if key in cooldown_dict:
             await self.update_log(f"Hey {user.name}, the save data function is still on cooldown")
@@ -524,8 +532,7 @@ async def process_message(message):
         if quiz.display_band == "?":
             if is_similar(message.content,quiz.song.band_name):
                 await quiz.correct_band(message.author)
-                #update for user
-                pass
+                return
     # Get rid of new line
     no_new_line = message.content.replace('\n', '')
     with open("bot_config/chatlog.txt", "a", encoding="UTF-8") as f:
@@ -539,7 +546,7 @@ react_dict={
 "<:AyaPointUp:727496890693976066>": MusicQuiz.skip_song,
 #"<:RinkoHide:727683091182649457>": MusicQuiz.toggle_autoplay,
 "<:StarGem:727683091337838633>": MusicQuiz.check_star,
-"<:MocaStarNom:727683091409404005>": MusicQuiz.save_data,
+#"<:MocaStarNom:727683091409404005>": MusicQuiz.save_data,
 #"<:YukinaDab:727683091350421605>": MusicQuiz.leave_channel
 }
 
@@ -619,16 +626,15 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        print("before")
-        print(before.channel)
-        print("after")
-        print(after.channel)
         if before.channel != None:
             if before.channel.guild.id in main_dict:
                 if not isinstance(main_dict[before.channel.guild.id].v_client, str):
                     if before.channel == main_dict[before.channel.guild.id].v_client.channel and after.channel == None:
                         if len(before.channel.members) == 1:
-                            print("passed finally")
+                            await asyncio.sleep(10)
+                            if len(before.channel.members) == 1:
+                                await main_dict[before.channel.guild.id].leave_channel(member)
+                                await main_dict[before.channel.guild.id].update_log("I left the channel because I felt lonely <:RinkoHide:727683091182649457>")
 
 
 
@@ -658,6 +664,10 @@ class QuizGUI(commands.Cog):
             if word in message.content.lower():
                 if len(message.content) - len(word) < 3:
                     await invoke(message)
+                    try:
+                        await message.delete()
+                    except:
+                        pass
                     return
 
         await process_message(message)
