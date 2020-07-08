@@ -1,0 +1,6 @@
+# Song files
+*.ogg
+
+# Files inside:
+song_files/*
+audio_file/*
