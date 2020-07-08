@@ -103,13 +103,13 @@ class MusicQuiz:
             await self.v_client.move_to(voice_channel)
             self.v_channel = voice_channel
 
-        # return if a song is already playing
+        # toggle auto play if a song is already playing
         if self.v_client.is_playing():
-            await self.update_log(f"Hey {user.name}, I am already playing a song")
+            await self.toggle_autoplay(user)
             return
-        elif self.v_client.is_paused():
-            await self.update_log("I'm paused, press ⏸️ to continue paying")
-            return
+        # elif self.v_client.is_paused():
+        #     await self.update_log("I'm paused, press ⏸️ to continue paying")
+        #     return
         else:
             self.song = Song(self)
 
@@ -139,7 +139,15 @@ class MusicQuiz:
         # Setup timer for hint
         self.hint_timer = Timer(20, MusicQuiz.give_hint, self)
 
-        # Setup timer for answer
+
+        # try to cancel next timer
+        try:
+            self.next_timer.cancel()
+        except:
+            pass
+
+
+        # Setup timer for answer and next song
         with audioread.audio_open(f'song_files/{self.song.song_name}.ogg') as f:
             self.answer_timer = Timer(int(f.duration) - 30, MusicQuiz.show_answer, self)
             if self.auto_play:
@@ -459,18 +467,18 @@ class Timer:
 
 
 
-async def call_gui(ctx):
+async def call_gui(message):
     global main_dict
     '''when recieve musicgui command'''
-    if ctx.guild.id in main_dict:
+    if message.guild.id in main_dict:
         pass
     else:
         # Delete up to 10 message to clear up bangdream text channel
-        if ctx.channel.name == "bangdream":
-            await ctx.channel.purge(limit=10)
+        if message.channel.name == "bangdream":
+            await message.channel.purge(limit=10)
         # Create the object and add it to main_dict
-        quiz = MusicQuiz(ctx)
-        main_dict[ctx.guild.id] = quiz
+        quiz = MusicQuiz(message)
+        main_dict[message.guild.id] = quiz
         await quiz.create_message()
 
 
@@ -529,10 +537,10 @@ async def process_message(message):
 react_dict={
 "<:KokoroYay:727683024526770222>": MusicQuiz.play_song,
 "<:AyaPointUp:727496890693976066>": MusicQuiz.skip_song,
-"<:RinkoHide:727683091182649457>": MusicQuiz.toggle_autoplay,
+#"<:RinkoHide:727683091182649457>": MusicQuiz.toggle_autoplay,
 "<:StarGem:727683091337838633>": MusicQuiz.check_star,
 "<:MocaStarNom:727683091409404005>": MusicQuiz.save_data,
-"<:YukinaDab:727683091350421605>": MusicQuiz.leave_channel
+#"<:YukinaDab:727683091350421605>": MusicQuiz.leave_channel
 }
 
 # A dict for reaction cooldown
@@ -561,6 +569,10 @@ async def process_reaction(reaction, user):
         await reaction.remove(user)
 
 
+
+
+
+
 class QuizGUI(commands.Cog):
 
     def __init__(self, bot):
@@ -572,27 +584,27 @@ class QuizGUI(commands.Cog):
         print(f"{self.__class__.__name__} Cog has been loaded\n-----")
 
 
-    @commands.command(aliases = ["mg"])
-    async def musicgui(self, ctx):
-        if ctx.message.channel.name == "bangdream":
-            await call_gui(ctx)
+    # @commands.command(aliases = ["mg"])
+    # async def musicgui(self, message):
+    #     if message.channel.name == "bangdream":
+    #         await call_gui(ctx)
 
-    @commands.command()
-    async def server(self, ctx, *, abbrs):
-        ''' Set what game server should the songs come from jp, ko, tw, en, ch'''
-        if ctx.message.channel.name == "bangdream":
-            server_list = []
-            for abbr in server_abbr.keys():
-                if abbr in abbrs.lower():
-                    server_list.append(server_abbr[abbr])
-            if ctx.message.guild.id in main_dict:
-                if server_list == []:
-                    main_dict[ctx.message.guild.id].servers = "all"
-                else:
-                    main_dict[ctx.message.guild.id].servers = server_list
-                await main_dict[ctx.message.guild.id].update_log(f"server list: {main_dict[ctx.message.guild.id].servers}")
-            else:
-                await ctx.send("You have to do `-mg` to start a game in order to configure its server")
+    # @commands.command()
+    # async def server(self, ctx, *, abbrs):
+    #     ''' Set what game server should the songs come from jp, ko, tw, en, ch'''
+    #     if ctx.message.channel.name == "bangdream":
+    #         server_list = []
+    #         for abbr in server_abbr.keys():
+    #             if abbr in abbrs.lower():
+    #                 server_list.append(server_abbr[abbr])
+    #         if ctx.message.guild.id in main_dict:
+    #             if server_list == []:
+    #                 main_dict[ctx.message.guild.id].servers = "all"
+    #             else:
+    #                 main_dict[ctx.message.guild.id].servers = server_list
+    #             await main_dict[ctx.message.guild.id].update_log(f"server list: {main_dict[ctx.message.guild.id].servers}")
+    #         else:
+    #             await ctx.send("You have to do `-mg` to start a game in order to configure its server")
 
 
     @commands.Cog.listener()
@@ -605,13 +617,29 @@ class QuizGUI(commands.Cog):
                 await process_reaction(reaction, user)
 
 
-    @commands.command()
-    @commands.is_owner()
-    async def purgebangdream(self, ctx):
-        msg = f"{ctx.channel.name}"
-        await ctx.send(msg)
-        if ctx.channel.name == "bangdream":
-            await ctx.channel.purge(limit=10)
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        print("before")
+        print(before.channel)
+        print("after")
+        print(after.channel)
+        if before.channel != None:
+            if before.channel.guild.id in main_dict:
+                if not isinstance(main_dict[before.channel.guild.id].v_client, str):
+                    if before.channel == main_dict[before.channel.guild.id].v_client.channel and after.channel == None:
+                        if len(before.channel.members) == 1:
+                            print("passed finally")
+
+
+
+    # @commands.command()
+    # @commands.is_owner()
+    # async def purgebangdream(self, ctx):
+    #     msg = f"{ctx.channel.name}"
+    #     await ctx.send(msg)
+    #     if ctx.channel.name == "bangdream":
+    #         await ctx.channel.purge(limit=10)
+
 
 
     @commands.Cog.listener()
@@ -626,9 +654,25 @@ class QuizGUI(commands.Cog):
             await message.delete()
             return
 
+        for word, invoke in command_dict.items():
+            if word in message.content.lower():
+                if len(message.content) - len(word) < 3:
+                    await invoke(message)
+                    return
+
         await process_message(message)
         await message.delete()
 
+
+async def musicgui(message):
+    if message.channel.name == "bangdream":
+        await call_gui(message)
+
+
+command_dict = {
+"start": musicgui,
+"mg": musicgui
+}
 
 
 

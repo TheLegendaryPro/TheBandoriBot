@@ -85,8 +85,8 @@ async def on_message(message):
 
     # Because of the cog doesn't have attribute problem, will haev to set up two listener for on messages
     # So will return if the channel is 'bangdream'
-    # if message.channel.name == "bangdream":
-    #     return
+    if message.channel.name == "bangdream":
+        return
 
 
     #A way to blacklist users from the bot by not processing commands if the author is in the blacklisted_users list
