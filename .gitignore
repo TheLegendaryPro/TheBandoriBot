@@ -1,6 +1,8 @@
 # Song files
 *.ogg
+*.txt
 
 # Files inside:
 song_files/*
 audio_file/*
+bot_data/*

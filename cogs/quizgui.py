@@ -258,10 +258,10 @@ class MusicQuiz:
         await self.update_log(f"auto play is set to {self.auto_play} by {user.name}")
 
     async def check_star(self, user):
-        if user.id not in song_points:
+        if user.id not in user_data:
             await self.update_log(f"Hey {user.name}, you don't have any <:StarGem:727683091337838633> yet, try answer songs correctly")
         else:
-            star = song_points[user.id]
+            star = user_data[user.id]['points']
             await self.update_log(f"Hi {user.name}, you have {star} <:StarGem:727683091337838633>, congratulation!")
 
 
@@ -302,8 +302,8 @@ class MusicQuiz:
 
     async def save_data(self, user=None):
         if user == None:
-            cogs._json.write_json(song_usage_data, "song_usage_data")
-            cogs._json.write_json(song_points, "song_points")
+            cogs._json.write_data(song_usage_data, "song_usage_data")
+            cogs._json.write_data(user_data, "user_data")
             return
         key = str(self.t_channel.id) + "save"
         if key in cooldown_dict:
@@ -312,8 +312,8 @@ class MusicQuiz:
         else:
             x = Timer(30, start_cooldown, key)
             cooldown_dict[key] = "3"
-        cogs._json.write_json(song_usage_data, "song_usage_data")
-        cogs._json.write_json(song_points, "song_points")
+        cogs._json.write_data(song_usage_data, "song_usage_data")
+        cogs._json.write_data(user_data, "user_data")
         if user.id == 298986102495248386:
             await self.update_log("<:AyaWow:728185928199307317> Se-senpai, da-data is s-saved")
         else:
@@ -334,29 +334,46 @@ class MusicQuiz:
 
     async def correct_song(self, user):
         if len(self.correct_list) == 0:
-            if user.id in song_points:
-                song_points[user.id] += 2
+            if user.id in user_data:
+                user_data[user.id]['points'] += 2
             else:
-                song_points[user.id] = 2
+                user_data[user.id]['points'] = 2
             await self.update_log(f"{user.name} was first to guess the song name, earning <:StarGem:727683091337838633><:StarGem:727683091337838633>")
             self.correct_list = [user.id]
+
+            # add name to user data if doesn't already exist
+            if 'name' not in user_data[user.id]:
+                user_data[user.id]['name'] = user.name
+                user_data[user.id]['discriminator'] = user.discriminator
+            elif user_data[user.id]['name'] != user.name:
+                user_data[user.id]['name'] = user.name
+
         else:
             if user.id not in self.correct_list:
-                if user.id in song_points:
-                    song_points[user.id] += 1
+                if user.id in user_data:
+                    user_data[user.id]['points'] += 1
                 else:
-                    song_points[user.id] = 1
+                    user_data[user.id]['points'] = 1
                 await self.update_log(f"{user.name} got it correct too, earning <:StarGem:727683091337838633>")
                 self.correct_list.append(user.id)
+
+                # add name to user data if doesn't already exist
+                if 'name' not in user_data[user.id]:
+                    user_data[user.id]['name'] = user.name
+                    user_data[user.id]['discriminator'] = user.discriminator
+                elif user_data[user.id]['name'] != user.name:
+                    user_data[user.id]['name'] = user.name
+
             else:
                 await self.update_log(f"{user.name}, you already answered, why would you answer again?")
 
 
+
     async def correct_band(self, user):
-        if user.id in song_points:
-            song_points[user.id] += 1
+        if user.id in user_data:
+            user_data[user.id]['points'] += 1
         else:
-            song_points[user.id] = 1
+            user_data[user.id]['points'] = 1
         self.display_band = self.song.band_name
         await self.update_log(f"{user.name} got the band right and earned 1 <:StarGem:727683091337838633>")
 
@@ -438,16 +455,16 @@ class Song:
 
 
 # Get song data
-song_usage_data = cogs._json.read_json("song_usage_data")
+song_usage_data = cogs._json.read_data("song_usage_data")
 
 # Get and fix user data
-song_points_raw = cogs._json.read_json("song_points")
-song_points = {}
-for i in song_points_raw.keys():
+user_data_raw = cogs._json.read_data("user_data")
+user_data = {}
+for i in user_data_raw.keys():
     try:
-        song_points[int(i)] = song_points_raw[i]
+        user_data[int(i)] = user_data_raw[i]
     except:
-        print("failed decode song point raw")
+        print("failed decode user data raw")
         pass
 
 # A timer
@@ -535,7 +552,7 @@ async def process_message(message):
                 return
     # Get rid of new line
     no_new_line = message.content.replace('\n', '')
-    with open("bot_config/chatlog.txt", "a", encoding="UTF-8") as f:
+    with open("bot_data/chatlog.txt", "a", encoding="UTF-8") as f:
         f.write(f"\n{datetime.datetime.now()} {str(message.author)}: {no_new_line}")
     await quiz.update_log(f"{str(message.author)[:-5]}: {no_new_line[:150]}")
 
