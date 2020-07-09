@@ -52,11 +52,10 @@ class MusicQuiz:
     def get_embed(self):
         '''create the embed object and return it'''
         embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description='\uFEFF')
-        embed.add_field(inline=False, name = "Instructions",value='''
-        Guess the song/band of the playing song and earn <:StarGem:727683091337838633>s!
-        Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star''')
+        embed.add_field(inline=False, name = "Instructions",value='''Guess the song/band of the playing song and earn <:StarGem:727683091337838633>s!
+Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star''')
         embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
-        {self.display_jp}''')
+{self.display_jp}''')
 #        embed.add_field(name="English Name: ", value=self.display_eng)
 #        embed.add_field(name='Japanese Name:', value=self.display_jp)
         embed.add_field(name='Band: ', value=self.display_band)
@@ -98,10 +97,12 @@ class MusicQuiz:
             return
         if self.v_channel == "voice channel":
             # Not connect yet
+            ## TODO: check if channel have music, if no, update log and return
             self.v_client = await voice_channel.connect()
             self.v_channel = voice_channel
         elif self.v_channel != voice_channel:
             # Connected to wrong one
+            ## TODO: check if channel have music, if no, update log and return
             await self.v_client.move_to(voice_channel)
             self.v_channel = voice_channel
 

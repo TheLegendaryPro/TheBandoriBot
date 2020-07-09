@@ -42,10 +42,11 @@ bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, owner_id=29
 bot.config_token = secret_file['token']
 logging.basicConfig(level=logging.INFO)
 
-bot.blacklisted_users = cogs._json.read_json("blacklist")["blacklistedUsers"]
+bot.blacklisted_users = cogs._json.read_json("user_role")["blacklistedUsers"]
+bot.bangdream_admins = cogs._json.read_json("user_role")["bangdream_admins"]
 bot.cwd = cwd
 
-bot.version = '0.5.4'
+bot.version = '1.1.5'
 
 bot.colors = {
   'WHITE': 0xFFFFFF,

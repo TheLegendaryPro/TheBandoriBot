@@ -4,6 +4,10 @@ import platform
 
 import cogs._json
 
+
+
+
+
 class Commands(commands.Cog):
 
     def __init__(self, bot):
@@ -46,41 +50,45 @@ class Commands(commands.Cog):
         await ctx.send(f"Hey {ctx.author.mention}, I am now logging out :wave:")
         await self.bot.logout()
 
-    @commands.command()
-    async def echo(self, ctx, *, message=None):
-        """
-        A simple command that repeats the users input back to them.
-        """
-        message = message or "Please provide the message to be repeated."
-        await ctx.message.delete()
-        await ctx.send(message)
+    # @commands.command()
+    # async def echo(self, ctx, *, message=None):
+    #     """
+    #     A simple command that repeats the users input back to them.
+    #     """
+    #     message = message or "Please provide the message to be repeated."
+    #     await ctx.message.delete()
+    #     await ctx.send(message)
+
 
     @commands.command()
-    @commands.has_role("New Staff")
     async def blacklist(self, ctx, user: discord.Member):
         """
         Blacklist someone from the bot
         """
+        # Only for those who have permission
+        if ctx.author.id not in self.bot.bangdream_admins:
+            return
         if ctx.message.author.id == user.id:
             await ctx.send("Hey, you cannot blacklist yourself!")
             return
 
         self.bot.blacklisted_users.append(user.id)
-        data = cogs._json.read_json("blacklist")
+        data = cogs._json.read_json("user_role")
         data["blacklistedUsers"].append(user.id)
-        cogs._json.write_json(data, "blacklist")
+        cogs._json.write_json(data, "user_role")
         await ctx.send(f"Hey, I have blacklisted {user.name} for you.")
 
     @commands.command()
-    @commands.has_role("New Staff")
     async def unblacklist(self, ctx, user: discord.Member):
         """
         Unblacklist someone from the bot
         """
+        if ctx.author.id not in self.bot.bangdream_admins:
+            return
         self.bot.blacklisted_users.remove(user.id)
-        data = cogs._json.read_json("blacklist")
+        data = cogs._json.read_json("user_role")
         data["blacklistedUsers"].remove(user.id)
-        cogs._json.write_json(data, "blacklist")
+        cogs._json.write_json(data, "user_role")
         await ctx.send(f"Hey, I have unblacklisted {user.name} for you.")
 
     @commands.command()
@@ -94,6 +102,29 @@ class Commands(commands.Cog):
         data[str(ctx.message.guild.id)] = pre
         cogs._json.write_json(data, 'prefixes')
         await ctx.send(f"The guild prefix has been set to `{pre}`. Use `{pre}prefix <prefix>` to change it again!")
+
+    @commands.command()
+    @commands.is_owner()
+    async def addadmin(self, ctx, user: discord.Member):
+        if user.id not in self.bot.bangdream_admins:
+            self.bot.bangdream_admins.append(user.id)
+            data = cogs._json.read_json("user_role")
+            data["bangdream_admins"].append(user.id)
+            cogs._json.write_json(data, "user_role")
+            await ctx.send(f"Hey, {user.name} is now a admin for bangdream")
+
+    @commands.command()
+    @commands.is_owner()
+    async def removeadmin(self, ctx, user: discord.Member):
+        if user.id in self.bot.bangdream_admins:
+            self.bot.bangdream_admins.remove(user.id)
+            data = cogs._json.read_json("user_role")
+            data["bangdream_admins"].remove(user.id)
+            cogs._json.write_json(data, "user_role")
+            await ctx.send(f"Hey, {user.name} is no longer a admin for bangdream")
+
+
+
 
 
 def setup(bot):
