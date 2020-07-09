@@ -90,9 +90,6 @@ class MusicQuiz:
 
 
     async def play_song(self, user):
-        # Try to save data
-        await self.save_data()
-
         try:
             voice_channel = user.voice.channel
         except:
@@ -117,6 +114,9 @@ class MusicQuiz:
         #     return
         else:
             self.song = Song(self)
+
+        # Try to save data
+        await self.save_data()
 
 
         # Start the player to play a song
@@ -323,7 +323,14 @@ class MusicQuiz:
     async def update_log(self, event):
         if len(self.log) >= 7:
             del self.log[0]
-        self.log.append(event)
+        need_append = True
+        # change last message if stacking
+        if self.log[-1].endswith('got it correct too, earning <:StarGem:727683091337838633>'):
+            if event.endswith('got it correct too, earning <:StarGem:727683091337838633>'):
+                self.log[-1] = self.log[-1][:-57] + 'and ' + event[:-57] + 'got it correct too, earning <:StarGem:727683091337838633>'
+                need_append = False
+        if need_append:
+            self.log.append(event)
         await self.update_message()
 
 
