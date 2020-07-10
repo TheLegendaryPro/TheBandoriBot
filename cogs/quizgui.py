@@ -345,6 +345,7 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
             if user.id in user_data:
                 user_data[user.id]['points'] += 2
             else:
+                user_data[user.id] = {}
                 user_data[user.id]['points'] = 2
             await self.update_log(f"{user.name} was first to guess the song name, earning <:StarGem:727683091337838633><:StarGem:727683091337838633>")
             self.correct_list = [user.id]
@@ -381,7 +382,8 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
         if user.id in user_data:
             user_data[user.id]['points'] += 1
         else:
-            user_data[user.id]['points'] = 1
+            user_data[user.id] = {}
+            user_data[user.id]['points'] = 2
         self.display_band = self.song.band_name
         await self.update_log(f"{user.name} got the band right and earned 1 <:StarGem:727683091337838633>")
 
@@ -540,29 +542,27 @@ async def process_message(message):
     # see if the answer was answered, if no, check
     if need_check_ans:
         if quiz.display_eng == "?":
-            if is_similar(message.content,quiz.song.song_name):
-                await quiz.correct_song(message.author)
-                return
-            if is_similar(message.content,quiz.song.name_jp) and quiz.song.name_jp != "same as english name":
-                await quiz.correct_song(message.author)
-                return
-            if is_similar(message.content,quiz.song.translation) and quiz.song.translation != "no translation":
-                await quiz.correct_song(message.author)
-                return
             if is_similar(message.content.lower(),quiz.song.song_name.lower()):
-                await quiz.update_log(f"{message.author.name} were close, try again by adding / remove CAPITAL LETTERS")
+                await quiz.correct_song(message.author)
+                return
+            if is_similar(message.content.lower(),quiz.song.name_jp.lower()) and quiz.song.name_jp != "same as english name":
+                await quiz.correct_song(message.author)
+                return
+            if is_similar(message.content.lower(),quiz.song.translation.lower()) and quiz.song.translation != "no translation":
+                await quiz.correct_song(message.author)
                 return
 
         # see if the band name was answered, if no, check
         if quiz.display_band == "?":
-            if is_similar(message.content,quiz.song.band_name):
+            if jellyfish.jaro_winkler_similarity(message.content.lower(),quiz.song.band_name.lower()) > 0.8:
                 await quiz.correct_band(message.author)
                 return
     # Get rid of new line
     no_new_line = message.content.replace('\n', '')
+    no_gw = no_new_line.replace(':GW', '')
     with open("bot_data/chatlog.txt", "a", encoding="UTF-8") as f:
         f.write(f"\n{datetime.datetime.now()} {str(message.author)}: {no_new_line}")
-    await quiz.update_log(f"{str(message.author)[:-5]}: {no_new_line[:150]}")
+    await quiz.update_log(f"{str(message.author)[:-5]}: {no_gw[:200]}")
 
 
 # The function to deal with reactions and know what to do
