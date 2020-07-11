@@ -98,8 +98,13 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
         if self.v_channel == "voice channel":
             # Not connect yet
             ## TODO: check if channel have music, if no, update log and return
-            self.v_client = await voice_channel.connect()
-            self.v_channel = voice_channel
+            try:
+                self.v_client = await voice_channel.connect()
+                self.v_channel = voice_channel
+            except:
+                await self.v_client.disconnect()
+                self.v_client = await voice_channel.connect()
+                self.v_channel = voice_channel
         elif self.v_channel != voice_channel:
             # Connected to wrong one
             ## TODO: check if channel have music, if no, update log and return
