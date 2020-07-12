@@ -18,7 +18,7 @@ main_dict = {
 
 def is_similar(input, answer):
     if jellyfish.jaro_winkler_similarity(input, answer) > 0.8:
-        if (abs(len(input)-len(answer)) / max(len(input), len(answer))) < 0.2:
+        if (abs(len(input)-len(answer)) / max(len(input), len(answer))) < 0.3:
             return True
     return False
 
@@ -559,7 +559,7 @@ async def process_message(message):
 
         # see if the band name was answered, if no, check
         if quiz.display_band == "?":
-            if jellyfish.jaro_winkler_similarity(message.content.lower(),quiz.song.band_name.lower()) > 0.8:
+            if is_similar(message.content.lower(),quiz.song.band_name.lower()):
                 await quiz.correct_band(message.author)
                 return
     # Get rid of new line

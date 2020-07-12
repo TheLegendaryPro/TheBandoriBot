@@ -6,8 +6,6 @@ import cogs._json
 
 
 
-
-
 class Commands(commands.Cog):
 
     def __init__(self, bot):
@@ -121,7 +119,22 @@ class Commands(commands.Cog):
             data = cogs._json.read_json("user_role")
             data["bangdream_admins"].remove(user.id)
             cogs._json.write_json(data, "user_role")
-            await ctx.send(f"Hey, {user.name} is no longer a admin for bangdream")
+            await ctx.send(f"Hey, {user.name} is no longer a admin for bangdream")\
+
+
+    @commands.command(aliases=['ZAWARUDO'])
+    @commands.cooldown(1, 3600, commands.BucketType.user)
+    async def reloadgame(self, ctx):
+        """
+        Reload the game in case it crashes
+        """
+        if ctx.author.id not in self.bot.bangdream_admins:
+            return
+        await ctx.send("About to reload BanG Dream Quiz, if it is successful, you will see another message")
+        self.bot.reload_extension("cogs.quizgui")
+        await ctx.send("You just saw another message, please type -start in bangdream channel to see if it works")
+
+
 
 
 
