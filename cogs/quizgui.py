@@ -97,7 +97,10 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
             return
         if self.v_channel == "voice channel":
             # Not connect yet
-            ## TODO: check if channel have music, if no, update log and return
+            if user.voice.channel.guild.id == 432379300684103699:
+                if user.voice.channel.id != 731813919638945802:
+                    await self.update_log(f"Hey {user.name}, please go to Music 2 channel then click <:KokoroYay:727683024526770222> again")
+                    return
             try:
                 self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
@@ -107,7 +110,10 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
                 self.v_channel = voice_channel
         elif self.v_channel != voice_channel:
             # Connected to wrong one
-            ## TODO: check if channel have music, if no, update log and return
+            if user.voice.channel.guild.id == 432379300684103699:
+                if user.voice.channel.id != 731813919638945802:
+                    await self.update_log(f"Hey {user.name}, please go to Music 2 channel then click <:KokoroYay:727683024526770222> again")
+                    return
             await self.v_client.move_to(voice_channel)
             self.v_channel = voice_channel
 
@@ -367,6 +373,7 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
                 if user.id in user_data:
                     user_data[user.id]['points'] += 1
                 else:
+                    user_data[user.id] = {}
                     user_data[user.id]['points'] = 1
                 await self.update_log(f"{user.name} got it correct too, earning <:StarGem:727683091337838633>")
                 self.correct_list.append(user.id)

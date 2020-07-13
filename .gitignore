@@ -6,3 +6,6 @@
 song_files/*
 audio_file/*
 bot_data/*
+
+# Bot secret
+bot_config/secrets.json

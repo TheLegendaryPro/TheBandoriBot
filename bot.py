@@ -37,6 +37,8 @@ def get_prefix(bot, message):
     return commands.when_mentioned_or(data[str(message.guild.id)])(bot, message)
 
 #Defining a few things
+# todo make it so that I can operate different instances at the same time, set owner id and bot config inside secrests
+# then do not have it inside git hub
 secret_file = json.load(open(cwd+'/bot_config/secrets.json'))
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, owner_id=298986102495248386)
 bot.config_token = secret_file['token']
@@ -76,7 +78,7 @@ bot.color_list = [c for c in bot.colors.values()]
 async def on_ready():
     # On ready, print some details to standard out
     print(f"-----\nLogged in as: {bot.user.name} : {bot.user.id}\n-----\nMy current prefix is: -\n-----")
-    await bot.change_presence(activity=discord.Game(name=f"do -musichelp")) # This changes the bots 'activity'
+    await bot.change_presence(activity=discord.Game(name=f"bangdream is my habitat")) # This changes the bots 'activity'
 
 @bot.event
 async def on_message(message):
