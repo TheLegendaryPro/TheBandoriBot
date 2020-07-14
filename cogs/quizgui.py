@@ -8,7 +8,7 @@ import jellyfish
 # For audio length
 import audioread
 import datetime
-
+import logging
 
 
 main_dict = {
@@ -17,7 +17,8 @@ main_dict = {
 
 
 def is_similar(input, answer):
-    if jellyfish.jaro_winkler_similarity(input, answer) > 0.8:
+    '''check if input is similar to the answer'''
+    if jellyfish.jaro_winkler_similarity(input, answer) > 0.85:
         if (abs(len(input)-len(answer)) / max(len(input), len(answer))) < 0.3:
             return True
     return False
@@ -39,7 +40,7 @@ class MusicQuiz:
         self.message = "message object"
         self.t_channel = ctx.channel
         self.v_channel = "voice channel"
-        self.log = ["React <:KokoroYay:727683024526770222> to start! Type the answer in chat below <:SayoYay:714494329779126392>"]
+        self.log = ["React <:KokoroYay:727683024526770222> to start! Type the answer in chat below <:SayoYay:732208214166470677>"]
         self.hint_timer = "timer object"
         self.answer_timer = "timer object"
         self.auto_play = False
@@ -51,17 +52,13 @@ class MusicQuiz:
 
     def get_embed(self):
         '''create the embed object and return it'''
-        embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description='\uFEFF')
-        embed.add_field(inline=False, name = "Instructions",value='''Guess the song/band of the playing song and earn <:StarGem:727683091337838633>s!
+        embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description='''Guess the song/band of the playing song and earn <:StarGem:727683091337838633>s!
 Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star''')
+
         embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
 {self.display_jp}''')
-#        embed.add_field(name="English Name: ", value=self.display_eng)
-#        embed.add_field(name='Japanese Name:', value=self.display_jp)
         embed.add_field(name='Band: ', value=self.display_band)
         embed.add_field(name="Difficulty", value=f"Expert: {self.display_expert} - Special: {self.display_special}")
-        # embed.add_field(name='Special difficulty: ', value=self.display_special)
-        #embed.add_field(name='Type', value=self.display_type)
 
         log_msg = ""
         for num in range(len(self.log)):
@@ -74,13 +71,14 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
         embed.add_field(inline=False, name='Log: ', value=log_msg)
 
         # embed.set_footer(text="Below, you can chat, answer song name and answer band name")
-        embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
-        embed.set_author(name="Made by TheLegendaryPro#6810", icon_url="https://cdn.discordapp.com/avatars/298986102495248386/c36840dfbed5e0e27253ada30eb1dedf.webp?size=128")
+        embed.set_footer(text = "Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
+        embed.set_author(name = "Made by TheLegendaryPro#6810", icon_url = bot.user.avatar_url)
 
         return embed
 
 
     async def create_message(self):
+        '''send the message'''
         msg_cont = "Welcome to BanG Dream Music Quiz"
         embed = self.get_embed()
         self.message = await self.t_channel.send(content=msg_cont, embed=embed)
@@ -95,21 +93,24 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
             # except user is not in a voice channel
             await self.update_log(f"Hey {user.name}, get into voice channel first then click <:KokoroYay:727683024526770222> again")
             return
+
         if self.v_channel == "voice channel":
-            # Not connect yet
+            # Only redirect people if in official server
             if user.voice.channel.guild.id == 432379300684103699:
                 if user.voice.channel.id != 731813919638945802:
                     await self.update_log(f"Hey {user.name}, please go to Music 2 channel then click <:KokoroYay:727683024526770222> again")
                     return
             try:
+                # Tries to connect
                 self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
             except:
+                # Try disconnect and reconnect
                 await self.v_client.disconnect()
                 self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
         elif self.v_channel != voice_channel:
-            # Connected to wrong one
+            # Connected to wrong one, but do not change channel in official server
             if user.voice.channel.guild.id == 432379300684103699:
                 if user.voice.channel.id != 731813919638945802:
                     await self.update_log(f"Hey {user.name}, please go to Music 2 channel then click <:KokoroYay:727683024526770222> again")
@@ -121,20 +122,15 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
         if self.v_client.is_playing():
             await self.toggle_autoplay(user)
             return
-        # elif self.v_client.is_paused():
-        #     await self.update_log("I'm paused, press ⏸️ to continue paying")
-        #     return
         else:
             self.song = Song(self)
 
         # Try to save data
         await self.save_data()
 
-
         # Start the player to play a song
         def load_success():
             print(f"loaded {ascii(self.song.song_name)}")
-            # I wanted to make it stopped when the audio stopeed, failed
         try:
             self.v_client.play(discord.FFmpegPCMAudio(f'song_files/{self.song.song_name}.ogg'), after=load_success())
             self.v_client.source = discord.PCMVolumeTransformer(self.v_client.source)
@@ -156,13 +152,11 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
         # Setup timer for hint
         self.hint_timer = Timer(20, MusicQuiz.give_hint, self)
 
-
         # try to cancel next timer
         try:
             self.next_timer.cancel()
         except:
             pass
-
 
         # Setup timer for answer and next song
         with audioread.audio_open(f'song_files/{self.song.song_name}.ogg') as f:
@@ -173,6 +167,7 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
 
 
     async def give_hint(self):
+        '''generate a hint and send it'''
         amount = int(len(self.song.song_name)/1.25) - 1
         hint_list = list("-"*len(self.song.song_name))
 
@@ -190,7 +185,7 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
 
 
     async def show_answer(self):
-
+        '''show the answer'''
         self.display_eng = self.song.song_name
         self.display_jp = self.song.name_jp
         self.display_band = self.song.band_name
@@ -202,47 +197,30 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
 
 
     async def next_song(parameters):
+        '''the callback for next timer'''
         self, user = parameters
         await self.play_song(user)
 
 
-    # async def pause(self, user):
-    #     # cancel the next timer
-    #     try:
-    #         self.next_timer.cancel()
-    #     except:
-    #         pass
-    #     try:
-    #         if self.v_client.is_paused():
-    #             self.v_client.resume()
-    #             await self.update_log(f"{user.name} resumed the player")
-    #         else:
-    #             self.v_client.pause()
-    #             await self.update_log(f"{user.name} paused the player")
-    #             await self.update_log(f"auto play stopped because you paused")
-    #     except:
-    #         await self.update_log("Cannot pause becasue no song is playing")
-
-
     async def skip_song(self, user):
-        # See if the voice client is playing anythong
+        # See if the voice client is playing anything
         try:
             self.v_client.is_playing()
         except:
-            await self.update_log("Cannot skip becasue no song is playing")
+            await self.update_log("Cannot skip because no song is playing")
             return
         # See if everyone agreed
         if user.id not in self.skip_vote:
             self.skip_vote.append(user.id)
-        for user_id in [user.id for user in self.v_channel.members if user.id != 650352975839100947]:
-            if user_id in self.skip_vote:
-                pass
-            else:
-                await self.update_log(f"{user.name} voted to skip, but not everyone agreed ({len(self.skip_vote)}/{len([user.id for user in self.v_channel.members if user.id != 650352975839100947])})")
-                return
+        vc_member_list = [user.id for user in self.v_channel.members if user.id != bot.user.id]
+        if len(self.skip_vote) / len(vc_member_list) > 0.85:
+            pass
+        else:
+            await self.update_log(f"({len(self.skip_vote)}/{len(vc_member_list)}) {user.name} voted to skip, but not everyone agreed")
+            return
+
         # Actually skip the song
-        print([user.id for user in self.v_channel.members if user.id != 650352975839100947], self.skip_vote, "skipping a song")
-        await self.update_log(f"song skipped by {user.name}, Will play another song soon")
+        await self.update_log(f"{user.name} casted the final skip vote, will play another song soon")
         self.skip_vote = []
         # Stop all timers
         try:
@@ -263,13 +241,14 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
         await self.play_song(user)
 
 
-
-
     async def toggle_autoplay(self, user):
+        '''toggle and announce autoplay'''
         self.auto_play = not self.auto_play
         await self.update_log(f"auto play is set to {self.auto_play} by {user.name}")
 
+
     async def check_star(self, user):
+        '''tell the user how much star he have'''
         if user.id not in user_data:
             await self.update_log(f"Hey {user.name}, you don't have any <:StarGem:727683091337838633> yet, try answer songs correctly")
         else:
@@ -278,22 +257,23 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
 
 
     async def leave_channel(self, user):
-        key = str(self.t_channel.id) + "leave"
-        if key in cooldown_dict:
-            await self.update_log(f"Hey {user.name}, the shutdown function is still on cooldown, if the bot is not working feel free to ping the creator")
-            return
-        else:
-            x = Timer(150, start_cooldown, key)
-            cooldown_dict[key] = "2"
+        '''leave the channel '''
+        # key = str(self.t_channel.id) + "leave"
+        # if key in cooldown_dict:
+        #     await self.update_log(f"Hey {user.name}, the shutdown function is still on cooldown, if the bot is not working feel free to ping the creator")
+        #     return
+        # else:
+        #     x = Timer(150, start_cooldown, key)
+        #     cooldown_dict[key] = "2"
         # Leave the channel and delete all timers
         if not isinstance(self.v_client, str):
             # Reset some variables
             await self.v_client.disconnect()
             self.v_client = "voice client object"
             self.v_channel = "voice channel"
-        else:
-            await self.update_log(f"{user.name} asked me to leave, but I'm not in a voice channel")
-            return
+        # else:
+        #     await self.update_log(f"{user.name} asked me to leave, but I'm not in a voice channel")
+        #     return
         # Try to cancel timers
         try:
             self.hint_timer.cancel()
@@ -317,19 +297,19 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
             cogs._json.write_data(song_usage_data, "song_usage_data")
             cogs._json.write_data(user_data, "user_data")
             return
-        key = str(self.t_channel.id) + "save"
-        if key in cooldown_dict:
-            await self.update_log(f"Hey {user.name}, the save data function is still on cooldown")
-            return
-        else:
-            x = Timer(30, start_cooldown, key)
-            cooldown_dict[key] = "3"
-        cogs._json.write_data(song_usage_data, "song_usage_data")
-        cogs._json.write_data(user_data, "user_data")
-        if user.id == 298986102495248386:
-            await self.update_log("<:AyaWow:728185928199307317> Se-senpai, da-data is s-saved")
-        else:
-            await self.update_log(f"You-you're not my senpai, {user.name}, but the data is still saved")
+        # key = str(self.t_channel.id) + "save"
+        # if key in cooldown_dict:
+        #     await self.update_log(f"Hey {user.name}, the save data function is still on cooldown")
+        #     return
+        # else:
+        #     x = Timer(30, start_cooldown, key)
+        #     cooldown_dict[key] = "3"
+        # cogs._json.write_data(song_usage_data, "song_usage_data")
+        # cogs._json.write_data(user_data, "user_data")
+        # if user.id == 298986102495248386:
+        #     await self.update_log("<:AyaWow:728185928199307317> Se-senpai, da-data is s-saved")
+        # else:
+        #     await self.update_log(f"You-you're not my senpai, {user.name}, but the data is still saved")
 
 
     async def update_log(self, event):
@@ -340,6 +320,11 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
         if self.log[-1].endswith('got it correct too, earning <:StarGem:727683091337838633>'):
             if event.endswith('got it correct too, earning <:StarGem:727683091337838633>'):
                 self.log[-1] = self.log[-1][:-57] + 'and ' + event[:-57] + 'got it correct too, earning <:StarGem:727683091337838633>'
+                need_append = False
+        # another stack
+        if self.log[-1].endswith('voted to skip, but not everyone agreed'):
+            if event.endswith('voted to skip, but not everyone agreed'):
+                self.log[-1] = self.log[-1][:-38] + 'and ' + event[6:-38] + 'voted to skip, but not everyone agreed'
                 need_append = False
         if need_append:
             self.log.append(event)
@@ -352,52 +337,37 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
 
 
     async def correct_song(self, user):
-        if len(self.correct_list) == 0:
-            if user.id in user_data:
-                user_data[user.id]['points'] += 2
+        '''called when the answer is correct, add the stars'''
+        if user.id not in self.correct_list:
+            self.correct_list.append(user.id)
+            if self.correct_list.index(user.id) == 0:
+                await self.add_points(user, 2)
+                await self.update_log(f"{user.name} was first to guess the song name, earning <:StarGem:727683091337838633><:StarGem:727683091337838633>")
             else:
-                user_data[user.id] = {}
-                user_data[user.id]['points'] = 2
-            await self.update_log(f"{user.name} was first to guess the song name, earning <:StarGem:727683091337838633><:StarGem:727683091337838633>")
-            self.correct_list = [user.id]
-
-            # add name to user data if doesn't already exist
-            if 'name' not in user_data[user.id]:
-                user_data[user.id]['name'] = user.name
-                user_data[user.id]['discriminator'] = user.discriminator
-            elif user_data[user.id]['name'] != user.name:
-                user_data[user.id]['name'] = user.name
-
-        else:
-            if user.id not in self.correct_list:
-                if user.id in user_data:
-                    user_data[user.id]['points'] += 1
-                else:
-                    user_data[user.id] = {}
-                    user_data[user.id]['points'] = 1
+                await self.add_points(user, 1)
                 await self.update_log(f"{user.name} got it correct too, earning <:StarGem:727683091337838633>")
-                self.correct_list.append(user.id)
-
-                # add name to user data if doesn't already exist
-                if 'name' not in user_data[user.id]:
-                    user_data[user.id]['name'] = user.name
-                    user_data[user.id]['discriminator'] = user.discriminator
-                elif user_data[user.id]['name'] != user.name:
-                    user_data[user.id]['name'] = user.name
-
-            else:
-                await self.update_log(f"{user.name}, you already answered, why would you answer again?")
-
+        else:
+            await self.update_log(f"{user.name}, you already answered, why would you answer again?")
 
 
     async def correct_band(self, user):
+        self.add_points(user, 1)
+        self.display_band = self.song.band_name
+        await self.update_log(f"{user.name} got the band right and earned <:StarGem:727683091337838633>")
+
+
+    async def add_points(self, user, amount):
         if user.id in user_data:
-            user_data[user.id]['points'] += 1
+            user_data[user.id]['points'] += amount
         else:
             user_data[user.id] = {}
-            user_data[user.id]['points'] = 2
-        self.display_band = self.song.band_name
-        await self.update_log(f"{user.name} got the band right and earned 1 <:StarGem:727683091337838633>")
+            user_data[user.id]['points'] = amount
+        # add name to user data if doesn't already exist
+        if 'name' not in user_data[user.id]:
+            user_data[user.id]['name'] = user.name
+            user_data[user.id]['discriminator'] = user.discriminator
+        elif user_data[user.id]['name'] != user.name:
+            user_data[user.id]['name'] = user.name
 
 
     def __del__(self):
@@ -426,7 +396,7 @@ class Song:
         else:
             details = self.getsong(quiz.servers)
 
-        #song_usage_data["played"][choose]["attempt"] = int(song_usage_data["played"][choose]["attempt"]) + 1
+        # song_usage_data["played"][choose]["attempt"] = int(song_usage_data["played"][choose]["attempt"]) + 1
         # Set up the detials
         self.song_name = details["song_name"]
         print(f"Song class {ascii(self.song_name)}")
@@ -489,6 +459,7 @@ for i in user_data_raw.keys():
         print("failed decode user data raw")
         pass
 
+
 # A timer
 class Timer:
     # the parameters may be a tuple
@@ -520,9 +491,9 @@ async def call_gui(message):
     if message.guild.id in main_dict:
         pass
     else:
-        # Delete up to 10 message to clear up bangdream text channel
+        # Delete up to 20 message to clear up bangdream text channel
         if message.channel.name == "bangdream":
-            await message.channel.purge(limit=10)
+            await message.channel.purge(limit=20)
         # Create the object and add it to main_dict
         quiz = MusicQuiz(message)
         main_dict[message.guild.id] = quiz
@@ -548,7 +519,7 @@ async def process_message(message):
         need_check_ans = False
 
     if need_check_ans:
-        if not (quiz.v_client.is_playing() or quiz.v_client.is_paused()):
+        if not (quiz.v_client.is_playing()):
             need_check_ans = False
 
     # see if the answer was answered, if no, check
@@ -569,6 +540,7 @@ async def process_message(message):
             if is_similar(message.content.lower(),quiz.song.band_name.lower()):
                 await quiz.correct_band(message.author)
                 return
+
     # Get rid of new line
     no_new_line = message.content.replace('\n', '')
     no_gw = no_new_line.replace(':GW', '')
@@ -581,11 +553,9 @@ async def process_message(message):
 react_dict={
 "<:KokoroYay:727683024526770222>": MusicQuiz.play_song,
 "<:AyaPointUp:727496890693976066>": MusicQuiz.skip_song,
-#"<:RinkoHide:727683091182649457>": MusicQuiz.toggle_autoplay,
 "<:StarGem:727683091337838633>": MusicQuiz.check_star,
-#"<:MocaStarNom:727683091409404005>": MusicQuiz.save_data,
-#"<:YukinaDab:727683091350421605>": MusicQuiz.leave_channel
 }
+
 
 # A dict for reaction cooldown
 cooldown_dict = {
@@ -598,12 +568,13 @@ async def start_cooldown(key):
 
 
 async def process_reaction(reaction, user):
-    if user.id in cooldown_dict:
-        await reaction.remove(user)
-        return
-    else:
-        x = Timer(5, start_cooldown, user.id)
-        cooldown_dict[user.id] = "1"
+    logging.info(f'3 process {reaction} reaction by {user.id}')
+    # if user.id in cooldown_dict:
+    #     await reaction.remove(user)
+    #     return
+    # else:
+    #     x = Timer(5, start_cooldown, user.id)
+    #     cooldown_dict[user.id] = "1"
 
     if reaction.message.id == main_dict[reaction.message.guild.id].message.id:
         if reaction.count > 2:
@@ -611,9 +582,7 @@ async def process_reaction(reaction, user):
             return
         await react_dict[str(reaction.emoji)](main_dict[reaction.message.guild.id], user)
         await reaction.remove(user)
-
-
-
+        logging.info(f'4 we triggered a command and removed the reaction')
 
 
 
@@ -622,16 +591,12 @@ class QuizGUI(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"{self.__class__.__name__} Cog has been loaded\n-----")
+        global bot
+        bot = self.bot
 
-
-    # @commands.command(aliases = ["mg"])
-    # async def musicgui(self, message):
-    #     if message.channel.name == "bangdream":
-    #         await call_gui(ctx)
 
     # @commands.command()
     # async def server(self, ctx, *, abbrs):
@@ -654,11 +619,13 @@ class QuizGUI(commands.Cog):
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
         if reaction.message.channel.name == "bangdream":
-            if user.id != 650352975839100947:
+            logging.info('1 we saw a reaction in bangdream')
+            if user.id != bot.user.id:
                 if user.id in self.bot.blacklisted_users:
                     await reaction.remove(user)
                     return
                 await process_reaction(reaction, user)
+                logging.info('2 we called the process_reaction')
 
 
     @commands.Cog.listener()

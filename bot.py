@@ -36,19 +36,23 @@ def get_prefix(bot, message):
         return commands.when_mentioned_or('-')(bot, message)
     return commands.when_mentioned_or(data[str(message.guild.id)])(bot, message)
 
+
 #Defining a few things
-# todo make it so that I can operate different instances at the same time, set owner id and bot config inside secrests
-# then do not have it inside git hub
 secret_file = json.load(open(cwd+'/bot_config/secrets.json'))
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, owner_id=298986102495248386)
 bot.config_token = secret_file['token']
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO,
+                    filename='bot_data/log.txt',
+                    format='%(asctime)s, %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S')
+
+
 
 bot.blacklisted_users = cogs._json.read_json("user_role")["blacklistedUsers"]
 bot.bangdream_admins = cogs._json.read_json("user_role")["bangdream_admins"]
 bot.cwd = cwd
 
-bot.version = '1.1.5'
+bot.version = '1.2.3'
 
 bot.colors = {
   'WHITE': 0xFFFFFF,
@@ -80,17 +84,18 @@ async def on_ready():
     print(f"-----\nLogged in as: {bot.user.name} : {bot.user.id}\n-----\nMy current prefix is: -\n-----")
     await bot.change_presence(activity=discord.Game(name=f"bangdream is my habitat")) # This changes the bots 'activity'
 
+
+
 @bot.event
 async def on_message(message):
     #Ignore messages sent by yourself
     if message.author.id == bot.user.id:
         return
 
-    # Because of the cog doesn't have attribute problem, will haev to set up two listener for on messages
+    # Because of the cog doesn't have attribute problem, will have to set up two listener for on messages
     # So will return if the channel is 'bangdream'
     if message.channel.name == "bangdream":
         return
-
 
     #A way to blacklist users from the bot by not processing commands if the author is in the blacklisted_users list
     if message.author.id in bot.blacklisted_users:
@@ -104,15 +109,9 @@ async def on_message(message):
         else:
             prefix = '-'
         prefixMsg = await message.channel.send(f"My prefix here is `{prefix}`")
-##        await prefixMsg.add_reaction('')
-
-
-    # If the command is in bang dream channel, return BUGGED for ubuntu
-    # if message.channel.name == "bangdream":
-    #     await cogs.quizgui.process_message(message)
-    #     await message.delete()
 
     await bot.process_commands(message)
+
 
 if __name__ == '__main__':
     # When running this file, if it is the 'main' file
