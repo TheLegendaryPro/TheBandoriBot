@@ -351,7 +351,7 @@ Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>
 
 
     async def correct_band(self, user):
-        self.add_points(user, 1)
+        await self.add_points(user, 1)
         self.display_band = self.song.band_name
         await self.update_log(f"{user.name} got the band right and earned <:StarGem:727683091337838633>")
 
@@ -568,7 +568,7 @@ async def start_cooldown(key):
 
 
 async def process_reaction(reaction, user):
-    logging.info(f'3 process {reaction} reaction by {user.id}')
+    logging.info(f'2 process {reaction} reaction by {user.id}')
     # if user.id in cooldown_dict:
     #     await reaction.remove(user)
     #     return
@@ -582,7 +582,7 @@ async def process_reaction(reaction, user):
             return
         await react_dict[str(reaction.emoji)](main_dict[reaction.message.guild.id], user)
         await reaction.remove(user)
-        logging.info(f'4 we triggered a command and removed the reaction')
+        logging.info(f'3 we triggered a command and removed the reaction')
 
 
 
@@ -625,7 +625,7 @@ class QuizGUI(commands.Cog):
                     await reaction.remove(user)
                     return
                 await process_reaction(reaction, user)
-                logging.info('2 we called the process_reaction')
+                logging.info('4 process_reaction was successfully executed')
 
 
     @commands.Cog.listener()
