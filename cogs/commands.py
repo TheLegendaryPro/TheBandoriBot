@@ -5,6 +5,7 @@ import platform
 import cogs._json
 
 
+
 class Commands(commands.Cog):
 
     def __init__(self, bot):

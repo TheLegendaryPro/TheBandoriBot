@@ -9,3 +9,5 @@ bot_data/*
 
 # Bot secret
 bot_config/secrets.json
+
+secrets.json
