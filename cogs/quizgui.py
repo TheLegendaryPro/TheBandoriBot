@@ -57,7 +57,8 @@ class MusicQuiz:
         # If it is maintenance mode, do mot return the normal message
         if not maintenance_mode:
             embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description='''Guess the song/band of the playing song and earn <:StarGem:727683091337838633>s!
-    Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star''')
+    Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star
+    Now the emoji should be fixed, another update is on the way but I didn't have enough time to finish it <:Fuee:727733595103297587>''')
 
             embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
     {self.display_jp}''')
@@ -479,15 +480,20 @@ class Song:
 # Get song data
 song_usage_data = cogs._json.read_data("song_usage_data")
 
-# Get and fix user data
-user_data_raw = cogs._json.read_data("user_data")
-user_data = {}
-for i in user_data_raw.keys():
-    try:
-        user_data[int(i)] = user_data_raw[i]
-    except:
-        print("failed decode user data raw")
-        pass
+def get_user_data():
+    # Get and fix user data
+    user_data_raw = cogs._json.read_data("user_data")
+    user_data = {}
+    for i in user_data_raw.keys():
+        try:
+            user_data[int(i)] = user_data_raw[i]
+        except:
+            print("failed decode user data raw")
+            pass
+    return user_data
+
+user_data = get_user_data()
+
 
 
 # A timer
@@ -571,12 +577,29 @@ async def process_message(message):
                 await quiz.correct_band(message.author)
                 return
 
+
+    def get_name(author):
+        if 'nickname' not in user_data[author.id].keys():
+            name = author.name
+        else:
+            name = user_data[author.id]['nickname']
+        if 'prefix' not in user_data[author.id].keys():
+            prefix = ""
+        else:
+            prefix = user_data[author.id]['prefix']
+        return f"{prefix}{name}"
+
+
     # Get rid of new line
     no_new_line = message.content.replace('\n', '')
-    no_gw = no_new_line.replace(':GW', '')
+    def get_msg(content):
+        content = content.replace(':GW', '')
+        content = content.replace('**', '')
+        return content[:250]
+
     with open("bot_data/chatlog.txt", "a", encoding="UTF-8") as f:
         f.write(f"\n{datetime.datetime.now()} {str(message.author)}: {no_new_line}")
-    await quiz.update_log(f"{str(message.author)[:-5]}: {no_gw[:200]}")
+    await quiz.update_log(f"{get_name(message.author)}: {get_msg(no_new_line)}")
 
 
 # The function to deal with reactions and know what to do
@@ -661,13 +684,17 @@ class QuizGUI(commands.Cog):
                 logging.info('4 process_reaction was successfully executed')
 
     @commands.Cog.listener()
-    async def on_resumed():
+    async def on_resumed(self):
         logging.warning("on resumed is triggered")
-        print("on resumed is triggered")
-        for item in main_dict.values():
-            await item.message.delete()
-            await item.create_message()
-
+        for key in main_dict.keys():
+            try:
+                await main_dict[key].message.delete()
+            except Exception as e:
+                logging.info(f"failed to delete message in {key} because of {type(e).__name__}, {str(e)}")
+            try:
+                await main_dict[key].create_message()
+            except Exception as e:
+                logging.info(f"failed to create message in {key} because of {type(e).__name__}, {str(e)}")
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
@@ -724,10 +751,6 @@ async def musicgui(message):
         await call_gui(message)
 
 
-async def resume_():
-    print(main_dict, "called from bot")
-
-
 async def resend_message(message):
     if message.channel.name == "bangdream":
         # Try if resending the message helps, first delete it
@@ -760,7 +783,7 @@ command_dict = {
 "start": musicgui,
 "reloadgame": resend_message,
 "startmaintenance": startmaintenance,
-"endmaintenance": endmaintenance
+"endmaintenance": endmaintenance,
 }
 
 

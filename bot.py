@@ -79,12 +79,6 @@ bot.color_list = [c for c in bot.colors.values()]
 
 
 @bot.event
-async def on_resumed():
-    logging.warning("on resumed is triggered")
-    print("on resumed is triggered")
-
-
-@bot.event
 async def on_ready():
     # On ready, print some details to standard out
     print(f"-----\nLogged in as: {bot.user.name} : {bot.user.id}\n-----\nMy current prefix is: -\n-----")
