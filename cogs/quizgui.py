@@ -4,21 +4,40 @@ from discord.ext import commands
 import asyncio
 import cogs._json
 import random
-# For check simular
 import jellyfish
-# For audio length
 import audioread
 import datetime
 import logging
 import datetime
+from pathlib import Path
+from tinydb import TinyDB, Query
+from tinydb.operations import add, set
+
+
+cwd = Path(__file__).parents[1]
+cwd = str(cwd)
+db = TinyDB(cwd + '/bot_data/user_db.json', indent=4)
 
 
 main_dict = {
 "guild_id": "MusicQuiz object"
 }
 
+replace_dict = {
+    "・": ".",
+    "♪": "",
+    "☆": "",
+    "◎": "",
+    "★": "",
+    "×": "x"
+}
 
 def is_similar(input, answer):
+    # Replace special characters
+    for key, item in replace_dict.items():
+        if key in answer:
+            answer = answer.replace(key, item)
+
     '''check if input is similar to the answer'''
     if jellyfish.jaro_winkler_similarity(input, answer) > 0.85:
         if (abs(len(input)-len(answer)) / max(len(input), len(answer))) < 0.3:
@@ -57,8 +76,7 @@ class MusicQuiz:
         # If it is maintenance mode, do mot return the normal message
         if not maintenance_mode:
             embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description='''Guess the song/band of the playing song and earn <:StarGem:727683091337838633>s!
-    Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star
-    Now the emoji should be fixed, another update is on the way but I didn't have enough time to finish it <:Fuee:727733595103297587>''')
+    Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star''')
 
             embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
     {self.display_jp}''')
@@ -77,7 +95,7 @@ class MusicQuiz:
 
             # embed.set_footer(text="Below, you can chat, answer song name and answer band name")
             embed.set_footer(text = "Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
-            embed.set_author(name = "Made by TheLegendaryPro#6810", icon_url = bot.get_user(bot.owner_id).avatar_url)
+            embed.set_author(name = "Made by <@298986102495248386>", icon_url = bot.get_user(bot.owner_id).avatar_url)
 
             return embed
 
@@ -86,7 +104,7 @@ class MusicQuiz:
             embed = discord.Embed(title='The bot is under maintenance', description='''The owner of this bot is working on improving the bot
 so you cannot use it for now''')
 
-            finish_time = datetime.datetime(2020, 7, 15, 12 - 8, 0, 0, tzinfo=pytz.utc)
+            finish_time = datetime.datetime(2020, 7, 18, 12 - 8, 0, 0, tzinfo=pytz.utc)
             hours, remainder = divmod((finish_time - datetime.datetime.now().astimezone(pytz.utc)).seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
             embed.add_field(name="Estimated time until finish: ", value='{:02}:{:02}:{:02}'.format(int(hours), int(minutes), int(seconds)))
@@ -103,7 +121,7 @@ so you cannot use it for now''')
 
             # embed.set_footer(text="Below, you can chat, answer song name and answer band name")
             embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
-            embed.set_author(name="Made by TheLegendaryPro#6810", icon_url=bot.get_user(bot.owner_id).avatar_url)
+            embed.set_author(name="Made by <@298986102495248386>", icon_url=bot.get_user(bot.owner_id).avatar_url)
 
             return embed
 
@@ -240,6 +258,10 @@ so you cannot use it for now''')
         except:
             await self.update_log("Cannot skip because no song is playing")
             return
+        # Return if the user is not inside the voice channel
+        if user.id not in [user.id for user in self.v_channel.members]:
+            await self.update_log(f"Hey {user.name}, you are not playing")
+            return
         # See if everyone agreed
         if user.id not in self.skip_vote:
             self.skip_vote.append(user.id)
@@ -280,11 +302,28 @@ so you cannot use it for now''')
 
     async def check_star(self, user):
         '''tell the user how much star he have'''
-        if user.id not in user_data:
-            await self.update_log(f"Hey {user.name}, you don't have any <:StarGem:727683091337838633> yet, try answer songs correctly")
-        else:
-            star = user_data[user.id]['points']
-            await self.update_log(f"Hi {user.name}, you have {star} <:StarGem:727683091337838633>, congratulation!")
+        try:
+            db.update(add("stars", 0), Query().user_id == user.id)
+            result = db.search(Query().user_id == user.id)
+            if result == []:
+                await self.update_log(f"Hey {user.name}, you don't have any <:StarGem:727683091337838633> yet, try answer songs correctly")
+            elif len(result) == 1:
+                star = result[0]['stars']
+                await self.update_log(f"Hi {user.name}, you have {star} <:StarGem:727683091337838633>, congratulation!")
+            else:
+                logging.warning(f"{user.id}, have multiple query results, {str(result)}")
+                await self.update_log(f"The database seems to be broken, please report to @TheLegendaryPro#6018")
+        except:
+            logging.warning(f"query failed! user id is {user.id}")
+            await self.update_log(f"The database seems to be broken 2, please report to @TheLegendaryPro#6018")
+
+        return
+        #
+        # if user.id not in user_data:
+        #     await self.update_log(f"Hey {user.name}, you don't have any <:StarGem:727683091337838633> yet, try answer songs correctly")
+        # else:
+        #     star = user_data[user.id]['points']
+        #     await self.update_log(f"Hi {user.name}, you have {star} <:StarGem:727683091337838633>, congratulation!")
 
 
     async def leave_channel(self, user):
@@ -326,7 +365,6 @@ so you cannot use it for now''')
     async def save_data(self, user=None):
         if user == None:
             cogs._json.write_data(song_usage_data, "song_usage_data")
-            cogs._json.write_data(user_data, "user_data")
             return
         # key = str(self.t_channel.id) + "save"
         # if key in cooldown_dict:
@@ -355,7 +393,7 @@ so you cannot use it for now''')
         # another stack
         if self.log[-1].endswith('voted to skip, but not everyone agreed'):
             if event.endswith('voted to skip, but not everyone agreed'):
-                self.log[-1] = self.log[-1][:-38] + 'and ' + event[6:-38] + 'voted to skip, but not everyone agreed'
+                self.log[-1] = event[0:6] + self.log[-1][6:-38] + 'and ' + event[6:-38] + 'voted to skip, but not everyone agreed'
                 need_append = False
         if need_append:
             self.log.append(event)
@@ -388,17 +426,43 @@ so you cannot use it for now''')
 
 
     async def add_points(self, user, amount):
-        if user.id in user_data:
-            user_data[user.id]['points'] += amount
-        else:
-            user_data[user.id] = {}
-            user_data[user.id]['points'] = amount
-        # add name to user data if doesn't already exist
-        if 'name' not in user_data[user.id]:
-            user_data[user.id]['name'] = user.name
-            user_data[user.id]['discriminator'] = user.discriminator
-        elif user_data[user.id]['name'] != user.name:
-            user_data[user.id]['name'] = user.name
+        try:
+            result = db.search(Query().user_id == user.id)
+            if result == []:
+                # first time create data
+                db.insert({
+                    "user_id": user.id,
+                    "stars": int(amount),
+                    "username": str(user.name),
+                    "discriminator": str(user.discriminator)
+                })
+            elif len(result) == 1:
+                db.update(add("stars", amount), Query().user_id == user.id)
+                if "username" not in result[0]:
+                    db.update(set('username', str(user.name)), Query().user_id == user.id)
+                if "discriminator" not in result[0]:
+                    db.update(set('discriminator', str(user.discriminator)), Query().user_id == user.id)
+
+            else:
+                logging.warning(f"failed adding {amount} to {user.id}, too many result")
+                print(f"failed adding {amount} to {user.id}, too many result")
+        except:
+            logging.warning(f"failed adding {amount} to {user.id}, unable to query or add")
+            print(f"failed adding {amount} to {user.id}, too many result")
+
+        return
+
+        # if user.id in user_data:
+        #     user_data[user.id]['points'] += amount
+        # else:
+        #     user_data[user.id] = {}
+        #     user_data[user.id]['points'] = amount
+        # # add name to user data if doesn't already exist
+        # if 'name' not in user_data[user.id]:
+        #     user_data[user.id]['name'] = user.name
+        #     user_data[user.id]['discriminator'] = user.discriminator
+        # elif user_data[user.id]['name'] != user.name:
+        #     user_data[user.id]['name'] = user.name
 
 
     def __del__(self):
@@ -480,19 +544,19 @@ class Song:
 # Get song data
 song_usage_data = cogs._json.read_data("song_usage_data")
 
-def get_user_data():
-    # Get and fix user data
-    user_data_raw = cogs._json.read_data("user_data")
-    user_data = {}
-    for i in user_data_raw.keys():
-        try:
-            user_data[int(i)] = user_data_raw[i]
-        except:
-            print("failed decode user data raw")
-            pass
-    return user_data
-
-user_data = get_user_data()
+# def get_user_data():
+#     # Get and fix user data
+#     user_data_raw = cogs._json.read_data("user_data")
+#     user_data = {}
+#     for i in user_data_raw.keys():
+#         try:
+#             user_data[int(i)] = user_data_raw[i]
+#         except:
+#             print("failed decode user data raw")
+#             pass
+#     return user_data
+#
+# user_data = get_user_data()
 
 
 
@@ -561,6 +625,7 @@ async def process_message(message):
     # see if the answer was answered, if no, check
     if need_check_ans:
         if quiz.display_eng == "?":
+
             if is_similar(message.content.lower(),quiz.song.song_name.lower()):
                 await quiz.correct_song(message.author)
                 return
@@ -579,14 +644,38 @@ async def process_message(message):
 
 
     def get_name(author):
-        if 'nickname' not in user_data[author.id].keys():
+
+
+        db.update(add("stars", 0), Query().user_id == author.id)
+        result = db.search(Query().user_id == author.id)
+        if result == []:
             name = author.name
-        else:
-            name = user_data[author.id]['nickname']
-        if 'prefix' not in user_data[author.id].keys():
             prefix = ""
+        elif len(result) == 1:
+            if 'nickname' in result[0]:
+                name = result[0]['nickname']
+            else:
+                name = author.name
+
+            if 'prefix' in result[0]:
+                prefix = result[0]['prefix']
+            else:
+                prefix = ""
         else:
-            prefix = user_data[author.id]['prefix']
+            name = author.name
+            prefix = ""
+            logging.warning(f"get name failed, it is {author.name}, too much result {result}")
+
+        # if 'nickname' not in user_data[author.id].keys():
+        #     name = author.name
+        # else:
+        #     name = user_data[author.id]['nickname']
+        # if 'prefix' not in user_data[author.id].keys():
+        #     prefix = ""
+        # else:
+        #     prefix = user_data[author.id]['prefix']
+        if prefix != "":
+            prefix = "[" + prefix + "]"
         return f"{prefix}{name}"
 
 
@@ -621,7 +710,6 @@ async def start_cooldown(key):
 
 
 async def process_reaction(reaction, user):
-    logging.info(f'2 process {reaction} reaction by {user.id}')
     # if user.id in cooldown_dict:
     #     await reaction.remove(user)
     #     return
@@ -638,7 +726,6 @@ async def process_reaction(reaction, user):
             return
         await react_dict[str(reaction.emoji)](main_dict[reaction.message.guild.id], user)
         await reaction.remove(user)
-        logging.info(f'3 we triggered a command and removed the reaction')
 
 
 
@@ -675,13 +762,12 @@ class QuizGUI(commands.Cog):
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
         if reaction.message.channel.name == "bangdream":
-            logging.info('1 we saw a reaction in bangdream')
             if user.id != bot.user.id:
                 if user.id in self.bot.blacklisted_users:
                     await reaction.remove(user)
                     return
                 await process_reaction(reaction, user)
-                logging.info('4 process_reaction was successfully executed')
+
 
     @commands.Cog.listener()
     async def on_resumed(self):
@@ -696,6 +782,7 @@ class QuizGUI(commands.Cog):
             except Exception as e:
                 logging.info(f"failed to create message in {key} because of {type(e).__name__}, {str(e)}")
 
+
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         if before.channel != None:
@@ -708,15 +795,6 @@ class QuizGUI(commands.Cog):
                                 await main_dict[before.channel.guild.id].leave_channel(member)
                                 await main_dict[before.channel.guild.id].update_log("I left the channel because I felt lonely <:RinkoHide:727683091182649457>")
 
-
-
-    # @commands.command()
-    # @commands.is_owner()
-    # async def purgebangdream(self, ctx):
-    #     msg = f"{ctx.channel.name}"
-    #     await ctx.send(msg)
-    #     if ctx.channel.name == "bangdream":
-    #         await ctx.channel.purge(limit=10)
 
 
 
@@ -780,10 +858,10 @@ async def endmaintenance(message):
 
 
 command_dict = {
-"start": musicgui,
+"music": musicgui,
 "reloadgame": resend_message,
 "startmaintenance": startmaintenance,
-"endmaintenance": endmaintenance,
+"endmaintenance": endmaintenance
 }
 
 
