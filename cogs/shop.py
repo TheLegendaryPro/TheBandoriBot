@@ -137,6 +137,7 @@ class Shop(commands.Cog):
 
 
     @commands.command()
+    @commands.is_owner()
     async def printdb(self, ctx):
         db.update(add("stars", 0), Query().user_id == ctx.author.id)
         result = db.search(Query().user_id == ctx.author.id)

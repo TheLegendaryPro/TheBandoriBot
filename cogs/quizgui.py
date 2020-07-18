@@ -76,7 +76,8 @@ class MusicQuiz:
         # If it is maintenance mode, do mot return the normal message
         if not maintenance_mode:
             embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description='''Guess the song/band of the playing song and earn <:StarGem:727683091337838633>s!
-    Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star''')
+    Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star
+    You can also so `-shop` in bot-commands to buy a prefix''')
 
             embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
     {self.display_jp}''')
@@ -95,7 +96,7 @@ class MusicQuiz:
 
             # embed.set_footer(text="Below, you can chat, answer song name and answer band name")
             embed.set_footer(text = "Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
-            embed.set_author(name = "Made by <@298986102495248386>", icon_url = bot.get_user(bot.owner_id).avatar_url)
+            embed.set_author(name = "Made by TheLegendaryPro#6018", icon_url = bot.get_user(bot.owner_id).avatar_url)
 
             return embed
 
@@ -121,7 +122,7 @@ so you cannot use it for now''')
 
             # embed.set_footer(text="Below, you can chat, answer song name and answer band name")
             embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
-            embed.set_author(name="Made by <@298986102495248386>", icon_url=bot.get_user(bot.owner_id).avatar_url)
+            embed.set_author(name="Made by TheLegendaryPro#6018", icon_url=bot.get_user(bot.owner_id).avatar_url)
 
             return embed
 
@@ -155,7 +156,11 @@ so you cannot use it for now''')
                 self.v_channel = voice_channel
             except:
                 # Try disconnect and reconnect
-                await self.v_client.disconnect()
+                try:
+                    await self.v_client.disconnect()
+                except:
+                    self.v_client = self.message.channel.guild.voice_channel
+                    await self.v_client.disconnect()
                 self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
         elif self.v_channel != voice_channel:

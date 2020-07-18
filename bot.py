@@ -52,7 +52,7 @@ bot.blacklisted_users = cogs._json.read_json("user_role")["blacklistedUsers"]
 bot.bangdream_admins = cogs._json.read_json("user_role")["bangdream_admins"]
 bot.cwd = cwd
 
-bot.version = '1.2.3'
+bot.version = '2.0.0'
 
 bot.colors = {
   'WHITE': 0xFFFFFF,
