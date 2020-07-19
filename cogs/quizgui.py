@@ -698,7 +698,7 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        if reaction.message.guild.id == 552369154594832384:
+        if reaction.message.guild.id == 432379300684103699:
             return
 
         if reaction.message.channel.name == "bangdream":
@@ -741,7 +741,7 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.guild.id == 552369154594832384:
+        if message.guild.id == 432379300684103699:
             return
 
 

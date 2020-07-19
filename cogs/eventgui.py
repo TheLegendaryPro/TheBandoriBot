@@ -133,7 +133,8 @@ class MusicQuiz:
             Then the top three players from **each** team will enter into stage 2 and play for 15 songs
             **1st** gets 200 stars and , **2nd** gets 150, **3rd** gets 100, other 3 players get 50 stars
             another round will be hosted for **those that couldn't participate in this one**
-            credits to vincent4399#1229 for suggesting this event''')
+            credits to vincent4399#1229 for suggesting this event
+            you can enroll in the two team by using the commands below''')
             embed.add_field(name="Red team: ", value=f"{count_player('red')}")
             embed.add_field(name='Blue Team: ', value=f"{count_player('blue')}")
             log_msg = ""
@@ -647,6 +648,7 @@ async def process_reaction(reaction, user):
 
     if reaction.message.id == main_dict[reaction.message.guild.id].message.id:
         await react_dict[str(reaction.emoji)](main_dict[reaction.message.guild.id], user)
+        await main_dict[reaction.message.guild.id].update_message()
         await reaction.remove(user)
 
 
@@ -671,7 +673,7 @@ class EventGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        if reaction.message.guild.id != 552369154594832384:
+        if reaction.message.guild.id != 432379300684103699:
             return
 
         if reaction.message.channel.name == "bangdream":
@@ -717,7 +719,7 @@ class EventGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.guild.id != 552369154594832384:
+        if message.guild.id != 432379300684103699:
             return
 
         if message.channel.name != "bangdream":
