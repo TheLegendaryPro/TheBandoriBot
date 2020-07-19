@@ -129,9 +129,9 @@ class MusicQuiz:
 
             embed = discord.Embed(title='upcoming event in 13 UTC, which is in {:02}:{:02}:{:02}'.format(int(hours), int(minutes), int(seconds)), description=\
                 '''Choose to play for team Red or team Blue, and answer song names with a **92%** accuracy for 10 songs
-            The winning team gets to split **400** stars equally between all group mates
+            The winning team gets to split **200** stars equally between all group mates
             Then the top three players from **each** team will enter into stage 2 and play for 15 songs
-            **1st** gets 200 stars and , **2nd** gets 150, **3rd** gets 100, other 3 players get 50 stars
+            **1st** gets 100 stars and , **2nd** gets 75, **3rd** gets 50, other 3 players get 25 stars
             another round will be hosted for **those that couldn't participate in this one**
             credits to vincent4399#1229 for suggesting this event
             you can enroll in the two team by using the commands below''')
@@ -153,8 +153,8 @@ class MusicQuiz:
             return embed
 
         if not self.show_result:
-            embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description='''Guess the song/band of the playing song and earn <:Coin:734296760364564571>s!
-    Press <:AyaPointUp:727496890693976066>: vote skip, <:Coin:734296760364564571>: check star''')
+            embed = discord.Embed(title='Event!', description='''Guess the song/band of the playing song and earn <:Coin:734296760364564571>s!
+    You can type your answer below''')
 
             embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
     {self.display_jp}''')
@@ -309,7 +309,6 @@ class MusicQuiz:
 
 
 
-
     async def give_hint(self):
         '''generate a hint and send it'''
         amount = int(len(self.song.song_name)/1.25) - 1
@@ -364,55 +363,110 @@ class MusicQuiz:
 
     async def correct_song(self, user):
         '''called when the answer is correct, add the stars'''
-        def check_team(user):
-            if str(user.id) in event_raw['red'].keys():
-                return 'red'
-            elif str(user.id) in event_raw['blue'].keys():
-                return 'blue'
-            else:
-                return None
-        team = check_team(user)
-        if team == None:
-            await self.update_log(f"{user.name}, this contest is only for registered users")
-            return
+        if not phase_2:
+            def check_team(user):
+                if str(user.id) in event_raw['red'].keys():
+                    return 'red'
+                elif str(user.id) in event_raw['blue'].keys():
+                    return 'blue'
+                else:
+                    return None
+            team = check_team(user)
+            if team == None:
+                await self.update_log(f"{user.name}, this contest is only for registered users")
+                return
 
-        if user.id not in self.correct_list:
-            self.correct_list.append(user.id)
-            if self.correct_list.index(user.id) == 0:
-                await self.update_log(f"{user.name} got first! team {team} gets <:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571>")
-                await self.add_points(user, 5, team)
-            elif self.correct_list.index(user.id) == 1:
-                await self.update_log(f"{user.name} got Second! team {team} gets <:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571>")
-                await self.add_points(user, 4, team)
-            elif self.correct_list.index(user.id) == 2:
-                await self.update_log(f"{user.name} got Third! team {team} gets <:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571>")
-                await self.add_points(user, 3, team)
-            elif self.correct_list.index(user.id) == 3:
-                await self.update_log(f"{user.name} got Forth! team {team} gets <:Coin:734296760364564571><:Coin:734296760364564571>")
-                await self.add_points(user, 2, team)
-            elif self.correct_list.index(user.id) >= 4:
-                await self.update_log(f"{user.name} got it too! team {team} gets <:Coin:734296760364564571>")
-                await self.add_points(user, 1, team)
+            if user.id not in self.correct_list:
+                self.correct_list.append(user.id)
+                if self.correct_list.index(user.id) == 0:
+                    await self.update_log(f"{user.name} got first! team {team} gets <:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571>")
+                    await self.add_points(user, 5, team)
+                elif self.correct_list.index(user.id) == 1:
+                    await self.update_log(f"{user.name} got Second! team {team} gets <:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571>")
+                    await self.add_points(user, 4, team)
+                elif self.correct_list.index(user.id) == 2:
+                    await self.update_log(f"{user.name} got Third! team {team} gets <:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571>")
+                    await self.add_points(user, 3, team)
+                elif self.correct_list.index(user.id) == 3:
+                    await self.update_log(f"{user.name} got Forth! team {team} gets <:Coin:734296760364564571><:Coin:734296760364564571>")
+                    await self.add_points(user, 2, team)
+                elif self.correct_list.index(user.id) >= 4:
+                    await self.update_log(f"{user.name} got it too! team {team} gets <:Coin:734296760364564571>")
+                    await self.add_points(user, 1, team)
+            else:
+                await self.update_log(f"{user.name}, you already answered, why would you answer again?")
         else:
-            await self.update_log(f"{user.name}, you already answered, why would you answer again?")
+            if user.id not in top_six:
+                await self.update_log('only top six from phase 1 can answer now')
+                return
+            else:
+                def check_team(user):
+                    if str(user.id) in event_raw['red'].keys():
+                        return 'red'
+                    elif str(user.id) in event_raw['blue'].keys():
+                        return 'blue'
+                    else:
+                        return None
+
+                team = check_team(user)
+
+                if user.id not in self.correct_list:
+                    self.correct_list.append(user.id)
+                    if self.correct_list.index(user.id) == 0:
+                        await self.update_log(
+                            f"{user.name} got first! gets <:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571>")
+                        await self.add_points(user, 5, team)
+                    elif self.correct_list.index(user.id) == 1:
+                        await self.update_log(
+                            f"{user.name} got Second! gets <:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571>")
+                        await self.add_points(user, 4, team)
+                    elif self.correct_list.index(user.id) == 2:
+                        await self.update_log(
+                            f"{user.name} got Third! gets <:Coin:734296760364564571><:Coin:734296760364564571><:Coin:734296760364564571>")
+                        await self.add_points(user, 3, team)
+                    elif self.correct_list.index(user.id) == 3:
+                        await self.update_log(
+                            f"{user.name} got Forth! gets <:Coin:734296760364564571><:Coin:734296760364564571>")
+                        await self.add_points(user, 2, team)
+                    elif self.correct_list.index(user.id) >= 4:
+                        await self.update_log(f"{user.name} got it too! gets <:Coin:734296760364564571>")
+                        await self.add_points(user, 1, team)
+                else:
+                    await self.update_log(f"{user.name}, you already answered, why would you answer again?")
 
 
     async def correct_band(self, user):
-        def check_team(user):
-            if str(user.id) in event_raw['red'].keys():
-                return 'red'
-            elif str(user.id) in event_raw['blue'].keys():
-                return 'blue'
-            else:
-                return None
-        team = check_team(user)
-        if team == None:
-            await self.update_log(f"{user.name}, this contest is only for registered users")
-            return
+        if not phase_2:
+            def check_team(user):
+                if str(user.id) in event_raw['red'].keys():
+                    return 'red'
+                elif str(user.id) in event_raw['blue'].keys():
+                    return 'blue'
+                else:
+                    return None
+            team = check_team(user)
+            if team == None:
+                await self.update_log(f"{user.name}, this contest is only for registered users")
+                return
 
-        await self.add_points(user, 2, team)
-        self.display_band = self.song.band_name
-        await self.update_log(f"{user.name} got the band right and earned <:Coin:734296760364564571><:Coin:734296760364564571>")
+            await self.add_points(user, 2, team)
+            self.display_band = self.song.band_name
+            await self.update_log(f"{user.name} got the band right and earned <:Coin:734296760364564571><:Coin:734296760364564571>")
+        else:
+            if user.id not in top_six:
+                await self.update_log('only top six from phase 1 can answer now')
+                return
+            def check_team(user):
+                if str(user.id) in event_raw['red'].keys():
+                    return 'red'
+                elif str(user.id) in event_raw['blue'].keys():
+                    return 'blue'
+                else:
+                    return None
+            team = check_team(user)
+            await self.add_points(user, 2, team)
+            self.display_band = self.song.band_name
+            await self.update_log(f"{user.name} got the band right and earned <:Coin:734296760364564571><:Coin:734296760364564571>")
 
 
     async def add_points(self, user, amount, team):
@@ -587,7 +641,6 @@ async def process_message(message):
 
 
     def get_name(author):
-
 
         db.update(add("stars", 0), Query().user_id == author.id)
         result = db.search(Query().user_id == author.id)
@@ -768,10 +821,34 @@ async def resend_message(message):
 
 phase_2 = False
 event_started = False
+top_six = []
 
-def start_phase_2(message):
-    global phase_2
+async def start_phase_2(message):
+    global phase_2, top_six
     phase_2 = True
+    red_team = []
+    blue_team = []
+    for key, value in event_raw['red'].items():
+        red_team.append((int(key), value))
+    for key, value in event_raw['blue'].items():
+        blue_team.append((int(key), value))
+    red_team = sorted(red_team, key=lambda x: x[1], reverse=True)
+    blue_team = sorted(blue_team, key=lambda x: x[1], reverse=True)
+    for item in red_team[:3]:
+        top_six.append(int(item[0]))
+    for item in blue_team[:3]:
+        top_six.append(int(item[0]))
+    msg = "The top six players are: \n"
+    for item in top_six:
+        msg += f"{bot.get_user(item).name}\n"
+    await main_dict[message.guild.id].update_log(msg)
+    cogs._json.write_data(event_raw, 'phase2')
+    for key, value in event_raw['red'].items():
+        event_raw['red'][key] = 0
+    for key, value in event_raw['blue'].items():
+        event_raw['blue'][key] = 0
+
+
 
 async def play_music(message):
     if message.channel.name == "bangdream":
@@ -784,6 +861,8 @@ async def play_music(message):
 async def start_event(message):
     global event_started
     event_started = True
+
+
 
 
 command_dict = {

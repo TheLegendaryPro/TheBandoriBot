@@ -168,6 +168,14 @@ class Shop(commands.Cog):
             await ctx.send(message)
 
 
+    @commands.command()
+    @commands.is_owner()
+    async def addstars(self, ctx, id, amount):
+        if self.bot.get_user(int(id)) != None:
+            db.update(add("stars", int(amount)), Query().user_id == int(id))
+            await ctx.send(f"Added {int(amount)} stars to {self.bot.get_user(int(id)).name}")
+
+
 
 
 def setup(bot):
