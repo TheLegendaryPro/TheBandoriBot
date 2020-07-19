@@ -144,6 +144,31 @@ class Shop(commands.Cog):
         await ctx.send(result)
 
 
+    @commands.command()
+    async def leaderboard(self, ctx, me=None):
+        if me == None:
+            def get_top_ten():
+                def get_top_below(results):
+                    max = (0, 'name')
+                    for item in db:
+                        if item['stars'] >= max[0] and 'username' in item:
+                            if item['username'] not in [item[1] for item in results]:
+                                max = (item['stars'], item['username'])
+                    return max
+
+                results = []
+                for i in range(10):
+                    results.append(get_top_below(results))
+                msg = "The Top Ten of Bang Dream Quiz is <:HagumiXD:733655960433721415>:\n"
+                for item in results:
+                    msg += f"{results.index(item)+1}: {item[1]}     {item[0]}\n"
+                return msg
+
+            message = get_top_ten()
+            await ctx.send(message)
+
+
+
 
 def setup(bot):
     bot.add_cog(Shop(bot))
