@@ -158,7 +158,9 @@ so you cannot use it for now''')
                 try:
                     await self.v_client.disconnect()
                 except:
-                    self.v_client = self.message.channel.guild.voice_channel
+                    for client in bot.voice_clients:
+                        if client.guild.id == self.message.channel.guild.id:
+                            self.v_client = client
                     await self.v_client.disconnect()
                 self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
@@ -269,6 +271,8 @@ so you cannot use it for now''')
         # See if everyone agreed
         if user.id not in self.skip_vote:
             self.skip_vote.append(user.id)
+        else:
+            return
         vc_member_list = [user.id for user in self.v_channel.members if user.id != bot.user.id]
         if len(self.skip_vote) / len(vc_member_list) > 0.85:
             pass
@@ -698,8 +702,6 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        if reaction.message.guild.id == 552369154594832384:
-            return
 
         if reaction.message.channel.name == "bangdream":
             if user.id != bot.user.id:
@@ -714,6 +716,8 @@ class QuizGUI(commands.Cog):
     async def on_resumed(self):
         logging.warning("on resumed is triggered")
         for key in main_dict.keys():
+            if key == "guild_id":
+                continue
             try:
                 await main_dict[key].message.delete()
             except Exception as e:
@@ -729,7 +733,7 @@ class QuizGUI(commands.Cog):
         if before.channel != None:
             if before.channel.guild.id in main_dict:
                 if not isinstance(main_dict[before.channel.guild.id].v_client, str):
-                    if before.channel == main_dict[before.channel.guild.id].v_client.channel and after.channel == None:
+                    if before.channel == main_dict[before.channel.guild.id].v_client.channel:
                         if len(before.channel.members) == 1:
                             await asyncio.sleep(10)
                             if len(before.channel.members) == 1:
@@ -741,9 +745,6 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.guild.id == 432379300684103699:
-            return
-
 
         if message.channel.name != "bangdream":
             return
