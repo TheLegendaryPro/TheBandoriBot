@@ -2,8 +2,9 @@ import discord
 from discord.ext import commands
 import datetime
 import cogs._json
-
+import random
 from pathlib import Path
+import asyncio
 
 
 from tinydb import TinyDB, Query
@@ -18,7 +19,13 @@ prefix_dict = {
     'TW': 25,
     'EN': 50,
     'JP': 75,
-    'Vote what new to add at #suggestions': 9999,
+    # 'Dr.': 50,
+    # 'Gt.': 50,
+    # 'Vo.': 50,
+    # 'Key': 50,
+    # 'Ba.': 50,
+    # 'DJ': 50,
+    'You can suggest what prefix you want': 9999,
 }
 
 del_time = 20 # how long will the message stay before being deleted
@@ -145,8 +152,8 @@ class Shop(commands.Cog):
 
 
     @commands.command()
-    async def leaderboard(self, ctx, me=None):
-        if me == None:
+    async def leaderboard(self, ctx, top=None):
+        if top != None:
             def get_top_ten():
                 def get_top_below(results):
                     max = (0, 'name')
@@ -162,10 +169,53 @@ class Shop(commands.Cog):
                 msg = "The Top Ten of Bang Dream Quiz is <:HagumiXD:733655960433721415>:\n"
                 for item in results:
                     msg += f"{results.index(item)+1}: {item[1]}     {item[0]}\n"
+                msg += '\nYou can also do `-leaderboard` to see players around you'
                 return msg
-
             message = get_top_ten()
-            await ctx.send(message)
+        else:
+            if db.update(add("stars", 0), Query().user_id == ctx.author.id) != []:
+                result = db.search(Query().user_id == ctx.author.id)
+                self_star = result[0]['stars']
+
+                def search(above, star):
+                    closest = (0, 'name')
+                    if above:
+                        for item in db:
+                            if item['stars'] > star and item['stars'] - star < abs(closest[0] - star):
+                                if 'username' in item:
+                                    closest = (item['stars'], item['username'])
+                                else:
+                                    closest = (item['stars'], 'unknown')
+                    else:
+                        for item in db:
+                            if item['stars'] < star and star - item['stars'] < abs(closest[0] - star):
+                                if 'username' in item:
+                                    closest = (item['stars'], item['username'])
+                                else:
+                                    closest = (item['stars'], 'unknown')
+                    return closest
+
+                result_list = [0,0,0,0,0]
+                result_list[2] = (self_star, ctx.author.name)
+                result_list[3] = search(False, self_star)
+                result_list[4] = search(False, result_list[3][0])
+                result_list[1] = search(True, self_star)
+                result_list[0] = search(True, result_list[1][0])
+
+                count = 0
+                for item in db:
+                    if item['stars'] > self_star:
+                        count += 1
+
+                msg = "You are ranked between\n"
+                for item in result_list:
+                    msg += f"{result_list.index(item)+1+count-2}: {item[1]}     {item[0]}\n"
+                msg += '\nYou can also do `-leaderboard top` to see the top 10 players'
+                message = msg
+
+            else:
+                message = "You have not played this game yet"
+        await ctx.send(message)
 
 
     @commands.command()
@@ -174,6 +224,73 @@ class Shop(commands.Cog):
         if self.bot.get_user(int(id)) != None:
             db.update(add("stars", int(amount)), Query().user_id == int(id))
             await ctx.send(f"Added {int(amount)} stars to {self.bot.get_user(int(id)).name}")
+
+
+    @commands.command()
+    async def gacha(self, ctx):
+        await ctx.send("Sorry, the gacha function is still under development", delete_after=del_time)
+        return
+        gacha_cost = 0 #todo make it 25
+        if db.update(add("stars", 0), Query().user_id == ctx.author.id) == []:
+            await ctx.send(f"Hey {ctx.author.name}, you have not played this game yet", delete_after=del_time)
+            # If the user doesn't exist
+            return
+        user_dict = db.search(Query().user_id == ctx.author.id)[0]
+        if user_dict['stars'] < gacha_cost:
+            # If the user don't have enough star
+            await ctx.send(f"Hey {ctx.author.name}, you don't have enough star to gacha", delete_after=del_time)
+            return
+
+        def check(m):
+            # only accept respond from the same guy
+            return ctx.author == m.author
+        try:
+            await ctx.send(f"You are about to spend {gacha_cost} <:StarGem:727683091337838633> to do a gacha\nType `yes` if you are sure", delete_after=del_time)
+            respond = await self.bot.wait_for('message', check=check, timeout=10)
+        except:
+            await ctx.send(f"Seems like you are not ready, come back when you decided to gacha", delete_after=del_time)
+            return
+        if respond.content.lower() != 'yes':
+            return
+        test_dict = {
+    'Dr.': 50,
+    'Gt.': 50,
+    'Vo.': 50,
+    'Key': 50,
+    'Ba.': 50,
+    'DJ': 50,
+}
+        pop_list = []
+        weight_list = []
+        for key, value in test_dict.items():
+            pop_list.append(key)
+            weight_list.append(300/(value+2))
+        roll_results = random.choices(population=pop_list, weights=weight_list, k=6)
+        def get_embed(index):
+            content_list = ['?']*5
+            for n in range(5):
+                if n-index+3 <= 5:
+                    content_list[n] = roll_results[n-index+3]
+                else:
+                    content_list[n] = '?'
+
+            content = 'the result is:\n'
+            for i in range(len(content_list)):
+                if i == 2:
+                    content += f'-**{content_list[i]}**-\n'
+                else:
+                    content += f'{content_list[i]}\n'
+            embed = discord.Embed(title='Gacha', description=content)
+            embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
+            return embed
+        gacha_msg = await ctx.send(content='.', embed=get_embed(0))
+        for i in [1,2,3,4,3]:
+            await asyncio.sleep(0.5)
+            await gacha_msg.edit(content='.', embed=get_embed(i))
+        print(roll_results[2])
+        # this is the result
+        #todo check if already have it, if no, add it, if yes, return some
+        #todo create a message for it
 
 
 

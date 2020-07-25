@@ -10,6 +10,7 @@ class Commands(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.bot.remove_command("help")
 
 
     @commands.Cog.listener()
@@ -129,6 +130,26 @@ class Commands(commands.Cog):
         await ctx.send("About to reload BanG Dream Quiz, if it is successful, you will see another message")
         self.bot.reload_extension("cogs.quizgui")
         await ctx.send("You just saw another message, please type -start in bangdream channel to see if it works")
+
+
+    @commands.command(name="help")
+    async def show_help(self, ctx):
+        help_content='''\
+Start playing by 1.Get inside a voice channel. 2.Press <:KokoroYay:727683024526770222>.
+Then you can guess the song and band by typing into the chat to earn <:StarGem:727683091337838633>s.
+The extra button <:AyaPointUp:727496890693976066> is for voting to skip and <:StarGem:727683091337838633> is for checking how many star you have.
+Then there are a few commands you can use inside #bot-commands:
+`-shop`: See what prefixes you can buy
+`-stats`: Show the statistics of this bot
+`-buy`: Buy a prefix, more details inside shop
+`-equip`: Equip a prefix you already own
+`-leaderboard`: Show the star leader board of the game
+`-help`: Yes, you are here
+If you need any help, want to suggest anything or want to praise the bot creator, find <@298986102495248386>
+'''
+        embed = discord.Embed(title=f"Hi {ctx.author.name}, here is help: ", description=help_content)
+        embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
+        await ctx.send(content='', embed=embed)
 
 
 

@@ -74,9 +74,8 @@ class MusicQuiz:
         '''create the embed object and return it'''
         # If it is maintenance mode, do mot return the normal message
         if not maintenance_mode:
-            embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description='''Guess the song/band of the playing song and earn <:StarGem:727683091337838633>s!
-    Press <:AyaPointUp:727496890693976066>: vote skip, <:StarGem:727683091337838633>: check star
-    You can also so `-shop` in bot-commands to buy a prefix''')
+            embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description=f'''\
+An event will start in ''')
 
             embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
     {self.display_jp}''')
@@ -162,7 +161,14 @@ so you cannot use it for now''')
                         if client.guild.id == self.message.channel.guild.id:
                             self.v_client = client
                     await self.v_client.disconnect()
-                self.v_client = await voice_channel.connect()
+                try:
+                    self.v_client = await voice_channel.connect()
+                except:
+                    for client in bot.voice_clients:
+                        if client.guild.id == self.message.channel.guild.id:
+                            self.v_client = client
+                    await self.v_client.disconnect()
+                    self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
         elif self.v_channel != voice_channel:
             # Connected to wrong one, but do not change channel in official server
