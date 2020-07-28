@@ -90,8 +90,10 @@ class MusicQuiz:
 
             embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description=f'''\
 Get help by typing `-help` inside #bot-commands
-An event will start in **{days} days,{hours} hours,{minutes} minutes** (29th 12:30 UTC), be sure to check it out
-more detials will be announced later
+An event will start in **{days} days,{hours} hours,{minutes} minutes** (29th 12:30 UTC), click <:OtaePing:737164470497050644> to be notified
+**In the event**, after the song started playing <:RASLogo:727683816755560550>, The bot will ask questions
+Everyone only have **one** chance for **each question**, first to answer correctly gets <:Coin:734296760364564571>
+Participants will earn <:StarGem:727683091337838633> if they participate, and more stars if they got into top ten <:SayoYay:732208214166470677>
 ''')
 
             embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
@@ -126,21 +128,27 @@ more detials will be announced later
         if not self.show_result:
             # Event mode
             embed = discord.Embed(title='Event!', description=f'''\
-text for event
-            ''')
+After the song started playing <:RASLogo:727683816755560550>, The bot will ask questions
+Let's say the song playing is "Yes BanG Dream"
+Bot: What is the expert difficulty of this song
+If you enter `20`, you earn <:Coin:734296760364564571> <:KasumiYay2:735009630497013761>, if you enter `19`, you don't
+Everyone only have **one** chance for **each question**, first to answer correctly gets <:Coin:734296760364564571>
+**Every** event participants gets 25 <:StarGem:727683091337838633>
+Then, top ten will get extra <:StarGem:727683091337838633> based on their ranking <:SayoYay:732208214166470677>
+''')
 
-            embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
-{self.display_jp}''')
-            embed.add_field(name='Band: ', value=self.display_band)
-
-            diff_msg = ""
-            for key, value in self.display_difficulty.items():
-                if value == -1:
-                    continue
-                diff_msg += f"{key}: {value}, "
-            diff_msg = diff_msg[:-2]
-
-            embed.add_field(name="Difficulty", value=diff_msg)
+#             embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
+# {self.display_jp}''')
+#             embed.add_field(name='Band: ', value=self.display_band)
+#
+#             diff_msg = ""
+#             for key, value in self.display_difficulty.items():
+#                 if value == -1:
+#                     continue
+#                 diff_msg += f"{key}: {value}, "
+#             diff_msg = diff_msg[:-2]
+#
+#             embed.add_field(name="Difficulty", value=diff_msg)
 
             log_msg = ""
             for num in range(len(self.log)):
@@ -164,7 +172,7 @@ text for event
             def get_leaderboard():
                 scores = []
                 event2_data = cogs._json.read_data('event2')
-                for key, value in event2_data['event_result']:
+                for key, value in event2_data['event_result'].items():
                     scores.append((int(key), value))
                 scores = sorted(scores, key=lambda x: x[1], reverse=True)
                 msg = ""
@@ -298,7 +306,6 @@ text for event
             if not event_mode:
                 self.answer_timer = Timer(int(f.duration) - 15, MusicQuiz.show_answer, self)
             if event_mode:
-                print("yes it is event mode")
                 question_list = ['easy', 'normal', 'hard', 'expert']
                 try:
                     int(self.song.special)
@@ -306,21 +313,22 @@ text for event
                 except:
                     pass
                 random.shuffle(question_list)
-                print(question_list)
                 for num in range(1, len(question_list)+1):
                     self.event_question = question_list[num-1]
                     params = (self, question_list[num-1])
                     Timer(int(f.duration * num / 6), MusicQuiz.ask_diff, params)
-                self.answer_timer = Timer(int(f.duration), MusicQuiz.show_answer, self)
-                self.result_timer = Timer(int(f.duration) + 15, MusicQuiz.next_song, self)
+                self.result_timer = Timer(int(f.duration) + 5, MusicQuiz.trigger_show_result, self)
+
+    async def trigger_show_result(self):
+        self.show_result = True
+        await self.update_log("results are shown for now")
 
     async def ask_diff(params):
-        print(params)
         self, text = params
         self.attempt_list = []
         self.event_answer = getattr(self.song, text)
         print(self.event_answer)
-        await self.update_log(f"What is the {text} difficulty of the song?")
+        await self.update_log(f"<:ConcernedKokori:736552124892184687> What is the {text} difficulty of the song?")
 
 
     async def give_hint(self):
@@ -543,15 +551,13 @@ text for event
 
 
     async def correct_difficulty(self, user):
-        print("called correct dict")
+        self.event_answer = -1
         data = cogs._json.read_data('event2')
         if str(user.id) not in data['event_result'].keys():
             data['event_result'][str(user.id)] = 1
         else:
             data['event_result'][str(user.id)] += 1
-        print(data['event_result'])
         cogs._json.write_data(data, 'event2')
-        print("successfully ran correct dict")
         pass
 
 
@@ -698,19 +704,22 @@ async def process_message(message):
                 return
 
     elif event_mode and need_check_ans:
-        if message.author.id in quiz.attempt_list:
-            return
         try:
             answer_input = int(message.content)
+            if message.author.id in quiz.attempt_list:
+                return
+            if quiz.event_answer == -1:
+                return
             quiz.attempt_list.append(message.author.id)
-            print(quiz.attempt_list)
             if answer_input == int(quiz.event_answer):
-                await quiz.update_log("answer is correct")
+                await quiz.update_log(f"<:KokoroYes:733655959934861333> {message.author.name} got it correct!, earning <:Coin:734296760364564571>")
                 await quiz.correct_difficulty(message.author)
                 return
+            else:
+                return
         except:
-            print("ran except")
             pass
+
 
 
 
