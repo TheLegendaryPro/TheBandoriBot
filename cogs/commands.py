@@ -145,6 +145,7 @@ Then there are a few commands you can use inside #bot-commands:
 `-equip`: Equip a prefix you already own
 `-leaderboard`: Show the star leader board of the game
 `-help`: Yes, you are here
+`-gacha`: Still work in progress gacha function
 If you need any help, want to suggest anything or want to praise the bot creator, find <@298986102495248386>
 '''
         embed = discord.Embed(title=f"Hi {ctx.author.name}, here is help: ", description=help_content)

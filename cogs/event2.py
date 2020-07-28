@@ -16,6 +16,7 @@ from tinydb.operations import add, set
 cwd = Path(__file__).parents[1]
 cwd = str(cwd)
 db = TinyDB(cwd + '/bot_data/user_db.json', indent=4)
+event_raw = cogs._json.read_data('event2')
 
 
 main_dict = {
@@ -54,8 +55,13 @@ class MusicQuiz:
         self.display_eng = "?"
         self.display_jp = "?"
         self.display_band = "?"
-        self.display_expert = "?"
-        self.display_special = "?"
+        self.display_difficulty = {
+            "easy": "?",
+            "normal": "?",
+            "hard": "?",
+            "expert": "?",
+            "special": -1
+        }
         self.display_type = "?"
         self.message = "message object"
         self.t_channel = ctx.channel
@@ -63,17 +69,19 @@ class MusicQuiz:
         self.log = ["React <:KokoroYay:727683024526770222> to start! Type the answer in chat below <:SayoYay:732208214166470677>"]
         self.hint_timer = "timer object"
         self.answer_timer = "timer object"
-        self.auto_play = False
-        self.next_timer = "timer object"
+        self.result_timer = "timer object"
         self.servers = "all"
-        self.skip_vote = []
         self.correct_list = []
+        self.show_result = False
+        self.attempt_list = []
+        self.event_answer = -1
+        self.event_question = "string"
 
 
     def get_embed(self):
         '''create the embed object and return it'''
         # If it is maintenance mode, do mot return the normal message
-        if not maintenance_mode:
+        if not event_mode:
             finish_time = datetime.datetime(2020, 7, 29, 20 - 8, 30, 0, tzinfo=pytz.utc)
             td = finish_time - datetime.datetime.now().astimezone(pytz.utc)
             days = td.days
@@ -89,7 +97,15 @@ more detials will be announced later
             embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
 {self.display_jp}''')
             embed.add_field(name='Band: ', value=self.display_band)
-            embed.add_field(name="Difficulty", value=f"Expert: {self.display_expert} - Special: {self.display_special}")
+
+            diff_msg = ""
+            for key, value in self.display_difficulty.items():
+                if value == -1:
+                    continue
+                diff_msg += f"{key}: {value}, "
+            diff_msg = diff_msg[:-2]
+
+            embed.add_field(name="Difficulty", value=diff_msg)
 
             log_msg = ""
             for num in range(len(self.log)):
@@ -107,15 +123,24 @@ more detials will be announced later
 
             return embed
 
-        else:
-            # Instead return this message
-            embed = discord.Embed(title='The bot is under maintenance', description='''The owner of this bot is working on improving the bot
-so you cannot use it for now''')
+        if not self.show_result:
+            # Event mode
+            embed = discord.Embed(title='Event!', description=f'''\
+text for event
+            ''')
 
-            finish_time = datetime.datetime(2020, 7, 18, 12 - 8, 0, 0, tzinfo=pytz.utc)
-            hours, remainder = divmod((finish_time - datetime.datetime.now().astimezone(pytz.utc)).seconds, 3600)
-            minutes, seconds = divmod(remainder, 60)
-            embed.add_field(name="Estimated time until finish: ", value='{:02}:{:02}:{:02}'.format(int(hours), int(minutes), int(seconds)))
+            embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
+{self.display_jp}''')
+            embed.add_field(name='Band: ', value=self.display_band)
+
+            diff_msg = ""
+            for key, value in self.display_difficulty.items():
+                if value == -1:
+                    continue
+                diff_msg += f"{key}: {value}, "
+            diff_msg = diff_msg[:-2]
+
+            embed.add_field(name="Difficulty", value=diff_msg)
 
             log_msg = ""
             for num in range(len(self.log)):
@@ -133,6 +158,38 @@ so you cannot use it for now''')
 
             return embed
 
+        else:
+            embed = discord.Embed(title='Results so far', description='description')
+
+            def get_leaderboard():
+                scores = []
+                event2_data = cogs._json.read_data('event2')
+                for key, value in event2_data['event_result']:
+                    scores.append((int(key), value))
+                scores = sorted(scores, key=lambda x: x[1], reverse=True)
+                msg = ""
+                for item in scores[0:10]:
+                    msg += f"{scores.index(item) + 1}: {bot.get_user(item[0]).name} with {item[1]} points\n"
+                return msg
+
+            embed.add_field(inline=False, name='Leaderboard: ', value=get_leaderboard())
+
+            log_msg = ""
+            for num in range(len(self.log)):
+                if num < len(self.log) - 1:
+                    log_msg += self.log[num]
+                else:
+                    log_msg += "**" + self.log[num] + "**"
+                log_msg += "\n"
+            log_msg = log_msg[:-1]
+            embed.add_field(inline=False, name='Log: ', value=log_msg)
+
+            embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
+            embed.set_author(name="Made by TheLegendaryPro#6018", icon_url=bot.get_user(bot.owner_id).avatar_url)
+
+            return embed
+
+
 
     async def create_message(self):
         '''send the message'''
@@ -144,6 +201,7 @@ so you cannot use it for now''')
 
 
     async def play_song(self, user):
+        self.show_result = False
         try:
             voice_channel = user.voice.channel
         except:
@@ -188,12 +246,7 @@ so you cannot use it for now''')
             await self.v_client.move_to(voice_channel)
             self.v_channel = voice_channel
 
-        # toggle auto play if a song is already playing
-        if self.v_client.is_playing():
-            await self.toggle_autoplay(user)
-            return
-        else:
-            self.song = Song(self)
+        self.song = Song(self)
 
         # Try to save data
         await self.save_data()
@@ -212,11 +265,22 @@ so you cannot use it for now''')
         self.display_eng = "?"
         self.display_jp = "?"
         self.display_band = "?"
-        self.display_expert = "?"
-        self.display_special = "?"
+        self.display_difficulty = {
+            "easy": "?",
+            "normal": "?",
+            "hard": "?",
+            "expert": "?",
+            "special": -1
+        }
+        self.event_question = "string"
+        try:
+            self.song.special
+            self.display_difficulty['special'] = "?"
+        except:
+            pass
         self.display_type = "?"
-        self.skip_vote = []
         self.correct_list = []
+        self.attempt_list = []
         await self.update_log("<:RASLogo:727683816755560550> Started playing a song")
 
         # Setup timer for hint
@@ -224,16 +288,39 @@ so you cannot use it for now''')
 
         # try to cancel next timer
         try:
-            self.next_timer.cancel()
+            self.result_timer.cancel()
         except:
             pass
 
         # Setup timer for answer and next song
         with audioread.audio_open(f'song_files/{self.song.song_name}.ogg') as f:
-            self.answer_timer = Timer(int(f.duration) - 30, MusicQuiz.show_answer, self)
-            if self.auto_play:
-                parameters = (self, user)
-                self.next_timer = Timer(int(f.duration) + 15, MusicQuiz.next_song, parameters)
+
+            if not event_mode:
+                self.answer_timer = Timer(int(f.duration) - 15, MusicQuiz.show_answer, self)
+            if event_mode:
+                print("yes it is event mode")
+                question_list = ['easy', 'normal', 'hard', 'expert']
+                try:
+                    int(self.song.special)
+                    question_list.append('special')
+                except:
+                    pass
+                random.shuffle(question_list)
+                print(question_list)
+                for num in range(1, len(question_list)+1):
+                    self.event_question = question_list[num-1]
+                    params = (self, question_list[num-1])
+                    Timer(int(f.duration * num / 6), MusicQuiz.ask_diff, params)
+                self.answer_timer = Timer(int(f.duration), MusicQuiz.show_answer, self)
+                self.result_timer = Timer(int(f.duration) + 15, MusicQuiz.next_song, self)
+
+    async def ask_diff(params):
+        print(params)
+        self, text = params
+        self.attempt_list = []
+        self.event_answer = getattr(self.song, text)
+        print(self.event_answer)
+        await self.update_log(f"What is the {text} difficulty of the song?")
 
 
     async def give_hint(self):
@@ -247,8 +334,6 @@ so you cannot use it for now''')
         hint_text = "".join(hint_list)
 
         self.display_type = self.song.type
-        self.display_expert = self.song.expert
-        self.display_special = self.song.special
 
         await self.update_log(f"<:AyaEh:727684305802756166> Hint: the song name is {hint_text}")
         del self.hint_timer
@@ -259,8 +344,14 @@ so you cannot use it for now''')
         self.display_eng = self.song.song_name
         self.display_jp = self.song.name_jp
         self.display_band = self.song.band_name
-        self.display_expert = self.song.expert
-        self.display_special = self.song.special
+        self.display_difficulty['easy'] = self.song.easy
+        self.display_difficulty['normal'] = self.song.normal
+        self.display_difficulty['hard'] = self.song.hard
+        self.display_difficulty['expert'] = self.song.expert
+        try:
+            self.display_difficulty['expert'] = self.song.special
+        except:
+            pass
         self.display_type = self.song.type
         await self.update_log(f"Time's up, the song was {self.song.song_name}")
         del self.answer_timer
@@ -280,7 +371,7 @@ so you cannot use it for now''')
             await self.update_log("Cannot skip because no song is playing")
             return
         # Return if the user is not inside the voice channel
-        if user.id not in [user.id for user in self.v_channel.members]:
+        if user.id not in [user.id for user in self.v_chanel.members]:
             await self.update_log(f"Hey {user.name}, you are not playing")
             return
         # See if everyone agreed
@@ -315,12 +406,6 @@ so you cannot use it for now''')
         self.v_client.stop()
         await asyncio.sleep(7)
         await self.play_song(user)
-
-
-    async def toggle_autoplay(self, user):
-        '''toggle and announce autoplay'''
-        self.auto_play = not self.auto_play
-        await self.update_log(f"auto play is set to {self.auto_play} by {user.name}")
 
 
     async def check_star(self, user):
@@ -444,6 +529,32 @@ so you cannot use it for now''')
 
         return
 
+    async def add_notify(self, user):
+        event2_data = cogs._json.read_data('event2')
+        if str(user.id) not in event2_data["notify_list"]:
+            event2_data["notify_list"].append(str(user.id))
+            cogs._json.write_data(event2_data, "event2")
+            await self.update_log(
+                f"Success {user.name}<:AkoYay:733655960094244895>, we will ping you 15 minutes before event begins ({len(event2_data['notify_list'])})")
+        else:
+            event2_data["notify_list"].remove(str(user.id))
+            cogs._json.write_data(event2_data, "event2")
+            await self.update_log(f"Hey {user.name}, you will no longer be notified")
+
+
+    async def correct_difficulty(self, user):
+        print("called correct dict")
+        data = cogs._json.read_data('event2')
+        if str(user.id) not in data['event_result'].keys():
+            data['event_result'][str(user.id)] = 1
+        else:
+            data['event_result'][str(user.id)] += 1
+        print(data['event_result'])
+        cogs._json.write_data(data, 'event2')
+        print("successfully ran correct dict")
+        pass
+
+
 
     def __del__(self):
 #        print(f"A MusicQuiz object has been destroyed, it is form {ascii(self.v_client.guild.name)}")
@@ -461,15 +572,12 @@ server_abbr = {
 
 class Song:
     def __init__(self, quiz):
-        if quiz.servers == "all":
-            if len(song_usage_data["not_played"]) == 0:
-                for i in list(song_usage_data["played"]):
-                    song_usage_data["not_played"][i] = song_usage_data["played"].pop(i)
-            choose = random.choice(list(song_usage_data["not_played"].keys()))
-            song_usage_data["played"][choose] = song_usage_data["not_played"].pop(choose)
-            details = song_usage_data["played"][choose]
-        else:
-            details = self.getsong(quiz.servers)
+        if len(song_usage_data["not_played"]) == 0:
+            for i in list(song_usage_data["played"]):
+                song_usage_data["not_played"][i] = song_usage_data["played"].pop(i)
+        choose = random.choice(list(song_usage_data["not_played"].keys()))
+        song_usage_data["played"][choose] = song_usage_data["not_played"].pop(choose)
+        details = song_usage_data["played"][choose]
 
         # Set up the detials
         self.song_name = details["song_name"]
@@ -493,26 +601,9 @@ class Song:
         self.type = details["type"]
         if "Server availability" in details:
             self.server_availability = details["Server availability"]
-
-
-    def getsong(self, servers):
-        #[song for song in songs_data_copy["not_played"].keys() if list(set(quiz.servers).intersection(song["Server availability"])) != []]
-        # The above is a complicated list comprehention that I decided to not use
-        song_data_copy = song_usage_data.copy()
-        for song, info in song_data_copy["not_played"].items():
-            for server in info["Server availability"]:
-                if server in servers:
-                    # other than returning song info, also make it played
-                    song_usage_data["played"][song] = song_usage_data["not_played"].pop(song)
-                    return info
-
-        # No song in not played is in that server
-        be_shuffled = list(song_data_copy["played"].values())
-        random.shuffle(be_shuffled)
-        for info in be_shuffled:
-            for server in info["Server availability"]:
-                if server in servers:
-                    return info
+        self.easy = int(details["Easy"])
+        self.normal = int(details["Normal"])
+        self.hard = int(details["Hard"])
 
 
     def __del__(self):
@@ -587,7 +678,7 @@ async def process_message(message):
             need_check_ans = False
 
     # see if the answer was answered, if no, check
-    if need_check_ans:
+    if need_check_ans and not event_mode:
         if quiz.display_eng == "?":
 
             if is_similar(message.content.lower(),quiz.song.song_name.lower()):
@@ -606,10 +697,24 @@ async def process_message(message):
                 await quiz.correct_band(message.author)
                 return
 
+    elif event_mode and need_check_ans:
+        if message.author.id in quiz.attempt_list:
+            return
+        try:
+            answer_input = int(message.content)
+            quiz.attempt_list.append(message.author.id)
+            print(quiz.attempt_list)
+            if answer_input == int(quiz.event_answer):
+                await quiz.update_log("answer is correct")
+                await quiz.correct_difficulty(message.author)
+                return
+        except:
+            print("ran except")
+            pass
+
+
 
     def get_name(author):
-
-
         db.update(add("stars", 0), Query().user_id == author.id)
         result = db.search(Query().user_id == author.id)
         if result == []:
@@ -652,6 +757,7 @@ react_dict={
 "<:KokoroYay:727683024526770222>": MusicQuiz.play_song,
 "<:AyaPointUp:727496890693976066>": MusicQuiz.skip_song,
 "<:StarGem:727683091337838633>": MusicQuiz.check_star,
+"<:OtaePing:737164470497050644>": MusicQuiz.add_notify,
 }
 
 
@@ -666,7 +772,7 @@ async def start_cooldown(key):
 
 
 async def process_reaction(reaction, user):
-    if maintenance_mode:
+    if event_mode:
         await reaction.remove(user)
         return
 
@@ -674,15 +780,12 @@ async def process_reaction(reaction, user):
         if reaction.count > 2:
             await reaction.remove(user)
             return
-        try:
-            await react_dict[str(reaction.emoji)](main_dict[reaction.message.guild.id], user)
-        except KeyError:
-            await reaction.remove(user)
+        await react_dict[str(reaction.emoji)](main_dict[reaction.message.guild.id], user)
         await reaction.remove(user)
 
 
 
-class QuizGUI(commands.Cog):
+class EventGUI(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -700,31 +803,18 @@ class QuizGUI(commands.Cog):
         print(f"{self.__class__.__name__} Cog has been loaded\n-----")
 
 
-    # @commands.command()
-    # async def server(self, ctx, *, abbrs):
-    #     ''' Set what game server should the songs come from jp, ko, tw, en, ch'''
-    #     if ctx.message.channel.name == "bangdream":
-    #         server_list = []
-    #         for abbr in server_abbr.keys():
-    #             if abbr in abbrs.lower():
-    #                 server_list.append(server_abbr[abbr])
-    #         if ctx.message.guild.id in main_dict:
-    #             if server_list == []:
-    #                 main_dict[ctx.message.guild.id].servers = "all"
-    #             else:
-    #                 main_dict[ctx.message.guild.id].servers = server_list
-    #             await main_dict[ctx.message.guild.id].update_log(f"server list: {main_dict[ctx.message.guild.id].servers}")
-    #         else:
-    #             await ctx.send("You have to do `-mg` to start a game in order to configure its server")
-
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        if reaction.message.guild.id == 552369154594832384:
+        if reaction.message.guild.id != 552369154594832384:
             return
 
         if reaction.message.channel.name == "bangdream":
             if user.id != bot.user.id:
+                if event_mode:
+                    await reaction.remove(user)
+                    await reaction.remove(bot.user)
+                    return
                 if user.id in self.bot.blacklisted_users:
                     await reaction.remove(user)
                     return
@@ -748,24 +838,11 @@ class QuizGUI(commands.Cog):
                 logging.info(f"failed to create message in {key} because of {type(e).__name__}, {str(e)}")
 
 
-    @commands.Cog.listener()
-    async def on_voice_state_update(self, member, before, after):
-        if before.channel != None:
-            if before.channel.guild.id in main_dict:
-                if not isinstance(main_dict[before.channel.guild.id].v_client, str):
-                    if before.channel == main_dict[before.channel.guild.id].v_client.channel:
-                        if len(before.channel.members) == 1:
-                            await asyncio.sleep(10)
-                            if len(before.channel.members) == 1:
-                                await main_dict[before.channel.guild.id].leave_channel(member)
-                                await main_dict[before.channel.guild.id].update_log("I left the channel because I felt lonely <:RinkoHide:727683091182649457>")
-
-
-
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.guild.id == 552369154594832384:
+
+        if message.guild.id != 552369154594832384:
             return
 
         if message.channel.name != "bangdream":
@@ -778,21 +855,23 @@ class QuizGUI(commands.Cog):
             await message.delete()
             return
 
-        for word, invoke in command_dict.items():
-            if word in message.content.lower():
-                if len(message.content) - len(word) < 3:
-                    await invoke(message)
-                    try:
-                        await message.delete()
-                    except:
-                        pass
-                    return
+        if message.author.id == self.bot.owner_id:
+            for word, invoke in command_dict.items():
+                if word in message.content.lower():
+                    if len(message.content) - len(word) < 3:
+                        await invoke(message)
+                        try:
+                            await message.delete()
+                        except:
+                            pass
+                        return
 
         await process_message(message)
         await message.delete()
 
 
 async def musicgui(message):
+
     if message.channel.name == "bangdream":
         await call_gui(message)
 
@@ -810,28 +889,51 @@ async def resend_message(message):
             except:
                 pass
 
-maintenance_mode = False
+event_mode = False
 
-async def startmaintenance(message):
+async def play_music(message):
     if message.author.id != bot.owner_id:
         return
-    global maintenance_mode
-    maintenance_mode = True
+    if message.channel.name == "bangdream":
+        try:
+            await main_dict[message.guild.id].play_song(message.author)
+        except Exception as e:
+            await main_dict[message.guild.id].update_log(f"cannot play because {e}")
 
-async def endmaintenance(message):
+
+async def startevent(message):
     if message.author.id != bot.owner_id:
         return
-    global maintenance_mode
-    maintenance_mode = False
+    global event_mode
+    event_mode = True
+
+async def endevent(message):
+    if message.author.id != bot.owner_id:
+        return
+    global event_mode
+    event_mode = False
+
+async def ping_all(message):
+    if message.author.id != bot.owner_id:
+        return
+    event2_data = cogs._json.read_data('event2')
+    msg = "Hey"
+    for id in event2_data['notify_list']:
+        msg += f", <@{id}>"
+    msg += ". Event is about to start! <:KokoroYes:733655959934861333>"
+    await message.channel.send(msg, delete_after = 60)
+
 
 
 command_dict = {
 "music": musicgui,
 "reloadgame": resend_message,
-"startmaintenance": startmaintenance,
-"endmaintenance": endmaintenance
+"startevent": startevent,
+"endevent": endevent,
+"play": play_music,
+"ping": ping_all
 }
 
 
 def setup(bot):
-    bot.add_cog(QuizGUI(bot))
+    bot.add_cog(EventGUI(bot))
