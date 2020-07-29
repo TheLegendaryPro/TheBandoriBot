@@ -82,7 +82,7 @@ bot.color_list = [c for c in bot.colors.values()]
 async def on_ready():
     # On ready, print some details to standard out
     print(f"-----\nLogged in as: {bot.user.name} : {bot.user.id}\n-----\nMy current prefix is: -\n-----")
-    await bot.change_presence(activity=discord.Game(name=f"bangdream is my habitat")) # This changes the bots 'activity'
+    await bot.change_presence(activity=discord.Game(name=f"-help")) # This changes the bots 'activity'
 
 
 
@@ -94,6 +94,9 @@ async def on_message(message):
 
     # Because of the cog doesn't have attribute problem, will have to set up two listener for on messages
     # So will return if the channel is 'bangdream'
+    if isinstance(message.channel, discord.channel.DMChannel):
+        return
+
     if message.channel.name == "bangdream":
         return
 

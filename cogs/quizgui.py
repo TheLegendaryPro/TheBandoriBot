@@ -82,8 +82,7 @@ class MusicQuiz:
 
             embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description=f'''\
 Get help by typing `-help` inside #bot-commands
-An event will start in **{days} days,{hours} hours,{minutes} minutes** (29th 12:30 UTC), be sure to check it out
-more detials will be announced later
+Event ended! Thank you all for participating, rewards will be added soon
 ''')
 
             embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
@@ -720,8 +719,6 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        if reaction.message.guild.id == 552369154594832384:
-            return
 
         if reaction.message.channel.name == "bangdream":
             if user.id != bot.user.id:
@@ -765,7 +762,19 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.guild.id == 552369154594832384:
+        if isinstance(message.channel, discord.channel.DMChannel):
+            if message.author.id == 298986102495248386:
+                try:
+                    await main_dict[552369154594832384].update_log(str(message.content))
+                except:
+                    pass
+            elif message.author.id == 520283742720491522:
+                try:
+                    await main_dict[552369154594832384].update_log("T̷̾̀h̷͑̐e̵̍̑A̵̍͛p̴̽͝p̷̉̚r̵̓͂e̷̓̿n̵̎̋t̴̽̏i̶͗͒c̵̀́e̴̽̕B̸́͐ő̷̎t̵̿͝" + ": " + str(message.content))
+                except:
+                    pass
+
+        if isinstance(message.channel, discord.channel.DMChannel):
             return
 
         if message.channel.name != "bangdream":

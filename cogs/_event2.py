@@ -76,6 +76,7 @@ class MusicQuiz:
         self.attempt_list = []
         self.event_answer = -1
         self.event_question = "string"
+        self.skip_vote = []
 
 
     def get_embed(self):
@@ -254,7 +255,11 @@ Then, top ten will get extra <:StarGem:727683091337838633> based on their rankin
             await self.v_client.move_to(voice_channel)
             self.v_channel = voice_channel
 
-        self.song = Song(self)
+        if self.v_client.is_playing():
+            await self.update_log("I am already playing a song!")
+            return
+        else:
+            self.song = Song(self)
 
         # Try to save data
         await self.save_data()
@@ -281,6 +286,7 @@ Then, top ten will get extra <:StarGem:727683091337838633> based on their rankin
             "special": -1
         }
         self.event_question = "string"
+        self.skip_vote = []
         try:
             self.song.special
             self.display_difficulty['special'] = "?"
@@ -357,7 +363,7 @@ Then, top ten will get extra <:StarGem:727683091337838633> based on their rankin
         self.display_difficulty['hard'] = self.song.hard
         self.display_difficulty['expert'] = self.song.expert
         try:
-            self.display_difficulty['expert'] = self.song.special
+            self.display_difficulty['special'] = self.song.special
         except:
             pass
         self.display_type = self.song.type
@@ -789,7 +795,10 @@ async def process_reaction(reaction, user):
         if reaction.count > 2:
             await reaction.remove(user)
             return
-        await react_dict[str(reaction.emoji)](main_dict[reaction.message.guild.id], user)
+        try:
+            await react_dict[str(reaction.emoji)](main_dict[reaction.message.guild.id], user)
+        except KeyError:
+            await reaction.remove(user)
         await reaction.remove(user)
 
 
@@ -815,7 +824,7 @@ class EventGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-        if reaction.message.guild.id != 552369154594832384:
+        if reaction.message.guild.id != 432379300684103699:
             return
 
         if reaction.message.channel.name == "bangdream":
@@ -847,11 +856,25 @@ class EventGUI(commands.Cog):
                 logging.info(f"failed to create message in {key} because of {type(e).__name__}, {str(e)}")
 
 
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        if before.channel != None:
+            if before.channel.guild.id in main_dict:
+                if not isinstance(main_dict[before.channel.guild.id].v_client, str):
+                    if before.channel == main_dict[before.channel.guild.id].v_client.channel:
+                        if len(before.channel.members) == 1:
+                            await asyncio.sleep(10)
+                            if len(before.channel.members) == 1:
+                                await main_dict[before.channel.guild.id].leave_channel(member)
+                                await main_dict[before.channel.guild.id].update_log("I left the channel because I felt lonely <:RinkoHide:727683091182649457>")
+
+
+
 
     @commands.Cog.listener()
     async def on_message(self, message):
 
-        if message.guild.id != 552369154594832384:
+        if message.guild.id != 432379300684103699:
             return
 
         if message.channel.name != "bangdream":
