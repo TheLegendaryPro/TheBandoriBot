@@ -18,6 +18,7 @@ import cogs._json
 
 
 # The place you place your mouse before hitting control shift B
+# no longer useful because I started using pyCharm
 
 
 
@@ -30,7 +31,9 @@ cwd = Path(__file__).parents[0]
 cwd = str(cwd)
 print(f"{cwd}\n-----")
 
+
 def get_prefix(bot, message):
+    # To read the prefix file and return the prefix for a server
     data = cogs._json.read_json('prefixes')
     if not str(message.guild.id) in data:
         return commands.when_mentioned_or('-')(bot, message)
@@ -47,13 +50,13 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='%H:%M:%S')
 
 
-
+# Read the black list and adins
 bot.blacklisted_users = cogs._json.read_json("user_role")["blacklistedUsers"]
 bot.bangdream_admins = cogs._json.read_json("user_role")["bangdream_admins"]
+
+
 bot.cwd = cwd
-
-bot.version = '2.0.0'
-
+bot.version = '2.4.5'
 bot.colors = {
   'WHITE': 0xFFFFFF,
   'AQUA': 0x1ABC9C,
@@ -82,27 +85,32 @@ bot.color_list = [c for c in bot.colors.values()]
 async def on_ready():
     # On ready, print some details to standard out
     print(f"-----\nLogged in as: {bot.user.name} : {bot.user.id}\n-----\nMy current prefix is: -\n-----")
-    await bot.change_presence(activity=discord.Game(name=f"-help")) # This changes the bots 'activity'
-
+    # This changes the bots 'activity'
+    await bot.change_presence(activity=discord.Game(name=f"-help"))
 
 
 @bot.event
 async def on_message(message):
-    #Ignore messages sent by yourself
+    # Ignore messages sent by yourself
     if message.author.id == bot.user.id:
         return
 
-    # Because of the cog doesn't have attribute problem, will have to set up two listener for on messages
-    # So will return if the channel is 'bangdream'
+
+    # Do not precess message from Direct Message channels
     if isinstance(message.channel, discord.channel.DMChannel):
         return
 
+
+    # Because of the cog doesn't have attribute problem, will have to set up two listener for on messages
+    # So will return if the channel is 'bangdream'
     if message.channel.name == "bangdream":
         return
+
 
     #A way to blacklist users from the bot by not processing commands if the author is in the blacklisted_users list
     if message.author.id in bot.blacklisted_users:
         return
+
 
     #Whenever the bot is tagged, respond with its prefix
     if f"<@!{bot.user.id}>" in message.content:

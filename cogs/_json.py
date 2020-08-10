@@ -12,6 +12,7 @@ def get_path():
     cwd = str(cwd)
     return cwd
 
+
 def read_json(filename):
     """
     A function to read a json file and return the data.
@@ -27,6 +28,7 @@ def read_json(filename):
         data = json.load(file)
     return data
 
+
 def write_json(data, filename):
     """
     A function used to write data to a json file
@@ -38,6 +40,7 @@ def write_json(data, filename):
     cwd = get_path()
     with open(cwd+'/bot_config/'+filename+'.json', 'w') as file:
         json.dump(data, file, indent=4)
+
 
 def read_data(filename):
     """
@@ -53,6 +56,7 @@ def read_data(filename):
     with open(cwd+'/bot_data/'+filename+'.json', 'r') as file:
         data = json.load(file)
     return data
+
 
 def write_data(data, filename):
     """
