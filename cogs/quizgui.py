@@ -240,6 +240,7 @@ so you cannot use it for now''')
         self.display_type = "?"
         self.skip_vote = []
         self.correct_list = []
+        self.guessed_band = []
         await self.update_log("<:RASLogo:727683816755560550> Started playing a song")
 
         # Setup timer for hint
@@ -649,8 +650,9 @@ async def process_message(message):
         # see if the band name was answered, if no, check
         if quiz.display_band == "?":
             for item in all_bands_list:
-                if is_similar(message.content.lower(), item):
+                if is_similar(message.content.lower(), item.lower()):
                     if message.author.id in quiz.guessed_band:
+                        await quiz.update_log(f"Hey {message.author.name}, you guessed a time already")
                         return
                     quiz.guessed_band.append(message.author.id)
             if is_similar(message.content.lower(),quiz.song.band_name.lower()):
