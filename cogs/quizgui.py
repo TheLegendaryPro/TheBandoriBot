@@ -35,18 +35,6 @@ replace_dict = {
     "×": "x"
 }
 
-all_bands_list = [
-    "Poppin'Party",
-    "Roselia",
-    "RAISE A SUILEN",
-    "Morƒonica",
-    "Afterglow",
-    "Pastel*Palettes",
-    "Hello, Happy World!",
-    "Glitter*Green",
-]
-
-
 def is_similar(input, answer):
     # to check if the input from user is similar to the song name (answer)
     # Replace special characters
@@ -60,6 +48,18 @@ def is_similar(input, answer):
             return True
     return False
 
+
+
+all_bands_list = [
+    "Poppin'Party",
+    "Roselia",
+    "RAISE A SUILEN",
+    "Morƒonica",
+    "Afterglow",
+    "Pastel*Palettes",
+    "Hello, Happy World!",
+    "Glitter*Green",
+]
 
 # The quiz object
 class MusicQuiz:
