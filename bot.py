@@ -6,7 +6,6 @@ from pathlib import Path
 import logging
 import datetime
 import os
-
 import cogs._json
 
 

@@ -6,6 +6,8 @@
 song_files/*
 audio_file/*
 bot_data/*
+__pycache__/*
+.idea/*
 
 # Bot secret
 bot_config/secrets.json
