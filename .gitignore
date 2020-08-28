@@ -5,11 +5,11 @@
 # Files inside:
 song_files/*
 audio_file/*
+extra_data/*
 bot_data/*
 __pycache__/*
 .idea/*
 
 # Bot secret
 bot_config/secrets.json
-
 secrets.json

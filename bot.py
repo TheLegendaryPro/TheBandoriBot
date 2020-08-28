@@ -14,18 +14,15 @@ import cogs._json
 #
 
 
-
-
 # The place you place your mouse before hitting control shift B
 # no longer useful because I started using pyCharm
-
-
 
 
 #
 #-
 #--
 
+# Get the path
 cwd = Path(__file__).parents[0]
 cwd = str(cwd)
 print(f"{cwd}\n-----")
@@ -41,12 +38,12 @@ def get_prefix(bot, message):
 
 #Defining a few things
 secret_file = json.load(open(cwd+'/bot_config/secrets.json'))
-bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, owner_id=298986102495248386)
+bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, owner_id=secret_file['owner_id'])
 bot.config_token = secret_file['token']
 logging.basicConfig(level=logging.INFO,
                     filename='bot_data/log.txt',
                     format='%(asctime)s, %(name)s %(levelname)s %(message)s',
-                    datefmt='%H:%M:%S')
+                    datefmt='%d/%m/%Y %H:%M:%S')
 
 
 # Read the black list and adins
@@ -55,7 +52,7 @@ bot.bangdream_admins = cogs._json.read_json("user_role")["bangdream_admins"]
 
 
 bot.cwd = cwd
-bot.version = '2.4.5'
+bot.version = '3.0.1'
 bot.colors = {
   'WHITE': 0xFFFFFF,
   'AQUA': 0x1ABC9C,
