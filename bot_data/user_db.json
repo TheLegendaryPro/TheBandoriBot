@@ -1,0 +1,1190 @@
+{
+    "_default": {
+        "1": {
+            "user_id": 364262599023656960,
+            "stars": 7
+        },
+        "2": {
+            "user_id": 296919264466698242,
+            "stars": 21,
+            "username": "LeeToto",
+            "discriminator": "0826"
+        },
+        "3": {
+            "user_id": 1234,
+            "stars": -1
+        },
+        "4": {
+            "user_id": 298986102495248386,
+            "stars": 625,
+            "username": "TheLegendaryPro",
+            "discriminator": "6018",
+            "inventory": [
+                "TW",
+                "JP"
+            ],
+            "prefix": "TW"
+        },
+        "5": {
+            "user_id": 706914405752897606,
+            "stars": 1
+        },
+        "6": {
+            "user_id": 326940044688621568,
+            "stars": 52
+        },
+        "7": {
+            "user_id": 413716207963865100,
+            "stars": 1
+        },
+        "8": {
+            "user_id": 421747509354823690,
+            "stars": 502,
+            "username": "vityfinin_sarsalad",
+            "discriminator": "7511",
+            "inventory": [
+                "TW"
+            ],
+            "prefix": "TW"
+        },
+        "9": {
+            "user_id": 399174316828262400,
+            "stars": 42
+        },
+        "10": {
+            "user_id": 499801544284438529,
+            "stars": 268,
+            "username": "dr.jothepixeldeltajo",
+            "discriminator": "9455",
+            "inventory": []
+        },
+        "11": {
+            "user_id": 704915394829222039,
+            "stars": 12,
+            "username": "MO3 SWORD ART ONLINE",
+            "discriminator": "3130"
+        },
+        "12": {
+            "user_id": 390656810903666689,
+            "stars": 8599,
+            "username": "\u0295\u2022\u032b\u0361\u2022\u0294",
+            "discriminator": "4860",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "13": {
+            "user_id": 727152107177640007,
+            "stars": 12
+        },
+        "14": {
+            "user_id": 599880169049817108,
+            "stars": 265,
+            "username": "PatrickGian",
+            "discriminator": "6179",
+            "inventory": [
+                "JP"
+            ],
+            "prefix": "JP"
+        },
+        "15": {
+            "user_id": 362375533155188736,
+            "stars": 4870,
+            "username": "shruikan196",
+            "discriminator": "9581",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "16": {
+            "user_id": 349881275911372803,
+            "stars": 2
+        },
+        "17": {
+            "user_id": 577050114691039232,
+            "stars": 6
+        },
+        "18": {
+            "user_id": 236919585775812608,
+            "stars": 4948,
+            "username": "Epic's Dead Penguin",
+            "discriminator": "9682",
+            "inventory": []
+        },
+        "19": {
+            "user_id": 404163640808308736,
+            "stars": 8599,
+            "username": "Spanky Pie",
+            "discriminator": "0824",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "20": {
+            "user_id": 443236017621958656,
+            "stars": 1712,
+            "username": "Derpfinity",
+            "discriminator": "4687",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "21": {
+            "user_id": 513476003516121129,
+            "stars": 149,
+            "username": "nanbread",
+            "discriminator": "5511",
+            "inventory": []
+        },
+        "22": {
+            "user_id": 123491679691866112,
+            "stars": 30
+        },
+        "23": {
+            "user_id": 459134226218876928,
+            "stars": 13
+        },
+        "24": {
+            "user_id": 310620073402433536,
+            "stars": 18
+        },
+        "25": {
+            "user_id": 520283742720491522,
+            "stars": 6132,
+            "username": "Moca\u2019s bun",
+            "discriminator": "4664",
+            "prefix": "EN",
+            "inventory": [
+                "EN"
+            ]
+        },
+        "26": {
+            "user_id": 720869207612325919,
+            "stars": 54
+        },
+        "27": {
+            "user_id": 403050151746207744,
+            "stars": 7
+        },
+        "28": {
+            "user_id": 523531831916888091,
+            "stars": 5
+        },
+        "29": {
+            "user_id": 448250257084776449,
+            "stars": 615,
+            "username": "NuggeToast",
+            "discriminator": "2071",
+            "inventory": []
+        },
+        "30": {
+            "user_id": 700340412224634991,
+            "stars": 5,
+            "username": "TheLegendaryAlt",
+            "discriminator": "5912",
+            "inventory": []
+        },
+        "31": {
+            "user_id": 237055542604988417,
+            "stars": 9,
+            "username": "Littlemoon",
+            "discriminator": "6114"
+        },
+        "32": {
+            "user_id": 413918940700475393,
+            "stars": 83,
+            "username": "sonofemer",
+            "discriminator": "2148"
+        },
+        "33": {
+            "user_id": 460378213525487626,
+            "stars": 48,
+            "username": "Irvine Ylarde",
+            "discriminator": "6178"
+        },
+        "34": {
+            "user_id": 85992109936504832,
+            "stars": 7,
+            "username": "Reileky",
+            "discriminator": "4161"
+        },
+        "35": {
+            "user_id": 166311760373088256,
+            "stars": 27,
+            "username": "Safyire",
+            "discriminator": "0784"
+        },
+        "36": {
+            "user_id": 703586431548784690,
+            "stars": 81,
+            "username": "ninja200704",
+            "discriminator": "5963"
+        },
+        "37": {
+            "user_id": 592938409933144067,
+            "stars": 65,
+            "username": "Chinori",
+            "discriminator": "0342",
+            "inventory": [
+                "JP"
+            ],
+            "prefix": "JP"
+        },
+        "38": {
+            "user_id": 226886564096114689,
+            "stars": 92,
+            "username": "Lunala",
+            "discriminator": "0001",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "39": {
+            "user_id": 731542252714852402,
+            "stars": 3,
+            "username": "[GLAD]VeXxED",
+            "discriminator": "6722"
+        },
+        "40": {
+            "user_id": 720988217414778920,
+            "stars": 425,
+            "username": "RinRin",
+            "discriminator": "9330",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "41": {
+            "user_id": 231539113910599681,
+            "stars": 2,
+            "username": "Fatality",
+            "discriminator": "0101"
+        },
+        "42": {
+            "user_id": 367269938823692288,
+            "stars": 1112,
+            "username": "vincent4399",
+            "discriminator": "1229",
+            "inventory": []
+        },
+        "43": {
+            "user_id": 220933099574263808,
+            "stars": 52,
+            "username": "Toastie",
+            "discriminator": "6609"
+        },
+        "44": {
+            "user_id": 443192613621858304,
+            "stars": 11,
+            "username": "RektWithStyl",
+            "discriminator": "6859"
+        },
+        "45": {
+            "user_id": 111454310985904128,
+            "stars": 7,
+            "username": "Jeremy97L",
+            "discriminator": "4915"
+        },
+        "46": {
+            "user_id": 554412389957632021,
+            "stars": 121,
+            "username": "amazing",
+            "discriminator": "9828"
+        },
+        "47": {
+            "user_id": 321531420289794049,
+            "stars": 101,
+            "username": "Matsubara Kanon",
+            "discriminator": "4659"
+        },
+        "48": {
+            "user_id": 660306047571066910,
+            "stars": 718,
+            "username": "Revo",
+            "discriminator": "7949",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "49": {
+            "user_id": 227546911371034636,
+            "stars": 17,
+            "username": "stevonnie_quartz",
+            "discriminator": "5364"
+        },
+        "50": {
+            "user_id": 248998525688479744,
+            "stars": 10,
+            "username": "Galaxure",
+            "discriminator": "2500"
+        },
+        "51": {
+            "user_id": 117394661886263302,
+            "stars": 8,
+            "username": "Lune",
+            "discriminator": "0001"
+        },
+        "52": {
+            "user_id": 225355391863750656,
+            "stars": 12,
+            "username": "Faye",
+            "discriminator": "0069"
+        },
+        "53": {
+            "user_id": 130829029577064448,
+            "stars": 1225,
+            "username": "Evets",
+            "discriminator": "4623",
+            "inventory": []
+        },
+        "54": {
+            "user_id": 150677680768024576,
+            "stars": 68,
+            "username": "Noodle",
+            "discriminator": "6284"
+        },
+        "55": {
+            "user_id": 197608336286285824,
+            "stars": 391,
+            "username": "Vince",
+            "discriminator": "6714",
+            "inventory": []
+        },
+        "56": {
+            "user_id": 478876754463686688,
+            "stars": 46,
+            "username": "micro.",
+            "discriminator": "4908"
+        },
+        "57": {
+            "user_id": 416211978034610188,
+            "stars": 1757,
+            "username": "Fryer Bird",
+            "discriminator": "3201",
+            "inventory": [
+                "JP"
+            ],
+            "prefix": "JP"
+        },
+        "58": {
+            "user_id": 246801404189081600,
+            "stars": 482,
+            "username": "Meruru",
+            "discriminator": "1641",
+            "inventory": []
+        },
+        "59": {
+            "user_id": 137977559546724352,
+            "stars": 2,
+            "username": "Lucia Hunter",
+            "discriminator": "0006"
+        },
+        "60": {
+            "user_id": 269807963214970881,
+            "stars": 2,
+            "username": "hope4896",
+            "discriminator": "5192"
+        },
+        "61": {
+            "user_id": 578372583939112960,
+            "stars": 1,
+            "username": "Leonhardt (Loewe)",
+            "discriminator": "5498"
+        },
+        "62": {
+            "user_id": 504935694192476160,
+            "stars": 1,
+            "username": "\u0393\u03ba\u03ac\u03b2\u03b9\u03bd",
+            "discriminator": "4220"
+        },
+        "63": {
+            "user_id": 385054594398683138,
+            "stars": 620,
+            "username": "Snes",
+            "discriminator": "2689",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "64": {
+            "user_id": 418322030065090561,
+            "stars": 24,
+            "username": "Patatas",
+            "discriminator": "9733"
+        },
+        "65": {
+            "user_id": 691987501513965628,
+            "stars": 2,
+            "username": "Varxx",
+            "discriminator": "5856"
+        },
+        "66": {
+            "user_id": 267468808061452289,
+            "stars": 3,
+            "username": "nico \u0b68\u2606\u0b67\u22c6\u02da\uff61",
+            "discriminator": "4444"
+        },
+        "67": {
+            "user_id": 531767013249515530,
+            "stars": 6,
+            "username": "Yuan1106",
+            "discriminator": "4990"
+        },
+        "68": {
+            "user_id": 314289317369479179,
+            "stars": 56,
+            "username": "garupa player",
+            "discriminator": "0001"
+        },
+        "69": {
+            "user_id": 511907980581797890,
+            "stars": 5,
+            "username": "Alpheratz",
+            "discriminator": "9384",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "70": {
+            "user_id": 701307714122416225,
+            "stars": 20,
+            "username": "Devsssssss",
+            "discriminator": "8435"
+        },
+        "71": {
+            "user_id": 718630489635946576,
+            "stars": 254,
+            "username": "lidoedits",
+            "discriminator": "8768"
+        },
+        "72": {
+            "user_id": 293851423060262922,
+            "stars": 174,
+            "username": "[TR7]chainchomp",
+            "discriminator": "8958",
+            "inventory": []
+        },
+        "73": {
+            "user_id": 350637437191585792,
+            "stars": 1172,
+            "username": "Jellybean",
+            "discriminator": "7131",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "74": {
+            "user_id": 695585771213553676,
+            "stars": 41,
+            "username": "bonerculture",
+            "discriminator": "4611"
+        },
+        "75": {
+            "user_id": 308327612017672193,
+            "stars": 6,
+            "username": "\u2667Shiro\u767d\u3044\u2667",
+            "discriminator": "2865"
+        },
+        "76": {
+            "user_id": 153551890976735232,
+            "stars": 440,
+            "username": "Orange",
+            "discriminator": "6025",
+            "inventory": [
+                "JP"
+            ],
+            "prefix": "JP"
+        },
+        "77": {
+            "user_id": 574380130059943937,
+            "stars": 5,
+            "username": "drowninginmysleep",
+            "discriminator": "0666"
+        },
+        "78": {
+            "user_id": 119252023395876864,
+            "stars": 73,
+            "username": "Pocky",
+            "discriminator": "7418"
+        },
+        "79": {
+            "user_id": 469248249933332480,
+            "stars": 56,
+            "username": "lostsnail",
+            "discriminator": "1433"
+        },
+        "80": {
+            "user_id": 616866203486388234,
+            "stars": 35,
+            "username": "J Carstairs",
+            "discriminator": "7747"
+        },
+        "81": {
+            "user_id": 313701822818680842,
+            "stars": 4,
+            "username": "WhyRUSoMean2Me",
+            "discriminator": "7609"
+        },
+        "82": {
+            "user_id": 490520924353986571,
+            "stars": 125,
+            "username": "labeef",
+            "discriminator": "0705",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "83": {
+            "user_id": 693088694688677939,
+            "stars": 6,
+            "username": "Sailormoonxprecurefan",
+            "discriminator": "7187"
+        },
+        "84": {
+            "user_id": 565172622212726825,
+            "stars": 44,
+            "username": "TBenny",
+            "discriminator": "3514"
+        },
+        "85": {
+            "user_id": 175166533948014592,
+            "stars": 9,
+            "username": "Repentaheart",
+            "discriminator": "1026"
+        },
+        "86": {
+            "user_id": 680140100365058109,
+            "stars": 129,
+            "username": "arwen",
+            "discriminator": "9499"
+        },
+        "87": {
+            "user_id": 560629149845159948,
+            "stars": 23,
+            "username": "sky",
+            "discriminator": "1111"
+        },
+        "88": {
+            "user_id": 174316186308182016,
+            "stars": 181,
+            "username": "Unch",
+            "discriminator": "7669"
+        },
+        "89": {
+            "user_id": 194712173476315136,
+            "stars": 89,
+            "username": "Mango",
+            "discriminator": "9718"
+        },
+        "90": {
+            "user_id": 704135549472079962,
+            "stars": 16,
+            "username": "Azzy",
+            "discriminator": "5889"
+        },
+        "91": {
+            "user_id": 289518315838242816,
+            "stars": 69,
+            "username": "Boo!",
+            "discriminator": "5151"
+        },
+        "92": {
+            "user_id": 614821505783824390,
+            "stars": 8,
+            "username": "LotF",
+            "discriminator": "9990",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "93": {
+            "user_id": 653264069956206631,
+            "stars": 1181,
+            "username": "D.cool.T",
+            "discriminator": "3427",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "94": {
+            "user_id": 275368418729918465,
+            "stars": 1,
+            "username": "bel",
+            "discriminator": "7529"
+        },
+        "95": {
+            "user_id": 688874041922158597,
+            "stars": 5,
+            "username": "Aex Beck",
+            "discriminator": "3976"
+        },
+        "96": {
+            "user_id": 151595738567147520,
+            "stars": 18,
+            "username": "AzNWontonz",
+            "discriminator": "2610"
+        },
+        "97": {
+            "user_id": 153035188757200896,
+            "stars": 7,
+            "username": "Raveille",
+            "discriminator": "7777"
+        },
+        "98": {
+            "user_id": 339100607912607744,
+            "stars": 19,
+            "username": "Glubbicous\u30fd\u0f3c \u0361\u2609 \u035c\u0296 \u0361\u2609 \u0f3d\uff89",
+            "discriminator": "0450"
+        },
+        "99": {
+            "user_id": 408505419250663434,
+            "stars": 3216,
+            "username": "Lumonel",
+            "discriminator": "9999",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "100": {
+            "user_id": 727585188732731482,
+            "stars": 1,
+            "username": "Kasumi",
+            "discriminator": "9746"
+        },
+        "101": {
+            "user_id": 440074641260675102,
+            "stars": 176,
+            "username": "Karemipans",
+            "discriminator": "4036"
+        },
+        "102": {
+            "user_id": 733684064300695664,
+            "stars": 166,
+            "username": "Yunomi And a Ren stan",
+            "discriminator": "5013"
+        },
+        "103": {
+            "user_id": 460496374069198858,
+            "stars": 1000,
+            "username": "habzizi007",
+            "discriminator": "5707"
+        },
+        "104": {
+            "user_id": 173412100268490753,
+            "stars": 48,
+            "username": "lKps",
+            "discriminator": "4183",
+            "inventory": []
+        },
+        "105": {
+            "user_id": 507874384812441617,
+            "stars": 16,
+            "username": "O\u0418E -Aria of The Planetes-",
+            "discriminator": "0001"
+        },
+        "106": {
+            "user_id": 321187082905321472,
+            "stars": 81,
+            "username": "Jessica Nguyen",
+            "discriminator": "6547"
+        },
+        "107": {
+            "user_id": 497639446276079616,
+            "stars": 107,
+            "username": "i am so lonely",
+            "discriminator": "3598",
+            "inventory": []
+        },
+        "108": {
+            "user_id": 581971132140224656,
+            "stars": 16,
+            "username": "brother trucker",
+            "discriminator": "4375"
+        },
+        "109": {
+            "user_id": 86930260976766976,
+            "stars": 118,
+            "username": "GokhanInGame",
+            "discriminator": "2581",
+            "inventory": []
+        },
+        "110": {
+            "user_id": 244549368324030465,
+            "stars": 96,
+            "username": "Fenrir",
+            "discriminator": "9136",
+            "inventory": []
+        },
+        "111": {
+            "user_id": 256928916998979584,
+            "stars": 192,
+            "username": "lina \u2661",
+            "discriminator": "6256",
+            "inventory": []
+        },
+        "112": {
+            "user_id": 342856334267514901,
+            "stars": 33,
+            "username": "\u661f\u00b2",
+            "discriminator": "4339",
+            "inventory": [
+                "TW"
+            ],
+            "prefix": "TW"
+        },
+        "113": {
+            "user_id": 164520938749165568,
+            "stars": 145,
+            "username": "Hen",
+            "discriminator": "9516",
+            "inventory": []
+        },
+        "114": {
+            "user_id": 442496249187270657,
+            "stars": 435,
+            "username": "Ahmad Miftachul Hidayat",
+            "discriminator": "3266",
+            "inventory": []
+        },
+        "115": {
+            "user_id": 204330429828956161,
+            "stars": 500,
+            "username": "Aidan",
+            "discriminator": "3229"
+        },
+        "116": {
+            "user_id": 659596818715508777,
+            "stars": 2,
+            "username": "Shuto.",
+            "discriminator": "5061"
+        },
+        "117": {
+            "user_id": 198777425964957696,
+            "stars": 447,
+            "username": "CHOMAMA",
+            "discriminator": "5266",
+            "inventory": [
+                "JP"
+            ],
+            "prefix": "JP"
+        },
+        "118": {
+            "user_id": 459917242633682955,
+            "stars": 24,
+            "username": "NicoHolic777",
+            "discriminator": "8277",
+            "inventory": []
+        },
+        "119": {
+            "user_id": 523789488581902357,
+            "stars": 42,
+            "username": "Darvins",
+            "discriminator": "4781"
+        },
+        "120": {
+            "user_id": 461380819995328523,
+            "stars": 44,
+            "username": "Milliant",
+            "discriminator": "5199",
+            "inventory": []
+        },
+        "121": {
+            "user_id": 486834166462283796,
+            "stars": 52,
+            "username": "fokuhazawa",
+            "discriminator": "0887",
+            "inventory": []
+        },
+        "122": {
+            "user_id": 665645998588035102,
+            "stars": 1097,
+            "username": "Sakura_DeZu",
+            "discriminator": "3661",
+            "inventory": [
+                "JP"
+            ],
+            "prefix": "JP"
+        },
+        "123": {
+            "user_id": 470056890454245376,
+            "stars": 12,
+            "username": "Voltex25",
+            "discriminator": "9762",
+            "inventory": []
+        },
+        "124": {
+            "user_id": 206357836437913601,
+            "stars": 15873,
+            "username": "Chisato",
+            "discriminator": "7578",
+            "inventory": [
+                "JP"
+            ],
+            "prefix": "JP"
+        },
+        "125": {
+            "user_id": 680286635547426820,
+            "stars": 10,
+            "username": "Feyn",
+            "discriminator": "8511"
+        },
+        "126": {
+            "user_id": 326298681282265099,
+            "stars": 2,
+            "username": "Bagus Ternyata",
+            "discriminator": "6812"
+        },
+        "127": {
+            "user_id": 242053666209529857,
+            "stars": 45,
+            "username": "Actronav",
+            "discriminator": "0528",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "128": {
+            "user_id": 266756293195333633,
+            "stars": 68,
+            "username": "Yuki_2698\ud83c\udf38",
+            "discriminator": "9893"
+        },
+        "129": {
+            "user_id": 374243546963902464,
+            "stars": 254,
+            "username": "Frost_Bolt",
+            "discriminator": "0550",
+            "inventory": []
+        },
+        "130": {
+            "user_id": 643981137961811980,
+            "stars": 1,
+            "username": "tanuki\uff1fwhat",
+            "discriminator": "7776"
+        },
+        "131": {
+            "user_id": 515331099321434113,
+            "stars": 1,
+            "username": "milkiue",
+            "discriminator": "3436"
+        },
+        "132": {
+            "user_id": 302926844980887552,
+            "stars": 2,
+            "username": "alt_unyv",
+            "discriminator": "0936"
+        },
+        "133": {
+            "user_id": 214072411140784128,
+            "stars": 41,
+            "username": "Martin-kun",
+            "discriminator": "7095"
+        },
+        "134": {
+            "user_id": 657918157112999956,
+            "stars": 6,
+            "username": "Ceriones",
+            "discriminator": "2666"
+        },
+        "135": {
+            "user_id": 432185534086119434,
+            "stars": 191,
+            "username": "Yinkie66",
+            "discriminator": "6282",
+            "inventory": [
+                "JP"
+            ],
+            "prefix": "JP"
+        },
+        "136": {
+            "user_id": 329403711480659968,
+            "stars": 34,
+            "username": "whatsthepopipa",
+            "discriminator": "5971"
+        },
+        "137": {
+            "user_id": 211987246130266112,
+            "stars": 103,
+            "username": "Lukerd",
+            "discriminator": "9003",
+            "inventory": []
+        },
+        "138": {
+            "user_id": 518447007841386527,
+            "stars": 14,
+            "username": "phaidoari",
+            "discriminator": "8947"
+        },
+        "139": {
+            "user_id": 299370075453128707,
+            "stars": 22,
+            "username": "kunigami",
+            "discriminator": "4318"
+        },
+        "140": {
+            "user_id": 707331509794898032,
+            "stars": 30,
+            "username": "I like Aya",
+            "discriminator": "4658"
+        },
+        "141": {
+            "user_id": 733664747555389450,
+            "stars": 48,
+            "username": "Aki",
+            "discriminator": "9190"
+        },
+        "142": {
+            "user_id": 497340708626235414,
+            "stars": 26,
+            "username": "Rainbonyte",
+            "discriminator": "6554"
+        },
+        "143": {
+            "user_id": 704542990244380862,
+            "stars": 5,
+            "username": "Lunala",
+            "discriminator": "6198"
+        },
+        "144": {
+            "user_id": 248103632648536064,
+            "stars": 2,
+            "username": "A\ud835\udd7d\u2442\u1fe7\u222a  \u0489\u0489   \u2615   \u0489\u0489",
+            "discriminator": "8094"
+        },
+        "145": {
+            "user_id": 429151708309094400,
+            "stars": 21,
+            "username": "Pookie\u273d",
+            "discriminator": "0490"
+        },
+        "146": {
+            "user_id": 386140775152615424,
+            "stars": 4,
+            "username": "S7even00K",
+            "discriminator": "8253"
+        },
+        "147": {
+            "user_id": 482701987029319708,
+            "stars": 22,
+            "username": "BlazingLy",
+            "discriminator": "4892"
+        },
+        "148": {
+            "user_id": 417669582606565378,
+            "stars": 31,
+            "username": "realnekomi3",
+            "discriminator": "5364"
+        },
+        "149": {
+            "user_id": 437781738341531648,
+            "stars": 72,
+            "username": "HifumiChan",
+            "discriminator": "6406"
+        },
+        "150": {
+            "user_id": 431826781683580929,
+            "stars": 21,
+            "username": "Grey",
+            "discriminator": "3937",
+            "inventory": []
+        },
+        "151": {
+            "user_id": 455608165371871233,
+            "stars": 846,
+            "username": "Kyun~ | Blessed by Babanbo-sama",
+            "discriminator": "7250",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "152": {
+            "user_id": 329700986312720386,
+            "stars": 2,
+            "username": "Aya",
+            "discriminator": "1752"
+        },
+        "153": {
+            "user_id": 696384491002003456,
+            "stars": 40,
+            "username": "Pau_Desu",
+            "discriminator": "3841"
+        },
+        "154": {
+            "user_id": 221074374726254594,
+            "stars": 101,
+            "username": "Karma Has Layed Out The Future",
+            "discriminator": "0670"
+        },
+        "155": {
+            "user_id": 464972222524686337,
+            "stars": 21,
+            "username": "Akari",
+            "discriminator": "8451"
+        },
+        "156": {
+            "user_id": 294894594552889346,
+            "stars": 18,
+            "username": "desertfoxd7",
+            "discriminator": "5385"
+        },
+        "157": {
+            "user_id": 525132414842961923,
+            "stars": 12,
+            "username": "juno1132",
+            "discriminator": "1565"
+        },
+        "158": {
+            "user_id": 349615497807003649,
+            "stars": 4,
+            "username": "Izzy",
+            "discriminator": "5281"
+        },
+        "159": {
+            "user_id": 312562998461857792,
+            "stars": 30,
+            "username": "yasmin",
+            "discriminator": "6516"
+        },
+        "160": {
+            "user_id": 384819377046028309,
+            "stars": 79,
+            "username": "moca\u2019s bread",
+            "discriminator": "7380"
+        },
+        "161": {
+            "user_id": 707287029943107604,
+            "stars": 29,
+            "username": "Astoria",
+            "discriminator": "3448"
+        },
+        "162": {
+            "user_id": 702004997050597387,
+            "stars": 30,
+            "username": "rat with an anime pfp",
+            "discriminator": "1120"
+        },
+        "163": {
+            "user_id": 477628841884516371,
+            "stars": 61,
+            "username": "am tired",
+            "discriminator": "6253",
+            "inventory": []
+        },
+        "164": {
+            "user_id": 605920619741184000,
+            "stars": 27,
+            "username": "daddy big rawr",
+            "discriminator": "0123",
+            "inventory": []
+        },
+        "165": {
+            "user_id": 702701195805851668,
+            "stars": 114,
+            "username": "\u30b3\u30b3\u30ed\u30f3",
+            "discriminator": "9584",
+            "inventory": [
+                "EN",
+                "JP"
+            ],
+            "prefix": "JP"
+        },
+        "166": {
+            "user_id": 276152163078766592,
+            "stars": 8,
+            "username": "Galaxia",
+            "discriminator": "7024"
+        },
+        "167": {
+            "user_id": 525248533142700033,
+            "stars": 17,
+            "username": "konori_miumizu",
+            "discriminator": "1529"
+        },
+        "168": {
+            "user_id": 479758410175479808,
+            "stars": 24,
+            "username": "Sam I Am",
+            "discriminator": "7544"
+        },
+        "169": {
+            "user_id": 573491614480203786,
+            "stars": 10,
+            "username": "aMaZiNg",
+            "discriminator": "8411"
+        },
+        "170": {
+            "user_id": 617209379279732766,
+            "stars": 10,
+            "username": "Sapphi3953",
+            "discriminator": "9297"
+        },
+        "171": {
+            "user_id": 527847557368512522,
+            "stars": 2,
+            "username": "Karma",
+            "discriminator": "6782"
+        },
+        "172": {
+            "user_id": 306234210686074904,
+            "stars": 247,
+            "username": "Vital",
+            "discriminator": "5877"
+        },
+        "173": {
+            "user_id": 603525603311878176,
+            "stars": 4,
+            "username": "\u2606 \u300e\u3010Lisa-chi \u3011\u300f\u2606",
+            "discriminator": "5367"
+        },
+        "174": {
+            "user_id": 483427299463790613,
+            "stars": 13,
+            "username": "starry",
+            "discriminator": "2247"
+        },
+        "175": {
+            "user_id": 705209631772770345,
+            "stars": 12,
+            "username": "\ud83c\udf0aHerlen-Lena.\ud83d\udd4a",
+            "discriminator": "4719"
+        },
+        "176": {
+            "user_id": 475627596814614528,
+            "stars": 158,
+            "username": "Roch",
+            "discriminator": "5935"
+        },
+        "177": {
+            "user_id": 532025411354230784,
+            "stars": 18,
+            "username": "\u5343\u79cb",
+            "discriminator": "5725"
+        },
+        "178": {
+            "user_id": 588934332844998667,
+            "stars": 62,
+            "username": "Glitchii02",
+            "discriminator": "9196",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        }
+    }
+}

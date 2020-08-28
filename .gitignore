@@ -6,10 +6,13 @@
 song_files/*
 audio_file/*
 extra_data/*
-bot_data/*
 __pycache__/*
 .idea/*
+song_id_files/*
 
 # Bot secret
 bot_config/secrets.json
 secrets.json
+
+# Log
+update_songs.log
