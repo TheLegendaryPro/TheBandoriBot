@@ -52,7 +52,7 @@ bot.bangdream_admins = cogs._json.read_json("user_role")["bangdream_admins"]
 
 
 bot.cwd = cwd
-bot.version = '3.0.1'
+bot.version = '3.1.3'
 bot.colors = {
   'WHITE': 0xFFFFFF,
   'AQUA': 0x1ABC9C,

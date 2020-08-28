@@ -490,28 +490,15 @@ so you cannot use it for now''')
 
 
 class Song:
-    # the server abbrs for the command to set only play songs from certain server?
-    server_abbr = {
-        "jp": "Japanese Server",
-        "tw": "Taiwanese Server",
-        "ko": "Korean Server",
-        "en": "English Server",
-        "ch": "Chinese Server"
-    }
 
 
     def __init__(self, quiz):
-        if quiz.servers == "all":
-            # Choose normally from all server
-            if len(song_usage_data["not_played"]) == 0:
-                for i in list(song_usage_data["played"]):
-                    song_usage_data["not_played"][i] = song_usage_data["played"].pop(i)
-            choose = random.choice(list(song_usage_data["not_played"].keys()))
-            song_usage_data["played"][choose] = song_usage_data["not_played"].pop(choose)
-            details = song_usage_data["played"][choose]
-        else:
-            # Use special way to choose song
-            details = self.getsong(quiz.servers)
+        if len(song_usage_data["not_played"]) == 0:
+            for i in list(song_usage_data["played"]):
+                song_usage_data["not_played"][i] = song_usage_data["played"].pop(i)
+        choose = random.choice(list(song_usage_data["not_played"].keys()))
+        song_usage_data["played"][choose] = song_usage_data["not_played"].pop(choose)
+        details = song_usage_data["played"][choose]
 
         #todo clean this up
         # Set up the detials
@@ -536,27 +523,6 @@ class Song:
         self.type = details["type"]
         if "Server availability" in details:
             self.server_availability = details["Server availability"]
-
-
-    def getsong(self, servers):
-        """Get the song only from some servers"""
-        #[song for song in songs_data_copy["not_played"].keys() if list(set(quiz.servers).intersection(song["Server availability"])) != []]
-        # The above is a complicated list comprehention that I decided to not use
-        song_data_copy = song_usage_data.copy()
-        for song, info in song_data_copy["not_played"].items():
-            for server in info["Server availability"]:
-                if server in servers:
-                    # other than returning song info, also make it played
-                    song_usage_data["played"][song] = song_usage_data["not_played"].pop(song)
-                    return info
-
-        # No song in not played is in that server
-        be_shuffled = list(song_data_copy["played"].values())
-        random.shuffle(be_shuffled)
-        for info in be_shuffled:
-            for server in info["Server availability"]:
-                if server in servers:
-                    return info
 
 
     def __del__(self):
