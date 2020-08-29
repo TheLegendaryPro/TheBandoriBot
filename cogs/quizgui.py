@@ -67,14 +67,14 @@ class MusicQuiz:
 
     def __init__(self, ctx):
         # Initialize the values inside the object
-        self.v_client = "voice client object"
+        self.v_client = None #"voice client object"
         self.song = "song object"
         self.display_eng = "?"
         self.display_jp = "?"
         self.display_band = "?"
         self.display_expert = "?"
         self.display_special = "?"
-        self.display_type = "?"
+        # self.display_type = "?"
         self.message = "message object"
         self.t_channel = ctx.channel
         self.v_channel = "voice channel"
@@ -166,6 +166,9 @@ so you cannot use it for now''')
 
     async def play_song(self, user):
         """check channel, then client, the play song, set up times"""
+        
+        # print(f"Voice client: {self.v_client}, channel: {self.v_channel}")
+        
         try:
             # See if the user is in a voice channel, if not, return
             voice_channel = user.voice.channel
@@ -173,7 +176,7 @@ so you cannot use it for now''')
             await self.update_log(f"Hey {user.name}, get into voice channel first then click <:KokoroYay:727683024526770222> again")
             return
 
-        if self.v_channel == "voice channel":
+        if not self.v_client:
             # If the voice channel is not defined yet
             if user.voice.channel.guild.id == 432379300684103699:
                 # Only redirect people if in official server
@@ -182,12 +185,10 @@ so you cannot use it for now''')
                     return
             try:
                 # Tries to connect
-                print("tries to connect", voice_channel)
                 self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
-                print("success connect")
             except Exception as e:
-                print(e)
+                logging.log(e) #todo logging
                 # Cannot connect, maybe it is already connected but something went wrong and it isn't in the music quiz object?
                 # Find the voice clients by looping through all voice clients
                 for client in bot.voice_clients:
@@ -201,7 +202,7 @@ so you cannot use it for now''')
                 self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
 
-        elif self.v_channel != voice_channel:
+        elif self.v_client.channel != voice_channel:
             # Connected to wrong one, but do not change channel in official server
             if user.voice.channel.guild.id == 432379300684103699:
                 if user.voice.channel.id != 731813919638945802:
@@ -215,17 +216,18 @@ so you cannot use it for now''')
             await self.toggle_autoplay(user)
             return
         else:
-            self.song = Song(self)
+            self.song = Song()
 
         # Try to save data
         await self.save_data()
 
         # Start the player to play a song
         def load_success():
-            print(f"loaded {ascii(self.song.song_name)}")
+            # This is called when the song is loaded and ready to play
+            pass
         try:
             # Some complicated code to play the song then decrease it's volume
-            self.v_client.play(discord.FFmpegPCMAudio(f'song_files/{self.song.song_name}.ogg'), after=load_success())
+            self.v_client.play(discord.FFmpegPCMAudio(f'song_id_files/{self.song.song_id}.ogg'), after=load_success())
             self.v_client.source = discord.PCMVolumeTransformer(self.v_client.source)
             self.v_client.source.volume = 0.14
         except Exception as e:
@@ -237,7 +239,7 @@ so you cannot use it for now''')
         self.display_band = "?"
         self.display_expert = "?"
         self.display_special = "?"
-        self.display_type = "?"
+        # self.display_type = "?"
         self.skip_vote = []
         self.correct_list = []
         self.guessed_band = []
@@ -270,7 +272,7 @@ so you cannot use it for now''')
             hint_list[num] = self.song.song_name[num]
         hint_text = "".join(hint_list)
 
-        self.display_type = self.song.type
+        # self.display_type = self.song.type
         self.display_expert = self.song.expert
         self.display_special = self.song.special
 
@@ -285,7 +287,7 @@ so you cannot use it for now''')
         self.display_band = self.song.band_name
         self.display_expert = self.song.expert
         self.display_special = self.song.special
-        self.display_type = self.song.type
+        # self.display_type = self.song.type
         await self.update_log(f"Time's up, the song was {self.song.song_name}")
         del self.answer_timer
 
@@ -375,7 +377,7 @@ so you cannot use it for now''')
         if not isinstance(self.v_client, str):
             # Disconnet and reset some variables
             await self.v_client.disconnect()
-            self.v_client = "voice client object"
+            self.v_client = None
             self.v_channel = "voice channel"
         # Cancel all timers and set it to default value
         try:
@@ -505,6 +507,7 @@ class Song:
         details = popped
 
         # Set up the detials
+        self.song_id = details["id"]
         try:
             self.song_name = details["name"]
         except:
@@ -787,7 +790,8 @@ class QuizGUI(commands.Cog):
     async def on_voice_state_update(self, member, before, after):
         if before.channel != None:
             if before.channel.guild.id in main_dict:
-                if not isinstance(main_dict[before.channel.guild.id].v_client, str):
+                if main_dict[before.channel.guild.id].v_client:
+                    # print(main_dict[before.channel.guild.id].v_client)
                     if before.channel == main_dict[before.channel.guild.id].v_client.channel:
                         if len(before.channel.members) == 1:
                             await asyncio.sleep(10)
