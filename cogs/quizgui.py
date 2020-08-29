@@ -397,7 +397,7 @@ so you cannot use it for now''')
 
     async def save_data(self):
         """Save the data"""
-        cogs._json.write_data(song_usage_data, "song_usage_data")
+        cogs._json.write_data(song_id_data, "song_usage_data")
         return
 
 
@@ -489,21 +489,26 @@ so you cannot use it for now''')
 
 
 
+
 class Song:
 
 
-    def __init__(self, quiz):
-        if len(song_usage_data["not_played"]) == 0:
-            for i in list(song_usage_data["played"]):
-                song_usage_data["not_played"][i] = song_usage_data["played"].pop(i)
-        choose = random.choice(list(song_usage_data["not_played"].keys()))
-        song_usage_data["played"][choose] = song_usage_data["not_played"].pop(choose)
-        details = song_usage_data["played"][choose]
+    def __init__(self):
+        # Reset song_id_data if all songs are played
+        if len(song_id_data["not_played"]) == 0:
+            while song_id_data['played']:
+                song_id_data['not_played'].append(song_id_data['played'].pop())
 
-        #todo clean this up
+        # Choose a random song
+        popped = song_id_data["not_played"].pop(random.randint(0, len(song_id_data["not_played"]) - 1))
+        song_id_data["played"].append(popped)
+        details = popped
+
         # Set up the detials
-        self.song_name = details["song_name"]
-        print(f"Song class {ascii(self.song_name)}")
+        try:
+            self.song_name = details["name"]
+        except:
+            self.song_name = details["title"]
         # Might not have kanji name
         if "kanji" in details:
             self.name_jp = details["kanji"]
@@ -513,16 +518,21 @@ class Song:
             self.translation = details["translation"]
         else:
             self.translation = "no translation"
-        self.band_name = details["band"]
-        self.expert = int(details["Expert"])
+
+        self.band_name = details["artist"]
+
+        self.easy = int(details['Easy']['level'])
+        self.normal = int(details['Normal']['level'])
+        self.hard = int(details['Hard']['level'])
+        self.expert = int(details['Expert']['level'])
         # Might not have special
         if "Special" in details:
-            self.special = int(details["Special"])
+            self.special = int(details['Special']['level'])
         else:
             self.special = "No"
-        self.type = details["type"]
-        if "Server availability" in details:
-            self.server_availability = details["Server availability"]
+
+        self.servers = details['server_list']
+        self.lyrics_dict = details['lyric_dict']
 
 
     def __del__(self):
@@ -530,10 +540,17 @@ class Song:
 #        print(f"A Song object is destroyed, the song name is {ascii(self.song_name)}")
 
 
+
 # Get song data
-song_usage_data = cogs._json.read_data("song_usage_data")
+# song_id_data = cogs._json.read_data("song_usage_data") #todo
 
-
+song_id_data_raw = cogs._json.read_data("song_id_data")
+song_id_data = {
+    "not_played": [],
+    "played": []
+}
+for item in song_id_data_raw:
+    song_id_data["not_played"].append(item)
 
 
 class Timer:

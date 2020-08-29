@@ -63,8 +63,12 @@ def find_game_version(path):
 def copy_file(game_version_path, data):
     for item in data:
         if item['id'] == game_version_path.parent.name:
+
+            if Path('song_id_files/' + item['id'] + '.ogg').exists:
+                return
             try:
                 shutil.copy(game_version_path, 'song_id_files/' + item['id'] + '.ogg')
+                logger.info(f"Copied {game_version_path.name} because it is not already there")
             except:
                 logger.warning(f"Failed to copy {game_version_path.name}")
 
