@@ -12,6 +12,8 @@ from pathlib import Path
 from tinydb import TinyDB, Query
 from tinydb.operations import add, set
 
+# Set up the logger
+logger = logging.getLogger(__name__)
 
 # Set up the current working directory
 cwd = Path(__file__).parents[1]
@@ -166,7 +168,8 @@ so you cannot use it for now''')
 
     async def play_song(self, user):
         """check channel, then client, the play song, set up times"""
-        
+
+        logger.info("now playing song")
         # print(f"Voice client: {self.v_client}, channel: {self.v_channel}")
         
         try:
@@ -188,7 +191,6 @@ so you cannot use it for now''')
                 self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
             except Exception as e:
-                logging.log(e) #todo logging
                 # Cannot connect, maybe it is already connected but something went wrong and it isn't in the music quiz object?
                 # Find the voice clients by looping through all voice clients
                 for client in bot.voice_clients:
@@ -255,7 +257,7 @@ so you cannot use it for now''')
             pass
 
         # Setup timer for answer and next song
-        with audioread.audio_open(f'song_files/{self.song.song_name}.ogg') as f:
+        with audioread.audio_open(f'song_id_files/{self.song.song_name}.ogg') as f:
             self.answer_timer = Timer(int(f.duration) - 30, MusicQuiz.show_answer, self)
             if self.auto_play:
                 parameters = (self, user)

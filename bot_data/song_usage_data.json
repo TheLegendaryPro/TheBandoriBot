@@ -3025,6 +3025,58 @@
             "id": "Re birth day"
         },
         {
+            "name": "Kimi no Kioku",
+            "image": [
+                "https://vignette.wikia.nocookie.net/bandori/images/3/38/Kimi_no_Kioku_Game_Cover.png/revision/latest?cb=20180720035835"
+            ],
+            "kanji": "\u30ad\u30df\u306e\u8a18\u61b6",
+            "hangul": "\ub108\uc758 \uae30\uc5b5",
+            "translation": "Memories of You",
+            "artist": "Roselia",
+            "length": "02:10",
+            "arranger": "Fujinaga Ryutaro",
+            "oartist": "Yumi Kawamura",
+            "olyricist": "Komori Shigeo",
+            "ocomposer": "Meguro Shoji",
+            "label": "Aniplex",
+            "bmp": "97 ~ 114 BPM",
+            "Easy": {
+                "level": "6",
+                "notes": "104"
+            },
+            "Normal": {
+                "level": "11",
+                "notes": "180"
+            },
+            "Hard": {
+                "level": "17",
+                "notes": "447"
+            },
+            "Expert": {
+                "level": "25",
+                "notes": "651"
+            },
+            "song_links": {
+                "Kimi no Kioku (Game Version)": {
+                    "length": "02:10",
+                    "link": "https://vignette.wikia.nocookie.net/bandori/images/b/b1/Kimi_no_Kioku_%28Game_Version%29.ogg/revision/latest?cb=20180720041448"
+                }
+            },
+            "lyric_dict": {
+                "Romaji": "Kaze no koe hikari no tsubu madoromu kimi ni sosogu\nWasurenai yasash\u012b hohoemi kanashisa kakushita hitomi wo\nNegau koto tsurakutemo tachimukau y\u016bki kimi ni moratta dakara yukune\nYume no naka mezametara mata aeruyo\nT\u014di kioku mune ni hime utau\nHakanaku tayutau sekai wo kimi no te de mamottakara\nImawa tada tsubasa wo tatande yukkuri nemurinasai\nEien no yasuragi ni tsutsumarete love through all eternity\nYasashiku mimamoru watashi no kono te de nemurinasai\nWaratteta naiteta okotteta kimi no koto oboeteiru\nWasurenai itsumademo kesshite until my life is exhausted",
+                "Kanji": "\u98a8\u306e \u58f0\u5149\u306e \u7c92\u307e\u3069\u308d\u3080 \u541b\u306b \u6ce8\u3050 \u5fd8\u308c\u306a\u3044 \u512a\u3057\u3044 \u5fae\u7b11\u307f \u512a\u3057\u3055 \u96a0\u3057\u305f \u77b3\u3092 \u9858\u3046\u3053\u3068 \u8f9b\u304f\u3066\u3082 \u7acb\u3061 \u5411\u304b\u3046 \u52c7\u6c17\u541b\u306b \u8cb0\u3063\u305f\u3000\u3060\u304b\u3089 \u884c\u304f\u306d \u5922\u306e \u4e2d\u76ee\u899a\u3081\u305f\u3089\u3000\u307e\u305f \u4f1a\u3048\u308b\u3088 \u9060\u8a18\u61b6\u80f8\u306b \u79d8\u3081 \u6b4c\u3046 \u511a\u304f\u305f\u3086\u305f\u3046 \u4e16\u754c\u3092 \u541b\u306e \u624b\u3067 \u5b88\u3063\u305f\u304b\u3089 \u4eca\u306f\u305f\u3060 \u7ffc\u3092\u305f\u305f\u3093\u3067\u3000\u3086\u3063\u304f\u308a \u7720\u308a\u306a\u3055\u3044 \u6c38\u9060\u306e \u5b89\u3089\u304e\u306b \u5305\u307e\u308c\u3066\u3000love through all eternity \u512a\u3057\u304f \u898b\u5b88\u308b \u79c1\u306e\u3000\u3053\u306e \u624b\u3067 \u7720\u308a\u306a\u3055\u3044 \u7b11\u3063\u3066\u305f \u6ce3\u3044\u3066\u305f \u6012\u3063\u3066\u305f \u541b\u306e \u4e8b\u899a\u3048\u3066\u3044\u308b \u5fd8\u308c\u306a\u3044\u3000\u3044\u3064\u307e\u3067\u3082 \u6c7a\u3057\u3066\u3000until my life is exhausted",
+                "English": "The voice of the wind and droplets of light flow over you as you doze\nI will never forget the gentle smile and the eyes you hid in sorrow\nYou gave me the courage to wish (even when it hurts) and to fight, so I can go on\nIn my dreams (even when I wake up) I will see you again\nI sing, with a distant memory in my heart\nYou defended this fragile and fleeting world with your hands\nSo please, fold your wings and rest\nSheltered by an eternal peace, love through all eternity\nRest now in my arms, as I watch over you\nAs I recall your joy, your sorrow, and your rage\nI will remember you always, until my life is exhausted"
+            },
+            "server_list": [
+                "Japanese Server",
+                "Taiwanese Server",
+                "English Server",
+                "Korean Server",
+                "Chinese Server"
+            ],
+            "id": "Kimi no Kioku"
+        },
+        {
             "title": "Neo-Aspect",
             "image": [
                 "https://vignette.wikia.nocookie.net/bandori/images/0/00/Neo-Aspect_Game_Cover.png/revision/latest?cb=20180521024330"
@@ -5776,6 +5828,67 @@
             "id": "BRAVE JEWEL"
         },
         {
+            "title": "Light Delight",
+            "image": [
+                "https://vignette.wikia.nocookie.net/bandori/images/9/94/Light_Delight_Game_Cover.png/revision/latest?cb=20180423035514"
+            ],
+            "artist": "Poppin'Party",
+            "length": "05:09  02:02 (Game size)",
+            "lyricist": "Nakamura Kou",
+            "composer": "Fujinaga Ryutaro",
+            "arranger": "Fujinaga Ryutaro",
+            "single": "CiRCLING",
+            "release": "March 21, 2018",
+            "tracklist": "CiRCLING  Light Delight  CiRCLING -instrumental-  Light Delight -instrumental-",
+            "album": "Breakthrough!  (Disc 2)",
+            "release_a": "June 24, 2020",
+            "tracklist_a": "Poppin' Shuffle  Natsuzora SUN! SUN! SEVEN!  1000-kai Urunda Sora  Happy Happy Party!  Natsunodon!  Kimi ni Moratta Mono  Light Delight  Setsunai Sandglass  Home Street  What's the POPIPA!?  SAKURA MEMORIES  Anniversary",
+            "bmp": "180 BPM",
+            "Easy": {
+                "level": "9",
+                "notes": "159"
+            },
+            "Normal": {
+                "level": "14",
+                "notes": "286"
+            },
+            "Hard": {
+                "level": "20",
+                "notes": "491"
+            },
+            "Expert": {
+                "level": "26",
+                "notes": "750"
+            },
+            "song_links": {
+                "Light Delight": {
+                    "length": "05:10",
+                    "link": "https://vignette.wikia.nocookie.net/bandori/images/9/98/02._Light_Delight.ogg/revision/latest?cb=20180323034537"
+                },
+                "Light Delight -instrumental-": {
+                    "length": "05:07",
+                    "link": "https://vignette.wikia.nocookie.net/bandori/images/4/48/04._Light_Delight_-Instrumental-.ogg/revision/latest?cb=20180323034654"
+                },
+                "Light Delight (Game Version)": {
+                    "length": "02:02",
+                    "link": "https://vignette.wikia.nocookie.net/bandori/images/9/9b/Light_Delight_%28Game_Version%29.ogg/revision/latest?cb=20180619135716"
+                }
+            },
+            "lyric_dict": {
+                "Romaji": "Tameiki iro somaru tenj\u014d\nHitoribocchi no beddo kara miage\nKoe wo dasezu mae wo mukezu\nFukai no nai namida ga koboreru\nNani mo kikoenai hodo\nMimi fusaida\n(Dakedo)\nAshita ni nareba subete ga\nNakatta y\u014d ni egao de utau yo\nDakara\nNaite naite naite naite\n(Jibun wo)\nDaite daite daite daite\n(Dakishime)\nSearch for the Light Delight\nTorimodos\u014d to shita\n(Koe ga)\nSong for the Light Delight\n(Sakebu yo)\nSong for the Light Delight\nHitotsu dake\n(Kimi to)\nyakusoku wo shitainda\nMazu wa watashi ga y\u016bki dasu kara\n\"Ohay\u014d\" kara hajimaru asa\nArifureta monogatari ga tsuzuku\nHagemashitari shikararetari\nHohoendari warawaseattari\nHitorikiri janainda\nSora miagete\n(Om\u014d)\nKodokuna furi wo suru no wa m\u014d yamey\u014d\nEgao de utau yo dakara\u2015\u2015\nNaite naite naite naite\n(Asa made)\nDaite daite daite daite\n(Subete wo)\nSearch for the Light Delight!\nKodoku ni torawarete\n(Itemo)\nSong for the Light Delight!\n(Ashita wa)\nSong for the Light Delight!\nTsurai koto\n(kimi ni)\nsunao ni uchiakey\u014d\nMazu wa watashi ga kawaranakereba\n\"Daij\u014dbu dayo hitori janai yo\"\n\"Akiramenaide m\u014d sukoshi dake!\"\n\"Issho ni ireba sunao ni nareru!\"\n\"Jibun no koto suki ni nareru yo dakara\"\nNaite naite naite naite\n(Issho ni)\nNaite naite naite naite\n(Issho ni)\nKonna f\u016b ni kitto zutto\nIchiban soba ni ite\n(Hosh\u012b)\nSearch for the Light Delight!\n(Issho ni!)\nSearch for the Light Delight!\nIkite iku\n(Kimi ni)\nshinjite hosh\u012b koto wo\nMazu wa watashi ga shinjiru\nKono sekai wa hitori janai yo\u2015\u2015\nHitori janai yo\u2015\u2015",
+                "Kanji": "\u305f\u3081\u606f\u8272\u3000\u67d3\u307e\u308b\u5929\u4e95\n\u4e00\u4eba\u307c\u3063\u3061\u306e\u30d9\u30c3\u30c9\u304b\u3089\u898b\u4e0a\u3052\n\u58f0\u3092\u3060\u305b\u305a\u3000\u524d\u3092\u5411\u3051\u305a\n\u3075\u304c\u3044\u306e\u306a\u3044\u3000\u6d99\u304c\u3053\u307c\u308c\u308b\n\u4f55\u3082\u805e\u3053\u3048\u306a\u3044\u307b\u3069\n\u8033\u3075\u3055\u3044\u3060(\u3060\u3051\u3069)\n\u660e\u65e5\u306b\u306a\u308c\u3070\u3059\u3079\u3066\u304c\u306a\u304b\u3063\u305f\u3088\u3046\u306b\n\u7b11\u9854\u3067\u5504\u3046\u3088\u3000\u3060\u304b\u3089\u2026\n\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066(\u81ea\u5206\u3092)\n\u62b1\u3044\u3066\u62b1\u3044\u3066\u62b1\u3044\u3066\u62b1\u3044\u3066(\u62b1\u304d\u3057\u3081)\nSearch for the light delight\uff01\n\u53d6\u308a\u623b\u305d\u3046\u3068\u3057\u305f(\u58f0\u304c)\nSong for the light delight\uff01(\u53eb\u3076\u3088)\nSong for the light delight\uff01\n\u3072\u3068\u3064\u3060\u3051(\u30ad\u30df\u3068)\u7d04\u675f\u3092\u3057\u305f\u3044\u3093\u3060\n\u307e\u305a\u306f\u79c1\u304c\u52c7\u6c17\u3060\u3059\u304b\u3089\u2015\u2015\n\u300c\u304a\u306f\u3088\u3046\u300d\u304b\u3089\u59cb\u307e\u308b\u671d\n\u3042\u308a\u3075\u308c\u305f\u7269\u8a9e\u304c\u7d9a\u304f\n\u52b1\u307e\u3057\u305f\u308a\u3000\u53f1\u3089\u308c\u305f\u308a\n\u5fae\u7b11\u3093\u3060\u308a\u3000\u7b11\u308f\u305b\u3042\u3063\u305f\u308a\n\u4e00\u4eba\u304d\u308a\u3058\u3083\u306a\u3044\u3093\u3060\n\u7a7a\u898b\u4e0a\u3052\u3066(\u601d\u3046)\n\u5b64\u72ec\u306a\u3075\u308a\u3092\u3059\u308b\u306e\u306f\u3082\u3046\u3084\u3081\u3088\u3046\n\u7b11\u9854\u3067\u5504\u3046\u3088\u3000\u3060\u304b\u3089\u2015\u2015\n\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066(\u671d\u307e\u3067)\n\u62b1\u3044\u3066\u62b1\u3044\u3066\u62b1\u3044\u3066\u62b1\u3044\u3066(\u5168\u3066\u3092)\nSearch for the light delight\uff01\n\u5b64\u72ec\u306b\u3068\u3089\u308f\u308c\u3066(\u3044\u3066\u3082)\nSong for the light delight\uff01(\u660e\u65e5\u306f)\nSong for the light delight\uff01\n\u3064\u3089\u3044\u3053\u3068(\u30ad\u30df\u306b)\u7d20\u76f4\u306b\u3046\u3061\u3042\u3051\u3088\u3046\n\u307e\u305a\u306f\u79c1\u304c\u5909\u308f\u3089\u306a\u3051\u308c\u3070\n\u300c\u5927\u4e08\u592b\u3060\u3088\u3000\u4e00\u4eba\u3058\u3083\u306a\u3044\u3088\u300d\n\u300c\u3042\u304d\u3089\u3081\u306a\u3044\u3067\u3000\u3082\u3046\u5c11\u3057\u3060\u3051\uff01\u300d\n\u300c\u4e00\u7dd2\u306b\u3044\u308c\u3070\u3000\u7d20\u76f4\u306b\u306a\u308c\u308b\uff01\u300d\n\u300c\u81ea\u5206\u306e\u3053\u3068\u597d\u304d\u306b\u306a\u308c\u308b\u3088\u3000\u3060\u304b\u3089\u300d\n\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066(\u4e00\u7dd2\u306b)\n\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066(\u4e00\u7dd2\u306b)\n\u3053\u3093\u306a\u3075\u3046\u306b\u304d\u3063\u3068\u305a\u3063\u3068\n\u4e00\u756a\u305d\u3070\u306b\u3044\u3066(\u307b\u3057\u3044)\nSearch for the light delight\uff01(\u4e00\u7dd2\u306b\uff01)\nSearch for the light delight\uff01\n\u751f\u304d\u3066\u3044\u304f(\u30ad\u30df\u306b)\u4fe1\u3058\u3066\u307b\u3057\u3044\u3053\u3068\u3092\n\u307e\u305a\u306f\u79c1\u304c\u4fe1\u3058\u308b\n\u3053\u306e\u4e16\u754c\u306f\u4e00\u4eba\u3058\u3083\u306a\u3044\u3088\u2015\u2015\n\u4e00\u4eba\u3058\u3083\u306a\u3044\u3088\u2015\u2015",
+                "English": "The color of my sighs stain the ceiling\nAs I gaze upwards from my lonesome bed\nUnable to let my voice out, unable to keep facing forwards\nI let my worthless tears spill\nI cover my ears until I can't hear anything anymore (Even so)\nAs if I have nothing to lose when tomorrow comes\nI sing out with a smile\nThat's why\nI cry, cry, cry and cry (I)\nEmbrace, embrace, embrace and embrace (Embrace myself)\nSearching for the Light Delight\nI'll try and bring it back\n(My voice) Song for the Light Delight\n(Lets out a shout) Song for the Light Delight\nI want to make a promise (with you)\nBut first, I'll need to find my courage\nA morning that starts with a \"Good morning\"\nThe story of an everyday life continues on\nFilled with encouragement, scoldings\nAnd smiles and laughter\nI am not alone\n(I think) as I gaze up towards the sky\nIt's time I stop acting like I'm lonely\nAnd sing out with a smile, so\nI'll cry, cry, cry, and cry (Until morning comes)\nI'll embrace, embrace, embrace, and embrace (Everything)\nSearch for the Light Delight!\n(Even when) I'm captured by the loneliness\nSong for the Light Delight! (Tomorrow)\nSong for the Light Delight!\nI'll open up (to you) about all of my worries\nBut first, I'll have to change myself\n\"It's okay, you are not alone.\"\n\"Don't give up, you're almost there!\"\n\"When we're together, you can be honest with us!\"\n\"You'll be able to like yourself more! So,\"\nLet's cry, cry, cry and cry (Together)\nAnd cry, cry, cry and cry (With each other)\nAt this rate, you'll surely, definitely\nBe the ones (that I want to keep) closest to me\nSearch for the Light Delight! (Together!)\nSearch for the Light Delight!\nI want to believe that I can continue living (With you)\nBut first, I'll need to believe in myself\nAnd that I am not alone in this world\u2015\u2015\nI am not alone\u2015\u2015"
+            },
+            "server_list": [
+                "Japanese Server",
+                "Taiwanese Server",
+                "English Server",
+                "Korean Server",
+                "Chinese Server"
+            ],
+            "id": "Light Delight"
+        },
+        {
             "title": "Nesshoku Starmine",
             "image": [
                 "https://vignette.wikia.nocookie.net/bandori/images/b/be/Nesshoku_Starmine.jpg/revision/latest?cb=20170812093138"
@@ -8136,54 +8249,6 @@
                 "Japanese Server"
             ],
             "id": "Byoushin wo Kamu"
-        },
-        {
-            "name": "Hanamaru Pippi wa Yoiko Dake",
-            "image": [
-                "https://vignette.wikia.nocookie.net/bandori/images/b/be/Hanamaru_Pippi_wa_Yoiko_Dake.png/revision/latest?cb=20170930111625"
-            ],
-            "kanji": "\u306f\u306a\u307e\u308b\u3074\u3063\u3074\u306f\u3088\u3044\u3053\u3060\u3051",
-            "translation": "Hanamaru Pippis are Just for Good Little Kids",
-            "artist": "Pastel\u273dPalettes",
-            "length": "01:45",
-            "arranger": "Kasai Yuta",
-            "oartist": "AOP",
-            "olyricist": "Asaki",
-            "ocomposer": "96",
-            "oarranger": "96",
-            "label": "AT-X",
-            "bmp": "172 BPM",
-            "Easy": {
-                "level": "9",
-                "notes": "193"
-            },
-            "Normal": {
-                "level": "14",
-                "notes": "318"
-            },
-            "Hard": {
-                "level": "18",
-                "notes": "507"
-            },
-            "Expert": {
-                "level": "25",
-                "notes": "729"
-            },
-            "song_links": {
-                "Hanamaru Pippi wa Yoiko Dake (Game Version)": {
-                    "length": "01:45",
-                    "link": "https://vignette.wikia.nocookie.net/bandori/images/a/ad/Hanamaru_Pippi_wa_Yoiko_Dake_%28Game_Version%29.ogg/revision/latest?cb=20170930131828"
-                }
-            },
-            "lyric_dict": {
-                "Romaji": "Hirari hirari mo suki no uchi to\nKakekomi suberikomi uttori\nKore zo KAMIKAZE s\u014d taiy\u014d\nMushi no iki hitoshirezu\nTaihen na no genba wa kaji\nUrei na omeme kara hassha da poon\nD\u014dka na kore shingata gimmiku\nAmari ni kakushinteki na hito\nKoko kara hajimete kokon t\u014dzai\nNariyamanu hana kuberu wa suiheisen\nMeromero torokete popon chuchu sa\nAshita mo kin\u014d no yoiko dake\nKore oagari to kukuri tsukerare\nNigegoshi dakko jan\nDengen nui chimau kam\u014d\nDatte\nModorenai? Aa,\nKaerenai? Aa,\nJigenshiki KARAMITI\nSaiky\u014d muketsu no popon t\u014dsai da\nJinrui saigo no gimmiku kimi ni\nHerahera odoketa gochi de chuny\u016b sa\nYoroshiku oagari\nOsomatsusan!\nIssh\u014d zenry\u014dku MORATORIAMU\nKy\u014d kara ashita wa kin\u014d no mirai\nYoi yoi koro koro yoi korassho\nKono yo ni iru no wa yoiko dake\nCh\u016bchu chucchu\nCh\u016bru churu chururira\nAme ni mo kaze ni mo makezu\nChira mori no bigaku ya barabara\nYaay!!",
-                "Kanji": "\u3072\u3089\u308a\u3072\u3089\u308a\u3082\u9699\u306e\u3046\u3061\u3068\n\u304b\u3051\u3053\u307f\u3059\u3079\u308a\u3053\u307f\u3046\u3063\u3068\u308a\n\u3053\u308c\u305e\u30ab\u30df\u30ab\u30bc\u6cbf\u3046\u592a\u967d\n\u866b\u306e\u606f\u3072\u3068\u77e5\u308c\u305a\n\u305f\u3044\u3078\u3093\u306a\u306e\u73fe\u5834\u306f\u706b\u4e8b\n\u6182\u3044\u306a\u304a\u3081\u3081\u304b\u3089\u767a\u5c04\u3060\u307d\u30fc\u3093\n\u3069\u3046\u304b\u306a\u3053\u308c\u65b0\u578b\u30ae\u30df\u30c3\u30af\n\u3042\u307e\u308a\u306b\u9769\u65b0\u7684\u306a\u3072\u3068\n\u3053\u3053\u304b\u3089\u306f\u3058\u3081\u3066\u53e4\u4eca\u6771\u897f\n\u9cf4\u308a\u3084\u307e\u306c\u82b1\u713c\u3079\u308b\u306f\u6c34\u5e73\u7dda\n\u3081\u308d\u3081\u308d\u3068\u308d\u3051\u3066\u307d\u307d\u3093\u3061\u3085\u3046\u3061\u3085\u3046\u3055\n\u660e\u65e5\u3082\u6628\u65e5\u306e\u3088\u3044\u3053\u3060\u3051\n\u3053\u308c\u304a\u3042\u304c\u308a\u3068\u304f\u304f\u308a\u3064\u3051\u3089\u308c\n\u9003\u3052\u8170\u3000\u62b1\u3063\u3053\u3058\u3083\u3093\n\u96fb\u6e90\u629c\u3044\u3061\u307e\u3046\u304b\u3082\u3046\n\u3060\u3063\u3066\n\u3082\u3069\u308c\u306a\u3044\uff1f\u55da\u547c\n\u304b\u3048\u308c\u306a\u3044\uff1f\u55da\u547c\n\u6642\u9650\u5f0f\u30ab\u30e9\u30df\u30c6\u30a3\n\u6700\u5f37\u7121\u6b20\u306e\u307d\u307d\u3093\u642d\u8f09\u3060\n\u4eba\u985e\u6700\u5f8c\u306e\u30ae\u30df\u30c3\u30af\u541b\u306b\n\u3078\u3089\u3078\u3089\u304a\u3069\u3051\u305f\u30b4\u30c1\u3067\u6ce8\u5165\u3055\n\u3088\u308d\u3057\u304f\u304a\u3042\u304c\u308a\n\u304a\u305d\u307e\u3064\u3055\u30fc\u3093\uff01\n\u4e00\u751f\u5168\u529b\u30e2\u30e9\u30c8\u30ea\u30a2\u30e0\n\u4eca\u65e5\u304b\u3089\u660e\u65e5\u306f\u6628\u65e5\u306e\u672a\u6765\n\u3088\u3044\u3088\u3044\u3053\u308d\u3053\u308d\u3088\u3044\u3053\u3089\u3063\u3057\u3087\n\u3053\u306e\u4e16\u306b\u8981\u308b\u306e\u306f\u3088\u3044\u3053\u3060\u3051\n\u3061\u3085\u30fc\u3061\u3085\u3000\u3061\u3085\u3063\u3061\u3085\n\u3061\u3085\u30fc\u308b\u3061\u3085\u308b\u3000\u3061\u3085\u308b\u308a\u3089\n\u96e8\u30cb\u30e2\u98a8\u30cb\u30e2\u8ca0\u30b1\u30ba\n\u3061\u3089\u76db\u308a\u306e\u7f8e\u5b66\u3084\u3000\u3070\u3089\u3070\u3089",
-                "English": "Drifting through the cracks\nIn a rush, just in time\u2013In a trance\nThis is a kamikaze; the sun rides along\nA dying breath, unknown to the world\nHow terrible\u2013the place is in flames\nShots from her distressed little eyes\u2013Blam!\nHow do you like this new gimmick?\nThis one is too progressive\nFrom here begins all of time and space\nFlowers that sound out incessantly, burning on the horizon\nEnchanted head-over-heels, it's popon chuu chuu\nOnly for the little kids who're good yesterday and tomorrow\nFastened with a \"here you go\"\nIt's a cold-footed embrace\nMaybe she should just pull the plug\nBut,\nShe can't turn back? Oh,\nShe can't go back? Oh,\nIt's a time-limit calamity\nEquipped with the strongest, flawless popon\nFor you, humanity's final gimmick\nA feast of hollow laughs and foolish jests\u2013here's your injection\nBest regards, here you go\nHope you enjoy!\nA lifelong, full-strength moratorium\nFrom today, tomorrow is yesterday's future\nWither wither, tumble tumble\u2013Alright, let's give it a go\nThis world only wants good little kids!\nChuu chu chuchu\nChuuru churu chururira\nWon't be defeated by the wind or the rain\nThe aesthetics of the scattered serving are in disarray\nSource\n[1]"
-            },
-            "server_list": [
-                "Japanese Server"
-            ],
-            "id": "Hanamaru Pippi wa Yoiko Dake"
         },
         {
             "name": "Kasabuta",
@@ -15308,117 +15373,52 @@
     ],
     "played": [
         {
-            "title": "Light Delight",
+            "name": "Hanamaru Pippi wa Yoiko Dake",
             "image": [
-                "https://vignette.wikia.nocookie.net/bandori/images/9/94/Light_Delight_Game_Cover.png/revision/latest?cb=20180423035514"
+                "https://vignette.wikia.nocookie.net/bandori/images/b/be/Hanamaru_Pippi_wa_Yoiko_Dake.png/revision/latest?cb=20170930111625"
             ],
-            "artist": "Poppin'Party",
-            "length": "05:09  02:02 (Game size)",
-            "lyricist": "Nakamura Kou",
-            "composer": "Fujinaga Ryutaro",
-            "arranger": "Fujinaga Ryutaro",
-            "single": "CiRCLING",
-            "release": "March 21, 2018",
-            "tracklist": "CiRCLING  Light Delight  CiRCLING -instrumental-  Light Delight -instrumental-",
-            "album": "Breakthrough!  (Disc 2)",
-            "release_a": "June 24, 2020",
-            "tracklist_a": "Poppin' Shuffle  Natsuzora SUN! SUN! SEVEN!  1000-kai Urunda Sora  Happy Happy Party!  Natsunodon!  Kimi ni Moratta Mono  Light Delight  Setsunai Sandglass  Home Street  What's the POPIPA!?  SAKURA MEMORIES  Anniversary",
-            "bmp": "180 BPM",
+            "kanji": "\u306f\u306a\u307e\u308b\u3074\u3063\u3074\u306f\u3088\u3044\u3053\u3060\u3051",
+            "translation": "Hanamaru Pippis are Just for Good Little Kids",
+            "artist": "Pastel\u273dPalettes",
+            "length": "01:45",
+            "arranger": "Kasai Yuta",
+            "oartist": "AOP",
+            "olyricist": "Asaki",
+            "ocomposer": "96",
+            "oarranger": "96",
+            "label": "AT-X",
+            "bmp": "172 BPM",
             "Easy": {
                 "level": "9",
-                "notes": "159"
+                "notes": "193"
             },
             "Normal": {
                 "level": "14",
-                "notes": "286"
+                "notes": "318"
             },
             "Hard": {
-                "level": "20",
-                "notes": "491"
-            },
-            "Expert": {
-                "level": "26",
-                "notes": "750"
-            },
-            "song_links": {
-                "Light Delight": {
-                    "length": "05:10",
-                    "link": "https://vignette.wikia.nocookie.net/bandori/images/9/98/02._Light_Delight.ogg/revision/latest?cb=20180323034537"
-                },
-                "Light Delight -instrumental-": {
-                    "length": "05:07",
-                    "link": "https://vignette.wikia.nocookie.net/bandori/images/4/48/04._Light_Delight_-Instrumental-.ogg/revision/latest?cb=20180323034654"
-                },
-                "Light Delight (Game Version)": {
-                    "length": "02:02",
-                    "link": "https://vignette.wikia.nocookie.net/bandori/images/9/9b/Light_Delight_%28Game_Version%29.ogg/revision/latest?cb=20180619135716"
-                }
-            },
-            "lyric_dict": {
-                "Romaji": "Tameiki iro somaru tenj\u014d\nHitoribocchi no beddo kara miage\nKoe wo dasezu mae wo mukezu\nFukai no nai namida ga koboreru\nNani mo kikoenai hodo\nMimi fusaida\n(Dakedo)\nAshita ni nareba subete ga\nNakatta y\u014d ni egao de utau yo\nDakara\nNaite naite naite naite\n(Jibun wo)\nDaite daite daite daite\n(Dakishime)\nSearch for the Light Delight\nTorimodos\u014d to shita\n(Koe ga)\nSong for the Light Delight\n(Sakebu yo)\nSong for the Light Delight\nHitotsu dake\n(Kimi to)\nyakusoku wo shitainda\nMazu wa watashi ga y\u016bki dasu kara\n\"Ohay\u014d\" kara hajimaru asa\nArifureta monogatari ga tsuzuku\nHagemashitari shikararetari\nHohoendari warawaseattari\nHitorikiri janainda\nSora miagete\n(Om\u014d)\nKodokuna furi wo suru no wa m\u014d yamey\u014d\nEgao de utau yo dakara\u2015\u2015\nNaite naite naite naite\n(Asa made)\nDaite daite daite daite\n(Subete wo)\nSearch for the Light Delight!\nKodoku ni torawarete\n(Itemo)\nSong for the Light Delight!\n(Ashita wa)\nSong for the Light Delight!\nTsurai koto\n(kimi ni)\nsunao ni uchiakey\u014d\nMazu wa watashi ga kawaranakereba\n\"Daij\u014dbu dayo hitori janai yo\"\n\"Akiramenaide m\u014d sukoshi dake!\"\n\"Issho ni ireba sunao ni nareru!\"\n\"Jibun no koto suki ni nareru yo dakara\"\nNaite naite naite naite\n(Issho ni)\nNaite naite naite naite\n(Issho ni)\nKonna f\u016b ni kitto zutto\nIchiban soba ni ite\n(Hosh\u012b)\nSearch for the Light Delight!\n(Issho ni!)\nSearch for the Light Delight!\nIkite iku\n(Kimi ni)\nshinjite hosh\u012b koto wo\nMazu wa watashi ga shinjiru\nKono sekai wa hitori janai yo\u2015\u2015\nHitori janai yo\u2015\u2015",
-                "Kanji": "\u305f\u3081\u606f\u8272\u3000\u67d3\u307e\u308b\u5929\u4e95\n\u4e00\u4eba\u307c\u3063\u3061\u306e\u30d9\u30c3\u30c9\u304b\u3089\u898b\u4e0a\u3052\n\u58f0\u3092\u3060\u305b\u305a\u3000\u524d\u3092\u5411\u3051\u305a\n\u3075\u304c\u3044\u306e\u306a\u3044\u3000\u6d99\u304c\u3053\u307c\u308c\u308b\n\u4f55\u3082\u805e\u3053\u3048\u306a\u3044\u307b\u3069\n\u8033\u3075\u3055\u3044\u3060(\u3060\u3051\u3069)\n\u660e\u65e5\u306b\u306a\u308c\u3070\u3059\u3079\u3066\u304c\u306a\u304b\u3063\u305f\u3088\u3046\u306b\n\u7b11\u9854\u3067\u5504\u3046\u3088\u3000\u3060\u304b\u3089\u2026\n\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066(\u81ea\u5206\u3092)\n\u62b1\u3044\u3066\u62b1\u3044\u3066\u62b1\u3044\u3066\u62b1\u3044\u3066(\u62b1\u304d\u3057\u3081)\nSearch for the light delight\uff01\n\u53d6\u308a\u623b\u305d\u3046\u3068\u3057\u305f(\u58f0\u304c)\nSong for the light delight\uff01(\u53eb\u3076\u3088)\nSong for the light delight\uff01\n\u3072\u3068\u3064\u3060\u3051(\u30ad\u30df\u3068)\u7d04\u675f\u3092\u3057\u305f\u3044\u3093\u3060\n\u307e\u305a\u306f\u79c1\u304c\u52c7\u6c17\u3060\u3059\u304b\u3089\u2015\u2015\n\u300c\u304a\u306f\u3088\u3046\u300d\u304b\u3089\u59cb\u307e\u308b\u671d\n\u3042\u308a\u3075\u308c\u305f\u7269\u8a9e\u304c\u7d9a\u304f\n\u52b1\u307e\u3057\u305f\u308a\u3000\u53f1\u3089\u308c\u305f\u308a\n\u5fae\u7b11\u3093\u3060\u308a\u3000\u7b11\u308f\u305b\u3042\u3063\u305f\u308a\n\u4e00\u4eba\u304d\u308a\u3058\u3083\u306a\u3044\u3093\u3060\n\u7a7a\u898b\u4e0a\u3052\u3066(\u601d\u3046)\n\u5b64\u72ec\u306a\u3075\u308a\u3092\u3059\u308b\u306e\u306f\u3082\u3046\u3084\u3081\u3088\u3046\n\u7b11\u9854\u3067\u5504\u3046\u3088\u3000\u3060\u304b\u3089\u2015\u2015\n\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066(\u671d\u307e\u3067)\n\u62b1\u3044\u3066\u62b1\u3044\u3066\u62b1\u3044\u3066\u62b1\u3044\u3066(\u5168\u3066\u3092)\nSearch for the light delight\uff01\n\u5b64\u72ec\u306b\u3068\u3089\u308f\u308c\u3066(\u3044\u3066\u3082)\nSong for the light delight\uff01(\u660e\u65e5\u306f)\nSong for the light delight\uff01\n\u3064\u3089\u3044\u3053\u3068(\u30ad\u30df\u306b)\u7d20\u76f4\u306b\u3046\u3061\u3042\u3051\u3088\u3046\n\u307e\u305a\u306f\u79c1\u304c\u5909\u308f\u3089\u306a\u3051\u308c\u3070\n\u300c\u5927\u4e08\u592b\u3060\u3088\u3000\u4e00\u4eba\u3058\u3083\u306a\u3044\u3088\u300d\n\u300c\u3042\u304d\u3089\u3081\u306a\u3044\u3067\u3000\u3082\u3046\u5c11\u3057\u3060\u3051\uff01\u300d\n\u300c\u4e00\u7dd2\u306b\u3044\u308c\u3070\u3000\u7d20\u76f4\u306b\u306a\u308c\u308b\uff01\u300d\n\u300c\u81ea\u5206\u306e\u3053\u3068\u597d\u304d\u306b\u306a\u308c\u308b\u3088\u3000\u3060\u304b\u3089\u300d\n\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066(\u4e00\u7dd2\u306b)\n\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066\u6ce3\u3044\u3066(\u4e00\u7dd2\u306b)\n\u3053\u3093\u306a\u3075\u3046\u306b\u304d\u3063\u3068\u305a\u3063\u3068\n\u4e00\u756a\u305d\u3070\u306b\u3044\u3066(\u307b\u3057\u3044)\nSearch for the light delight\uff01(\u4e00\u7dd2\u306b\uff01)\nSearch for the light delight\uff01\n\u751f\u304d\u3066\u3044\u304f(\u30ad\u30df\u306b)\u4fe1\u3058\u3066\u307b\u3057\u3044\u3053\u3068\u3092\n\u307e\u305a\u306f\u79c1\u304c\u4fe1\u3058\u308b\n\u3053\u306e\u4e16\u754c\u306f\u4e00\u4eba\u3058\u3083\u306a\u3044\u3088\u2015\u2015\n\u4e00\u4eba\u3058\u3083\u306a\u3044\u3088\u2015\u2015",
-                "English": "The color of my sighs stain the ceiling\nAs I gaze upwards from my lonesome bed\nUnable to let my voice out, unable to keep facing forwards\nI let my worthless tears spill\nI cover my ears until I can't hear anything anymore (Even so)\nAs if I have nothing to lose when tomorrow comes\nI sing out with a smile\nThat's why\nI cry, cry, cry and cry (I)\nEmbrace, embrace, embrace and embrace (Embrace myself)\nSearching for the Light Delight\nI'll try and bring it back\n(My voice) Song for the Light Delight\n(Lets out a shout) Song for the Light Delight\nI want to make a promise (with you)\nBut first, I'll need to find my courage\nA morning that starts with a \"Good morning\"\nThe story of an everyday life continues on\nFilled with encouragement, scoldings\nAnd smiles and laughter\nI am not alone\n(I think) as I gaze up towards the sky\nIt's time I stop acting like I'm lonely\nAnd sing out with a smile, so\nI'll cry, cry, cry, and cry (Until morning comes)\nI'll embrace, embrace, embrace, and embrace (Everything)\nSearch for the Light Delight!\n(Even when) I'm captured by the loneliness\nSong for the Light Delight! (Tomorrow)\nSong for the Light Delight!\nI'll open up (to you) about all of my worries\nBut first, I'll have to change myself\n\"It's okay, you are not alone.\"\n\"Don't give up, you're almost there!\"\n\"When we're together, you can be honest with us!\"\n\"You'll be able to like yourself more! So,\"\nLet's cry, cry, cry and cry (Together)\nAnd cry, cry, cry and cry (With each other)\nAt this rate, you'll surely, definitely\nBe the ones (that I want to keep) closest to me\nSearch for the Light Delight! (Together!)\nSearch for the Light Delight!\nI want to believe that I can continue living (With you)\nBut first, I'll need to believe in myself\nAnd that I am not alone in this world\u2015\u2015\nI am not alone\u2015\u2015"
-            },
-            "server_list": [
-                "Japanese Server",
-                "Taiwanese Server",
-                "English Server",
-                "Korean Server",
-                "Chinese Server"
-            ],
-            "id": "Light Delight"
-        },
-        {
-            "name": "Kimi no Kioku",
-            "image": [
-                "https://vignette.wikia.nocookie.net/bandori/images/3/38/Kimi_no_Kioku_Game_Cover.png/revision/latest?cb=20180720035835"
-            ],
-            "kanji": "\u30ad\u30df\u306e\u8a18\u61b6",
-            "hangul": "\ub108\uc758 \uae30\uc5b5",
-            "translation": "Memories of You",
-            "artist": "Roselia",
-            "length": "02:10",
-            "arranger": "Fujinaga Ryutaro",
-            "oartist": "Yumi Kawamura",
-            "olyricist": "Komori Shigeo",
-            "ocomposer": "Meguro Shoji",
-            "label": "Aniplex",
-            "bmp": "97 ~ 114 BPM",
-            "Easy": {
-                "level": "6",
-                "notes": "104"
-            },
-            "Normal": {
-                "level": "11",
-                "notes": "180"
-            },
-            "Hard": {
-                "level": "17",
-                "notes": "447"
+                "level": "18",
+                "notes": "507"
             },
             "Expert": {
                 "level": "25",
-                "notes": "651"
+                "notes": "729"
             },
             "song_links": {
-                "Kimi no Kioku (Game Version)": {
-                    "length": "02:10",
-                    "link": "https://vignette.wikia.nocookie.net/bandori/images/b/b1/Kimi_no_Kioku_%28Game_Version%29.ogg/revision/latest?cb=20180720041448"
+                "Hanamaru Pippi wa Yoiko Dake (Game Version)": {
+                    "length": "01:45",
+                    "link": "https://vignette.wikia.nocookie.net/bandori/images/a/ad/Hanamaru_Pippi_wa_Yoiko_Dake_%28Game_Version%29.ogg/revision/latest?cb=20170930131828"
                 }
             },
             "lyric_dict": {
-                "Romaji": "Kaze no koe hikari no tsubu madoromu kimi ni sosogu\nWasurenai yasash\u012b hohoemi kanashisa kakushita hitomi wo\nNegau koto tsurakutemo tachimukau y\u016bki kimi ni moratta dakara yukune\nYume no naka mezametara mata aeruyo\nT\u014di kioku mune ni hime utau\nHakanaku tayutau sekai wo kimi no te de mamottakara\nImawa tada tsubasa wo tatande yukkuri nemurinasai\nEien no yasuragi ni tsutsumarete love through all eternity\nYasashiku mimamoru watashi no kono te de nemurinasai\nWaratteta naiteta okotteta kimi no koto oboeteiru\nWasurenai itsumademo kesshite until my life is exhausted",
-                "Kanji": "\u98a8\u306e \u58f0\u5149\u306e \u7c92\u307e\u3069\u308d\u3080 \u541b\u306b \u6ce8\u3050 \u5fd8\u308c\u306a\u3044 \u512a\u3057\u3044 \u5fae\u7b11\u307f \u512a\u3057\u3055 \u96a0\u3057\u305f \u77b3\u3092 \u9858\u3046\u3053\u3068 \u8f9b\u304f\u3066\u3082 \u7acb\u3061 \u5411\u304b\u3046 \u52c7\u6c17\u541b\u306b \u8cb0\u3063\u305f\u3000\u3060\u304b\u3089 \u884c\u304f\u306d \u5922\u306e \u4e2d\u76ee\u899a\u3081\u305f\u3089\u3000\u307e\u305f \u4f1a\u3048\u308b\u3088 \u9060\u8a18\u61b6\u80f8\u306b \u79d8\u3081 \u6b4c\u3046 \u511a\u304f\u305f\u3086\u305f\u3046 \u4e16\u754c\u3092 \u541b\u306e \u624b\u3067 \u5b88\u3063\u305f\u304b\u3089 \u4eca\u306f\u305f\u3060 \u7ffc\u3092\u305f\u305f\u3093\u3067\u3000\u3086\u3063\u304f\u308a \u7720\u308a\u306a\u3055\u3044 \u6c38\u9060\u306e \u5b89\u3089\u304e\u306b \u5305\u307e\u308c\u3066\u3000love through all eternity \u512a\u3057\u304f \u898b\u5b88\u308b \u79c1\u306e\u3000\u3053\u306e \u624b\u3067 \u7720\u308a\u306a\u3055\u3044 \u7b11\u3063\u3066\u305f \u6ce3\u3044\u3066\u305f \u6012\u3063\u3066\u305f \u541b\u306e \u4e8b\u899a\u3048\u3066\u3044\u308b \u5fd8\u308c\u306a\u3044\u3000\u3044\u3064\u307e\u3067\u3082 \u6c7a\u3057\u3066\u3000until my life is exhausted",
-                "English": "The voice of the wind and droplets of light flow over you as you doze\nI will never forget the gentle smile and the eyes you hid in sorrow\nYou gave me the courage to wish (even when it hurts) and to fight, so I can go on\nIn my dreams (even when I wake up) I will see you again\nI sing, with a distant memory in my heart\nYou defended this fragile and fleeting world with your hands\nSo please, fold your wings and rest\nSheltered by an eternal peace, love through all eternity\nRest now in my arms, as I watch over you\nAs I recall your joy, your sorrow, and your rage\nI will remember you always, until my life is exhausted"
+                "Romaji": "Hirari hirari mo suki no uchi to\nKakekomi suberikomi uttori\nKore zo KAMIKAZE s\u014d taiy\u014d\nMushi no iki hitoshirezu\nTaihen na no genba wa kaji\nUrei na omeme kara hassha da poon\nD\u014dka na kore shingata gimmiku\nAmari ni kakushinteki na hito\nKoko kara hajimete kokon t\u014dzai\nNariyamanu hana kuberu wa suiheisen\nMeromero torokete popon chuchu sa\nAshita mo kin\u014d no yoiko dake\nKore oagari to kukuri tsukerare\nNigegoshi dakko jan\nDengen nui chimau kam\u014d\nDatte\nModorenai? Aa,\nKaerenai? Aa,\nJigenshiki KARAMITI\nSaiky\u014d muketsu no popon t\u014dsai da\nJinrui saigo no gimmiku kimi ni\nHerahera odoketa gochi de chuny\u016b sa\nYoroshiku oagari\nOsomatsusan!\nIssh\u014d zenry\u014dku MORATORIAMU\nKy\u014d kara ashita wa kin\u014d no mirai\nYoi yoi koro koro yoi korassho\nKono yo ni iru no wa yoiko dake\nCh\u016bchu chucchu\nCh\u016bru churu chururira\nAme ni mo kaze ni mo makezu\nChira mori no bigaku ya barabara\nYaay!!",
+                "Kanji": "\u3072\u3089\u308a\u3072\u3089\u308a\u3082\u9699\u306e\u3046\u3061\u3068\n\u304b\u3051\u3053\u307f\u3059\u3079\u308a\u3053\u307f\u3046\u3063\u3068\u308a\n\u3053\u308c\u305e\u30ab\u30df\u30ab\u30bc\u6cbf\u3046\u592a\u967d\n\u866b\u306e\u606f\u3072\u3068\u77e5\u308c\u305a\n\u305f\u3044\u3078\u3093\u306a\u306e\u73fe\u5834\u306f\u706b\u4e8b\n\u6182\u3044\u306a\u304a\u3081\u3081\u304b\u3089\u767a\u5c04\u3060\u307d\u30fc\u3093\n\u3069\u3046\u304b\u306a\u3053\u308c\u65b0\u578b\u30ae\u30df\u30c3\u30af\n\u3042\u307e\u308a\u306b\u9769\u65b0\u7684\u306a\u3072\u3068\n\u3053\u3053\u304b\u3089\u306f\u3058\u3081\u3066\u53e4\u4eca\u6771\u897f\n\u9cf4\u308a\u3084\u307e\u306c\u82b1\u713c\u3079\u308b\u306f\u6c34\u5e73\u7dda\n\u3081\u308d\u3081\u308d\u3068\u308d\u3051\u3066\u307d\u307d\u3093\u3061\u3085\u3046\u3061\u3085\u3046\u3055\n\u660e\u65e5\u3082\u6628\u65e5\u306e\u3088\u3044\u3053\u3060\u3051\n\u3053\u308c\u304a\u3042\u304c\u308a\u3068\u304f\u304f\u308a\u3064\u3051\u3089\u308c\n\u9003\u3052\u8170\u3000\u62b1\u3063\u3053\u3058\u3083\u3093\n\u96fb\u6e90\u629c\u3044\u3061\u307e\u3046\u304b\u3082\u3046\n\u3060\u3063\u3066\n\u3082\u3069\u308c\u306a\u3044\uff1f\u55da\u547c\n\u304b\u3048\u308c\u306a\u3044\uff1f\u55da\u547c\n\u6642\u9650\u5f0f\u30ab\u30e9\u30df\u30c6\u30a3\n\u6700\u5f37\u7121\u6b20\u306e\u307d\u307d\u3093\u642d\u8f09\u3060\n\u4eba\u985e\u6700\u5f8c\u306e\u30ae\u30df\u30c3\u30af\u541b\u306b\n\u3078\u3089\u3078\u3089\u304a\u3069\u3051\u305f\u30b4\u30c1\u3067\u6ce8\u5165\u3055\n\u3088\u308d\u3057\u304f\u304a\u3042\u304c\u308a\n\u304a\u305d\u307e\u3064\u3055\u30fc\u3093\uff01\n\u4e00\u751f\u5168\u529b\u30e2\u30e9\u30c8\u30ea\u30a2\u30e0\n\u4eca\u65e5\u304b\u3089\u660e\u65e5\u306f\u6628\u65e5\u306e\u672a\u6765\n\u3088\u3044\u3088\u3044\u3053\u308d\u3053\u308d\u3088\u3044\u3053\u3089\u3063\u3057\u3087\n\u3053\u306e\u4e16\u306b\u8981\u308b\u306e\u306f\u3088\u3044\u3053\u3060\u3051\n\u3061\u3085\u30fc\u3061\u3085\u3000\u3061\u3085\u3063\u3061\u3085\n\u3061\u3085\u30fc\u308b\u3061\u3085\u308b\u3000\u3061\u3085\u308b\u308a\u3089\n\u96e8\u30cb\u30e2\u98a8\u30cb\u30e2\u8ca0\u30b1\u30ba\n\u3061\u3089\u76db\u308a\u306e\u7f8e\u5b66\u3084\u3000\u3070\u3089\u3070\u3089",
+                "English": "Drifting through the cracks\nIn a rush, just in time\u2013In a trance\nThis is a kamikaze; the sun rides along\nA dying breath, unknown to the world\nHow terrible\u2013the place is in flames\nShots from her distressed little eyes\u2013Blam!\nHow do you like this new gimmick?\nThis one is too progressive\nFrom here begins all of time and space\nFlowers that sound out incessantly, burning on the horizon\nEnchanted head-over-heels, it's popon chuu chuu\nOnly for the little kids who're good yesterday and tomorrow\nFastened with a \"here you go\"\nIt's a cold-footed embrace\nMaybe she should just pull the plug\nBut,\nShe can't turn back? Oh,\nShe can't go back? Oh,\nIt's a time-limit calamity\nEquipped with the strongest, flawless popon\nFor you, humanity's final gimmick\nA feast of hollow laughs and foolish jests\u2013here's your injection\nBest regards, here you go\nHope you enjoy!\nA lifelong, full-strength moratorium\nFrom today, tomorrow is yesterday's future\nWither wither, tumble tumble\u2013Alright, let's give it a go\nThis world only wants good little kids!\nChuu chu chuchu\nChuuru churu chururira\nWon't be defeated by the wind or the rain\nThe aesthetics of the scattered serving are in disarray\nSource\n[1]"
             },
             "server_list": [
-                "Japanese Server",
-                "Taiwanese Server",
-                "English Server",
-                "Korean Server",
-                "Chinese Server"
+                "Japanese Server"
             ],
-            "id": "Kimi no Kioku"
+            "id": "Hanamaru Pippi wa Yoiko Dake"
         }
     ]
 }
