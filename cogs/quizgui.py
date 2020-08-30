@@ -796,7 +796,7 @@ class QuizGUI(commands.Cog):
                     pass
             elif message.author.id == 520283742720491522:
                 try:
-                    await main_dict[715226997562802227].update_log("TheApprenticeBot" + ": " + str(message.content))
+                    await main_dict[715226997562802227].update_log("TheBandoriBot" + ": " + str(message.content))
                 except:
                     pass
 
