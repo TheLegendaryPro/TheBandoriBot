@@ -36,14 +36,23 @@ def get_prefix(bot, message):
     return commands.when_mentioned_or(data[str(message.guild.id)])(bot, message)
 
 
-#Defining a few things
+# Defining a few things
 secret_file = json.load(open(cwd+'/bot_config/secrets.json'))
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, owner_id=secret_file['owner_id'])
 bot.config_token = secret_file['token']
+
+# Set up logging and logger
 logging.basicConfig(level=logging.INFO,
                     filename='bot_data/log.txt',
-                    format='%(asctime)s, %(name)s %(levelname)s %(message)s',
-                    datefmt='%d/%m/%Y %H:%M:%S')
+                    format='%(asctime)s:%(levelname)s:%(name)s: %(message)s',
+                    filemode='w')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setLevel(logging.ERROR)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 
 # Read the black list and adins

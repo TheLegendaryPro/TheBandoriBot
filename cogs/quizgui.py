@@ -14,6 +14,13 @@ from tinydb.operations import add, set
 
 # Set up the logger
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setLevel(logging.ERROR)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
 
 # Set up the current working directory
 cwd = Path(__file__).parents[1]
@@ -169,9 +176,6 @@ so you cannot use it for now''')
     async def play_song(self, user):
         """check channel, then client, the play song, set up times"""
 
-        logger.info("now playing song")
-        # print(f"Voice client: {self.v_client}, channel: {self.v_channel}")
-        
         try:
             # See if the user is in a voice channel, if not, return
             voice_channel = user.voice.channel
@@ -366,10 +370,10 @@ so you cannot use it for now''')
                 await self.update_log(f"Hi {user.name}, you have {star} <:StarGem:727683091337838633>, congratulation!")
             else:
                 # Should never have multiple results, raise this error
-                logging.warning(f"{user.id}, have multiple query results, {str(result)}")
+                logger.error(f"{user.id}, have multiple query results, {str(result)}")
                 await self.update_log(f"The database seems to be broken, please report to @TheLegendaryPro#6018")
         except:
-            logging.warning(f"query failed! user id is {user.id}")
+            logger.error(f"query failed! user id is {user.id}")
             await self.update_log(f"The database seems to be broken 2, please report to @TheLegendaryPro#6018")
         return
 
@@ -477,11 +481,9 @@ so you cannot use it for now''')
                 if "discriminator" not in result[0]:
                     db.update(set('discriminator', str(user.discriminator)), Query().user_id == user.id)
             else:
-                logging.warning(f"failed adding {amount} to {user.id}, too many result")
-                print(f"failed adding {amount} to {user.id}, too many result")
+                logger.error(f"failed adding {amount} to {user.id}, too many result")
         except:
-            logging.warning(f"failed adding {amount} to {user.id}, unable to query or add")
-            print(f"failed adding {amount} to {user.id}, too many result")
+            logger.error(f"failed adding {amount} to {user.id}, unable to query or add")
 
         return
 
@@ -668,7 +670,7 @@ async def process_message(message):
         else:
             name = author.name
             prefix = ""
-            logging.warning(f"get name failed, it is {author.name}, too much result {result}")
+            logger.error(f"get name failed, it is {author.name}, too much result {result}")
 
         if prefix != "":
             prefix = "[" + prefix + "]"
@@ -732,7 +734,7 @@ class QuizGUI(commands.Cog):
 
 
     def set_bot(self):
-        print("set bot")
+        logger.info('set bot')
         global bot
         bot = self.bot
 
@@ -740,24 +742,6 @@ class QuizGUI(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"{self.__class__.__name__} Cog has been loaded\n-----")
-
-
-    # @commands.command()
-    # async def server(self, ctx, *, abbrs):
-    #     ''' Set what game server should the songs come from jp, ko, tw, en, ch'''
-    #     if ctx.message.channel.name == "bangdream":
-    #         server_list = []
-    #         for abbr in server_abbr.keys():
-    #             if abbr in abbrs.lower():
-    #                 server_list.append(server_abbr[abbr])
-    #         if ctx.message.guild.id in main_dict:
-    #             if server_list == []:
-    #                 main_dict[ctx.message.guild.id].servers = "all"
-    #             else:
-    #                 main_dict[ctx.message.guild.id].servers = server_list
-    #             await main_dict[ctx.message.guild.id].update_log(f"server list: {main_dict[ctx.message.guild.id].servers}")
-    #         else:
-    #             await ctx.send("You have to do `-mg` to start a game in order to configure its server")
 
 
     @commands.Cog.listener()
@@ -771,21 +755,20 @@ class QuizGUI(commands.Cog):
                 await process_reaction(reaction, user)
 
 
-
     @commands.Cog.listener()
     async def on_resumed(self):
-        logging.warning("on resumed is triggered")
+        logger.error("on resumed is triggered")
         for key in main_dict.keys():
             if key == "guild_id":
                 continue
             try:
                 await main_dict[key].message.delete()
             except Exception as e:
-                logging.info(f"failed to delete message in {key} because of {type(e).__name__}, {str(e)}")
+                logger.error(f"failed to delete message in {key} because of {type(e).__name__}, {str(e)}")
             try:
                 await main_dict[key].create_message()
             except Exception as e:
-                logging.info(f"failed to create message in {key} because of {type(e).__name__}, {str(e)}")
+                logger.error(f"failed to create message in {key} because of {type(e).__name__}, {str(e)}")
 
 
     @commands.Cog.listener()
@@ -793,7 +776,6 @@ class QuizGUI(commands.Cog):
         if before.channel != None:
             if before.channel.guild.id in main_dict:
                 if main_dict[before.channel.guild.id].v_client:
-                    # print(main_dict[before.channel.guild.id].v_client)
                     if before.channel == main_dict[before.channel.guild.id].v_client.channel:
                         if len(before.channel.members) == 1:
                             await asyncio.sleep(10)
