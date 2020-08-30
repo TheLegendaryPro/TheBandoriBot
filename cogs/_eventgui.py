@@ -2,7 +2,7 @@ import discord
 import pytz
 from discord.ext import commands
 import asyncio
-import cogs._json
+import utils.json
 import random
 import jellyfish
 import audioread
@@ -10,13 +10,12 @@ import logging
 import datetime
 from pathlib import Path
 from tinydb import TinyDB, Query
-from tinydb.operations import add, set
-
+from tinydb.operations import add
 
 cwd = Path(__file__).parents[1]
 cwd = str(cwd)
 db = TinyDB(cwd + '/bot_data/user_db.json', indent=4)
-event_raw = cogs._json.read_data('event')
+event_raw = utils.json.read_data('event')
 
 
 main_dict = {
@@ -342,8 +341,8 @@ class MusicQuiz:
 
     async def save_data(self, user=None):
         if user == None:
-            cogs._json.write_data(song_usage_data, "song_usage_data")
-            cogs._json.write_data(event_raw, "event")
+            utils.json.write_data(song_usage_data, "song_usage_data")
+            utils.json.write_data(event_raw, "event")
             return
 
 
@@ -554,7 +553,7 @@ class Song:
 
 
 # Get song data
-song_usage_data = cogs._json.read_data("song_usage_data")
+song_usage_data = utils.json.read_data("song_usage_data")
 
 
 # A timer
@@ -842,7 +841,7 @@ async def start_phase_2(message):
     for item in top_six:
         msg += f"{bot.get_user(item).name}\n"
     await main_dict[message.guild.id].update_log(msg)
-    cogs._json.write_data(event_raw, 'phase2')
+    utils.json.write_data(event_raw, 'phase2')
     for key, value in event_raw['red'].items():
         event_raw['red'][key] = 0
     for key, value in event_raw['blue'].items():

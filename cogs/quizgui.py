@@ -2,7 +2,7 @@ import discord
 import pytz
 from discord.ext import commands
 import asyncio
-import cogs._json
+import utils.json
 import random
 import jellyfish
 import audioread
@@ -27,7 +27,7 @@ cwd = Path(__file__).parents[1]
 cwd = str(cwd)
 
 # Setup the database
-db = TinyDB(cwd + '/bot_data/user_db.json', indent=4)
+# db = TinyDB(cwd + '/bot_data/user_db.json', indent=4)
 
 # This is the content inside main_dict
 main_dict = {
@@ -358,23 +358,38 @@ so you cannot use it for now''')
     async def check_star(self, user):
         """tell the user how much star he have"""
         try:
-            # Add 0 stars to the user to refresh the database
-            db.update(add("stars", 0), Query().user_id == user.id)
-            result = db.search(Query().user_id == user.id)
+            result = await bot.user_db.find(user.id)
             if not result:
                 # not result means the result list is empty, then tell the user
                 await self.update_log(f"Hey {user.name}, you don't have any <:StarGem:727683091337838633> yet, try answer songs correctly")
-            elif len(result) == 1:
-                # Only have one result, which is the way it is supposed to be
-                star = result[0]['stars']
-                await self.update_log(f"Hi {user.name}, you have {star} <:StarGem:727683091337838633>, congratulation!")
+            elif 'stars' in result:
+                await self.update_log(f"Hi {user.name}, you have {result['stars']} <:StarGem:727683091337838633>, congratulation!")
             else:
-                # Should never have multiple results, raise this error
-                logger.error(f"{user.id}, have multiple query results, {str(result)}")
-                await self.update_log(f"The database seems to be broken, please report to @TheLegendaryPro#6018")
-        except:
-            logger.error(f"query failed! user id is {user.id}")
-            await self.update_log(f"The database seems to be broken 2, please report to @TheLegendaryPro#6018")
+                #todo the database contains his name but have no field for stars, let's take it as he has no stars
+                # may upsert data, or just add the star field later
+                # make here check if username changed as well
+                pass
+        except Exception as e:
+            logger.error(f"Error when check star, user: {user.id}, Error: {e}")
+
+        # try:
+        #     # Add 0 stars to the user to refresh the database
+        #     db.update(add("stars", 0), Query().user_id == user.id)
+        #     result = db.search(Query().user_id == user.id)
+        #     if not result:
+        #         # not result means the result list is empty, then tell the user
+        #         await self.update_log(f"Hey {user.name}, you don't have any <:StarGem:727683091337838633> yet, try answer songs correctly")
+        #     elif len(result) == 1:
+        #         # Only have one result, which is the way it is supposed to be
+        #         star = result[0]['stars']
+        #         await self.update_log(f"Hi {user.name}, you have {star} <:StarGem:727683091337838633>, congratulation!")
+        #     else:
+        #         # Should never have multiple results, raise this error
+        #         logger.error(f"{user.id}, have multiple query results, {str(result)}")
+        #         await self.update_log(f"The database seems to be broken, please report to @TheLegendaryPro#6018")
+        # except:
+        #     logger.error(f"query failed! user id is {user.id}")
+        #     await self.update_log(f"The database seems to be broken 2, please report to @TheLegendaryPro#6018")
         return
 
 
@@ -405,7 +420,7 @@ so you cannot use it for now''')
 
     async def save_data(self):
         """Save the data"""
-        cogs._json.write_data(song_id_data, "song_usage_data")
+        utils.json.write_data(song_id_data, "song_usage_data")
         return
 
 
@@ -463,27 +478,38 @@ so you cannot use it for now''')
     async def add_points(self, user, amount):
         """To add points to a user"""
         try:
-            result = db.search(Query().user_id == user.id)
-            if not result:
-                # result is empty list, first time create data
-                db.insert({
-                    "user_id": user.id,
-                    "stars": int(amount),
+            if not await bot.user_db.increment(user.id, amount, 'stars'):
+                print('not success')
+                await bot.user_db.upsert({
+                    "_id": user.id,
+                    "stars": amount,
                     "username": str(user.name),
                     "discriminator": str(user.discriminator)
                 })
-                # Actually adding stars
-            elif len(result) == 1:
-                # Add 0 stars to update the database
-                db.update(add("stars", amount), Query().user_id == user.id)
-                if "username" not in result[0]:
-                    db.update(set('username', str(user.name)), Query().user_id == user.id)
-                if "discriminator" not in result[0]:
-                    db.update(set('discriminator', str(user.discriminator)), Query().user_id == user.id)
-            else:
-                logger.error(f"failed adding {amount} to {user.id}, too many result")
-        except:
-            logger.error(f"failed adding {amount} to {user.id}, unable to query or add")
+        except Exception as e:
+            logger.error(f"failed adding {amount} to {user.id}, problem: {e}")
+        # try:
+        #     result = db.search(Query().user_id == user.id)
+        #     if not result:
+        #         # result is empty list, first time create data
+        #         db.insert({
+        #             "user_id": user.id,
+        #             "stars": int(amount),
+        #             "username": str(user.name),
+        #             "discriminator": str(user.discriminator)
+        #         })
+        #         # Actually adding stars
+        #     elif len(result) == 1:
+        #         # Add 0 stars to update the database
+        #         db.update(add("stars", amount), Query().user_id == user.id)
+        #         if "username" not in result[0]:
+        #             db.update(set('username', str(user.name)), Query().user_id == user.id)
+        #         if "discriminator" not in result[0]:
+        #             db.update(set('discriminator', str(user.discriminator)), Query().user_id == user.id)
+        #     else:
+        #         logger.error(f"failed adding {amount} to {user.id}, too many result")
+        # except:
+        #     logger.error(f"failed adding {amount} to {user.id}, unable to query or add")
 
         return
 
@@ -551,7 +577,7 @@ class Song:
 # Get song data
 # song_id_data = cogs._json.read_data("song_usage_data") #todo
 
-song_id_data_raw = cogs._json.read_data("song_id_data")
+song_id_data_raw = utils.json.read_data("song_id_data")
 song_id_data = {
     "not_played": [],
     "played": []
@@ -616,7 +642,7 @@ async def process_message(message):
         return
 
     # don't check ans if voice client no playing
-    if isinstance(quiz.v_client, str):
+    if not quiz.v_client:
         need_check_ans = False
 
     if need_check_ans:
@@ -649,28 +675,45 @@ async def process_message(message):
                 await quiz.correct_band(message.author)
                 return
     # A function within process message
-    def get_name(author):
+    async def get_name(author):
         # Get the name from the database
         # Add 0 stars to the user to update the database
-        db.update(add("stars", 0), Query().user_id == author.id)
-        result = db.search(Query().user_id == author.id)
-        if result == []:
-            name = author.name
-            prefix = ""
-        elif len(result) == 1:
-            if 'nickname' in result[0]:
-                name = result[0]['nickname']
-            else:
+        try:
+            result = await bot.user_db.find(author.id)
+            if not result:
                 name = author.name
-
-            if 'prefix' in result[0]:
-                prefix = result[0]['prefix']
-            else:
                 prefix = ""
-        else:
-            name = author.name
-            prefix = ""
-            logger.error(f"get name failed, it is {author.name}, too much result {result}")
+            else:
+                if 'nickname' in result:
+                    name = result['nickname']
+                else:
+                    name = author.name
+
+                if 'prefix' in result:
+                    prefix = result['prefix']
+                else:
+                    prefix = ""
+        except Exception as e:
+            logger.error(f"failed to get_name for {author.id}, Error: {e}")
+        # db.update(add("stars", 0), Query().user_id == author.id)
+        # result = db.search(Query().user_id == author.id)
+        # if result == []:
+        #     name = author.name
+        #     prefix = ""
+        # elif len(result) == 1:
+        #     if 'nickname' in result[0]:
+        #         name = result[0]['nickname']
+        #     else:
+        #         name = author.name
+        #
+        #     if 'prefix' in result[0]:
+        #         prefix = result[0]['prefix']
+        #     else:
+        #         prefix = ""
+        # else:
+        #     name = author.name
+        #     prefix = ""
+        #     logger.error(f"get name failed, it is {author.name}, too much result {result}")
 
         if prefix != "":
             prefix = "[" + prefix + "]"
@@ -685,7 +728,7 @@ async def process_message(message):
 
     with open("bot_data/chatlog.txt", "a", encoding="UTF-8") as f:
         f.write(f"\n{datetime.datetime.now()} {str(message.author)}: {no_new_line}")
-    await quiz.update_log(f"{get_name(message.author)}: {get_msg(no_new_line)}")
+    await quiz.update_log(f"{await get_name(message.author)}: {get_msg(no_new_line)}")
 
 
 # The function to deal with reactions and know what to do
@@ -734,9 +777,9 @@ class QuizGUI(commands.Cog):
 
 
     def set_bot(self):
-        logger.info('set bot')
         global bot
         bot = self.bot
+        logger.info(f'Set bot for {__name__}')
 
 
     @commands.Cog.listener()

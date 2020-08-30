@@ -4,10 +4,11 @@ from discord.ext import commands
 import json
 from pathlib import Path
 import logging
-import datetime
 import os
-import cogs._json
+import motor.motor_asyncio
 
+import utils.json
+from utils.mongo import Document
 
 #--
 #-
@@ -28,18 +29,33 @@ cwd = str(cwd)
 print(f"{cwd}\n-----")
 
 
-def get_prefix(bot, message):
-    # To read the prefix file and return the prefix for a server
-    data = cogs._json.read_json('prefixes')
-    if not str(message.guild.id) in data:
-        return commands.when_mentioned_or('-')(bot, message)
-    return commands.when_mentioned_or(data[str(message.guild.id)])(bot, message)
+async def get_prefix(bot, message):
+    # Don't have custom prefix for DMs
+    if not message.guild:
+        return commands.when_mentioned_or("-")
+
+    # # To read the prefix file and return the prefix for a server
+    # data = utils.json.read_json('prefixes')
+    # if not str(message.guild.id) in data:
+    #     return commands.when_mentioned_or('-')(bot, message)
+    # return commands.when_mentioned_or(data[str(message.guild.id)])(bot, message)
+
+    try:
+        data = await bot.server_config.find(message.guild.id)
+
+        # Make sure we have a useable prefix
+        if not data or "prefix" not in data:
+            return commands.when_mentioned_or("-")(bot, message)
+        return commands.when_mentioned_or(data["prefix"])(bot, message)
+    except:
+        return commands.when_mentioned_or("-")(bot, message)
 
 
 # Defining a few things
 secret_file = json.load(open(cwd+'/bot_config/secrets.json'))
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, owner_id=secret_file['owner_id'])
 bot.config_token = secret_file['token']
+bot.connection_url = secret_file['mongo']
 
 # Set up logging and logger
 logging.basicConfig(level=logging.INFO,
@@ -56,8 +72,8 @@ logger.addHandler(ch)
 
 
 # Read the black list and adins
-bot.blacklisted_users = cogs._json.read_json("user_role")["blacklistedUsers"]
-bot.bangdream_admins = cogs._json.read_json("user_role")["bangdream_admins"]
+bot.blacklisted_users = utils.json.read_json("user_role")["blacklistedUsers"]
+bot.bangdream_admins = utils.json.read_json("user_role")["bangdream_admins"]
 
 
 bot.cwd = cwd
@@ -93,6 +109,12 @@ async def on_ready():
     # This changes the bots 'activity'
     await bot.change_presence(activity=discord.Game(name=f"-help"))
 
+    bot.mongo = motor.motor_asyncio.AsyncIOMotorClient(str(bot.connection_url))
+    bot.db = bot.mongo["TheBandoriBot"]
+    bot.server_config = Document(bot.db, "server_config")
+    bot.user_db = Document(bot.db, "user_db")
+    print("Initialized Database\n-----")
+
 
 @bot.event
 async def on_message(message):
@@ -119,12 +141,20 @@ async def on_message(message):
 
     #Whenever the bot is tagged, respond with its prefix
     if f"<@!{bot.user.id}>" in message.content:
-        data = cogs._json.read_json('prefixes')
-        if str(message.guild.id) in data:
-            prefix = data[str(message.guild.id)]
+
+        data = await bot.server_config.get_by_id(message.guild.id)
+        if not data or "prefix" not in data:
+            prefix = "-"
         else:
-            prefix = '-'
-        prefixMsg = await message.channel.send(f"My prefix here is `{prefix}`")
+            prefix = data["prefix"]
+        await message.channel.send(f"My prefix here is `{prefix}`", delete_after=15)
+
+    #     data = utils.json.read_json('prefixes')
+    #     if str(message.guild.id) in data:
+    #         prefix = data[str(message.guild.id)]
+    #     else:
+    #         prefix = '-'
+    #     prefixMsg = await message.channel.send(f"My prefix here is `{prefix}`")
 
     await bot.process_commands(message)
 

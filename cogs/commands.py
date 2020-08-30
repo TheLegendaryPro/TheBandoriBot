@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import platform
 
-import cogs._json
+import utils.json
 
 
 
@@ -69,9 +69,9 @@ class Commands(commands.Cog):
             return
 
         self.bot.blacklisted_users.append(user.id)
-        data = cogs._json.read_json("user_role")
+        data = utils.json.read_json("user_role")
         data["blacklistedUsers"].append(user.id)
-        cogs._json.write_json(data, "user_role")
+        utils.json.write_json(data, "user_role")
         await ctx.send(f"Hey, I have blacklisted {user.name} for you.")
 
     @commands.command()
@@ -82,31 +82,33 @@ class Commands(commands.Cog):
         if ctx.author.id not in self.bot.bangdream_admins:
             return
         self.bot.blacklisted_users.remove(user.id)
-        data = cogs._json.read_json("user_role")
+        data = utils.json.read_json("user_role")
         data["blacklistedUsers"].remove(user.id)
-        cogs._json.write_json(data, "user_role")
+        utils.json.write_json(data, "user_role")
         await ctx.send(f"Hey, I have unblacklisted {user.name} for you.")
 
     @commands.command()
     @commands.has_permissions(administrator=True)
     @commands.cooldown(1, 5, commands.BucketType.guild)
-    async def prefix(self, ctx, *, pre='-'):
+    async def prefix(self, ctx, *, prefix='-'):
         """
         Set a custom prefix for a guild
         """
-        data = cogs._json.read_json('prefixes')
-        data[str(ctx.message.guild.id)] = pre
-        cogs._json.write_json(data, 'prefixes')
-        await ctx.send(f"The guild prefix has been set to `{pre}`. Use `{pre}prefix <prefix>` to change it again!")
+        await self.bot.server_config.upsert({"_id": ctx.guild.id, "prefix": prefix})
+        await ctx.send(f"The guild prefix has been set to `{prefix}`. Use `{prefix}prefix <prefix>` to change it again!")
+        # data = utils.json.read_json('prefixes')
+        # data[str(ctx.message.guild.id)] = pre
+        # utils.json.write_json(data, 'prefixes')
+        # await ctx.send(f"The guild prefix has been set to `{pre}`. Use `{pre}prefix <prefix>` to change it again!")
 
     @commands.command()
     @commands.is_owner()
     async def addadmin(self, ctx, user: discord.Member):
         if user.id not in self.bot.bangdream_admins:
             self.bot.bangdream_admins.append(user.id)
-            data = cogs._json.read_json("user_role")
+            data = utils.json.read_json("user_role")
             data["bangdream_admins"].append(user.id)
-            cogs._json.write_json(data, "user_role")
+            utils.json.write_json(data, "user_role")
             await ctx.send(f"Hey, {user.name} is now a admin for bangdream")
 
     @commands.command()
@@ -114,9 +116,9 @@ class Commands(commands.Cog):
     async def removeadmin(self, ctx, user: discord.Member):
         if user.id in self.bot.bangdream_admins:
             self.bot.bangdream_admins.remove(user.id)
-            data = cogs._json.read_json("user_role")
+            data = utils.json.read_json("user_role")
             data["bangdream_admins"].remove(user.id)
-            cogs._json.write_json(data, "user_role")
+            utils.json.write_json(data, "user_role")
             await ctx.send(f"Hey, {user.name} is no longer a admin for bangdream")\
 
 
@@ -152,7 +154,22 @@ If you need any help, want to suggest anything or want to praise the bot creator
         embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
         await ctx.send(content='', embed=embed)
 
+    @commands.command()
+    @commands.is_owner()
+    async def testadd(self, ctx, amount=1):
+        if not await self.bot.user_db.increment(ctx.author.id, amount, 'stars'):
+            await self.bot.user_db.upsert({
+                "_id": ctx.author.id,
+                "stars": 1,
+                "username": str(ctx.author.name),
+                "discriminator": str(ctx.author.discriminator)
+            })
+        await ctx.send(f"added {amount}")
 
+    @commands.command()
+    async def testget(self, ctx):
+        data = await self.bot.user_db.find(ctx.author.id)
+        await ctx.send(f"data: {data}")
 
 
 

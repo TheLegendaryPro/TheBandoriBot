@@ -2,7 +2,7 @@ import discord
 import pytz
 from discord.ext import commands
 import asyncio
-import cogs._json
+import utils.json
 import random
 import jellyfish
 import audioread
@@ -16,7 +16,7 @@ from tinydb.operations import add, set
 cwd = Path(__file__).parents[1]
 cwd = str(cwd)
 db = TinyDB(cwd + '/bot_data/user_db.json', indent=4)
-event_raw = cogs._json.read_data('event2')
+event_raw = utils.json.read_data('event2')
 
 
 main_dict = {
@@ -172,7 +172,7 @@ Then, top ten will get extra <:StarGem:727683091337838633> based on their rankin
 
             def get_leaderboard():
                 scores = []
-                event2_data = cogs._json.read_data('event2')
+                event2_data = utils.json.read_data('event2')
                 for key, value in event2_data['event_result'].items():
                     scores.append((int(key), value))
                 scores = sorted(scores, key=lambda x: x[1], reverse=True)
@@ -468,7 +468,7 @@ Then, top ten will get extra <:StarGem:727683091337838633> based on their rankin
 
     async def save_data(self, user=None):
         if user == None:
-            cogs._json.write_data(song_usage_data, "song_usage_data")
+            utils.json.write_data(song_usage_data, "song_usage_data")
             return
 
 
@@ -544,26 +544,26 @@ Then, top ten will get extra <:StarGem:727683091337838633> based on their rankin
         return
 
     async def add_notify(self, user):
-        event2_data = cogs._json.read_data('event2')
+        event2_data = utils.json.read_data('event2')
         if str(user.id) not in event2_data["notify_list"]:
             event2_data["notify_list"].append(str(user.id))
-            cogs._json.write_data(event2_data, "event2")
+            utils.json.write_data(event2_data, "event2")
             await self.update_log(
                 f"Success {user.name}<:AkoYay:733655960094244895>, we will ping you 15 minutes before event begins ({len(event2_data['notify_list'])})")
         else:
             event2_data["notify_list"].remove(str(user.id))
-            cogs._json.write_data(event2_data, "event2")
+            utils.json.write_data(event2_data, "event2")
             await self.update_log(f"Hey {user.name}, you will no longer be notified")
 
 
     async def correct_difficulty(self, user):
         self.event_answer = -1
-        data = cogs._json.read_data('event2')
+        data = utils.json.read_data('event2')
         if str(user.id) not in data['event_result'].keys():
             data['event_result'][str(user.id)] = 1
         else:
             data['event_result'][str(user.id)] += 1
-        cogs._json.write_data(data, 'event2')
+        utils.json.write_data(data, 'event2')
         pass
 
 
@@ -624,7 +624,7 @@ class Song:
 
 
 # Get song data
-song_usage_data = cogs._json.read_data("song_usage_data")
+song_usage_data = utils.json.read_data("song_usage_data")
 
 
 # A timer
@@ -948,7 +948,7 @@ async def endevent(message):
 async def ping_all(message):
     if message.author.id != bot.owner_id:
         return
-    event2_data = cogs._json.read_data('event2')
+    event2_data = utils.json.read_data('event2')
     msg = "Hey"
     for id in event2_data['notify_list']:
         msg += f", <@{id}>"
