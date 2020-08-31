@@ -148,6 +148,7 @@ async def on_message(message):
         else:
             prefix = data["prefix"]
         await message.channel.send(f"My prefix here is `{prefix}`", delete_after=15)
+    
 
     #     data = utils.json.read_json('prefixes')
     #     if str(message.guild.id) in data:

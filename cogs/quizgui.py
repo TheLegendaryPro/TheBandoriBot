@@ -9,8 +9,8 @@ import audioread
 import logging
 import datetime
 from pathlib import Path
-from tinydb import TinyDB, Query
-from tinydb.operations import add, set
+# from tinydb import TinyDB, Query
+# from tinydb.operations import add, set
 
 # Set up the logger
 logger = logging.getLogger(__name__)
@@ -101,67 +101,38 @@ class MusicQuiz:
 
     def get_embed(self):
         """create the embed object and return it"""
-        # If it is maintenance mode, do mot return the normal message
-        if not maintenance_mode:
-            finish_time = datetime.datetime(2020, 7, 29, 20 - 8, 30, 0, tzinfo=pytz.utc)
-            td = finish_time - datetime.datetime.now().astimezone(pytz.utc)
-            days = td.days
-            hours, remainder = divmod(td.seconds, 3600)
-            minutes, seconds = divmod(remainder, 60)
 
-            # The description / announcement string for the embed
-            embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description=f'''\
+        finish_time = datetime.datetime(2020, 7, 29, 20 - 8, 30, 0, tzinfo=pytz.utc)
+        td = finish_time - datetime.datetime.now().astimezone(pytz.utc)
+        days = td.days
+        hours, remainder = divmod(td.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+
+        # The description / announcement string for the embed
+        embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description=f'''\
 Get help by typing `-help` inside #bot-commands
 The stars for event has been added.
 ''')
 
-            embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
+        embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
 {self.display_jp}''')
-            embed.add_field(name='Band: ', value=self.display_band)
-            embed.add_field(name="Difficulty", value=f"Expert: {self.display_expert} - Special: {self.display_special}")
+        embed.add_field(name='Band: ', value=self.display_band)
+        embed.add_field(name="Difficulty", value=f"Expert: {self.display_expert} - Special: {self.display_special}")
 
-            log_msg = ""
-            for num in range(len(self.log)):
-                if num < len(self.log) - 1:
-                    log_msg += self.log[num]
-                else:
-                    log_msg += "**" + self.log[num] + "**"
-                log_msg += "\n"
-            log_msg = log_msg[:-1]
-            embed.add_field(inline=False, name='Log: ', value=log_msg)
+        log_msg = ""
+        for num in range(len(self.log)):
+            if num < len(self.log) - 1:
+                log_msg += self.log[num]
+            else:
+                log_msg += "**" + self.log[num] + "**"
+            log_msg += "\n"
+        log_msg = log_msg[:-1]
+        embed.add_field(inline=False, name='Log: ', value=log_msg)
 
-            embed.set_footer(text = "Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
-            embed.set_author(name = "Made by TheLegendaryPro#6018", icon_url = bot.get_user(bot.owner_id).avatar_url)
+        embed.set_footer(text = "Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
+        embed.set_author(name = "Made by TheLegendaryPro#6018", icon_url = bot.get_user(bot.owner_id).avatar_url)
 
-            return embed
-
-        else:
-            # Instead return this message
-            embed = discord.Embed(title='The bot is under maintenance', description='''The owner of this bot is working on improving the bot
-so you cannot use it for now''')
-
-            finish_time = datetime.datetime(2020, 7, 29, 20 - 8, 30, 0, tzinfo=pytz.utc)
-            td = finish_time - datetime.datetime.now().astimezone(pytz.utc)
-            days = td.days
-            hours, remainder = divmod(td.seconds, 3600)
-            minutes, seconds = divmod(remainder, 60)
-            embed.add_field(name="Estimated time until finish: ", value=f"{days} days {hours} hour {minutes} minutes {seconds} seconds")
-
-            log_msg = ""
-            for num in range(len(self.log)):
-                if num < len(self.log) - 1:
-                    log_msg += self.log[num]
-                else:
-                    log_msg += "**" + self.log[num] + "**"
-                log_msg += "\n"
-            log_msg = log_msg[:-1]
-            embed.add_field(inline=False, name='Log: ', value=log_msg)
-
-            # embed.set_footer(text="Below, you can chat, answer song name and answer band name")
-            embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
-            embed.set_author(name="Made by TheLegendaryPro#6018", icon_url=bot.get_user(bot.owner_id).avatar_url)
-
-            return embed
+        return embed
 
 
     async def create_message(self):
@@ -753,9 +724,6 @@ async def start_cooldown(key):
 
 
 async def process_reaction(reaction, user):
-    if maintenance_mode:
-        await reaction.remove(user)
-        return
 
     if reaction.message.id == main_dict[reaction.message.guild.id].message.id:
         if reaction.count > 2:
@@ -893,26 +861,11 @@ async def resend_message(message):
         except:
             pass
 
-maintenance_mode = False
-
-async def startmaintenance(message):
-    if message.author.id != bot.owner_id:
-        return
-    global maintenance_mode
-    maintenance_mode = True
-
-async def endmaintenance(message):
-    if message.author.id != bot.owner_id:
-        return
-    global maintenance_mode
-    maintenance_mode = False
 
 
 command_dict = {
 "music": musicgui,
-"reloadgame": resend_message,
-"startmaintenance": startmaintenance,
-"endmaintenance": endmaintenance
+"reloadgame": resend_message
 }
 
 
