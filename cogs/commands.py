@@ -137,9 +137,9 @@ class Commands(commands.Cog):
     @commands.command(name="help")
     async def show_help(self, ctx):
         help_content='''\
-Start playing by 1.Get inside a voice channel. 2.Press <:KokoroYay:727683024526770222>.
+Start playing by 1.Get inside a voice channel. 2.Press <:RASLogo:727683816755560550>.
 Then you can guess the song and band by typing into the chat to earn <:StarGem:727683091337838633>s.
-The extra button <:AyaPointUp:727496890693976066> is for voting to skip and <:StarGem:727683091337838633> is for checking how many star you have.
+The skip button <:skip:749807101232152606> is for voting to skip and <:StarGem:727683091337838633> is for checking how many star you have.
 Then there are a few commands you can use inside #bot-commands:
 `-shop`: See what prefixes you can buy
 `-stats`: Show the statistics of this bot
@@ -148,6 +148,8 @@ Then there are a few commands you can use inside #bot-commands:
 `-leaderboard`: Show the star leader board of the game
 `-help`: Yes, you are here
 `-gacha`: Still work in progress gacha function
+`-info`: (only in bangdream) DM you info about the song
+`-ignore`: (only in bangdream) toggle ignore mode for skip
 If you need any help, want to suggest anything or want to praise the bot creator, find <@298986102495248386>
 '''
         embed = discord.Embed(title=f"Hi {ctx.author.name}, here is help: ", description=help_content)

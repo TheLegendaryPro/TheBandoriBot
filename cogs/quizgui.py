@@ -1,5 +1,5 @@
 import discord
-import pytz
+# import pytz
 from discord.ext import commands
 import asyncio
 import utils.json
@@ -47,16 +47,15 @@ replace_dict = {
 def is_similar(input, answer):
     # to check if the input from user is similar to the song name (answer)
     # Replace special characters
-    for key, item in replace_dict.items():
+    for key, value in replace_dict.items():
         if key in answer:
-            answer = answer.replace(key, item)
+            answer = answer.replace(key, value)
 
     '''check if input is similar to the answer'''
     if jellyfish.jaro_winkler_similarity(input, answer) > 0.88:
         if (abs(len(input)-len(answer)) / max(len(input), len(answer))) < 0.3:
             return True
     return False
-
 
 
 all_bands_list = [
@@ -70,6 +69,7 @@ all_bands_list = [
     "Glitter*Green",
 ]
 
+
 # The quiz object
 class MusicQuiz:
 
@@ -77,17 +77,15 @@ class MusicQuiz:
     def __init__(self, ctx):
         # Initialize the values inside the object
         self.v_client = None #"voice client object"
-        self.song = "song object"
+        self.song = None #"song object"
         self.display_eng = "?"
         self.display_jp = "?"
         self.display_band = "?"
-        self.display_expert = "?"
-        self.display_special = "?"
-        # self.display_type = "?"
+        self.display_easy = self.display_normal = self.display_hard = self.display_expert = self.display_special = "?"
         self.message = "message object"
         self.t_channel = ctx.channel
         self.v_channel = "voice channel"
-        self.log = ["React <:KokoroYay:727683024526770222> to start! Type the answer in chat below <:SayoYay:732208214166470677>"]
+        self.log = ["React <:RASLogo:727683816755560550> to start! Type the answer in chat below <:SayoYay:732208214166470677>"]
         self.hint_timer = "timer object"
         self.answer_timer = "timer object"
         self.auto_play = False
@@ -96,28 +94,23 @@ class MusicQuiz:
         self.skip_vote = []
         self.correct_list = []
         self.guessed_band = []
-        #todo add all difficulty
+        self.ignore_list = []
 
 
     def get_embed(self):
         """create the embed object and return it"""
 
-        finish_time = datetime.datetime(2020, 7, 29, 20 - 8, 30, 0, tzinfo=pytz.utc)
-        td = finish_time - datetime.datetime.now().astimezone(pytz.utc)
-        days = td.days
-        hours, remainder = divmod(td.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-
         # The description / announcement string for the embed
-        embed = discord.Embed(title='Press <:KokoroYay:727683024526770222> to start!', description=f'''\
+        embed = discord.Embed(title='Press <:RASLogo:727683816755560550> to start!', description=f'''\
 Get help by typing `-help` inside #bot-commands
-The stars for event has been added.
 ''')
 
         embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
 {self.display_jp}''')
         embed.add_field(name='Band: ', value=self.display_band)
-        embed.add_field(name="Difficulty", value=f"Expert: {self.display_expert} - Special: {self.display_special}")
+        # embed.add_field(name="Difficulty", value=f"Expert: {self.display_expert} - Special: {self.display_special}")
+        difficulty_value = f'Easy:{self.display_easy} Normal:{self.display_normal} Hard:{self.display_hard} Expert:{self.display_expert} Special:{self.display_special}'
+        embed.add_field(name="Difficulty", value=difficulty_value)
 
         log_msg = ""
         for num in range(len(self.log)):
@@ -131,6 +124,10 @@ The stars for event has been added.
 
         embed.set_footer(text = "Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
         embed.set_author(name = "Made by TheLegendaryPro#6018", icon_url = bot.get_user(bot.owner_id).avatar_url)
+
+        if self.display_eng != "?":
+            if self.v_client.is_playing():
+                embed.set_thumbnail(url=random.choice(self.song.thumbnails_list))
 
         return embed
 
@@ -151,7 +148,7 @@ The stars for event has been added.
             # See if the user is in a voice channel, if not, return
             voice_channel = user.voice.channel
         except:
-            await self.update_log(f"Hey {user.name}, get into voice channel first then click <:KokoroYay:727683024526770222> again")
+            await self.update_log(f"Hey {user.name}, get into voice channel first then click <:RASLogo:727683816755560550> again")
             return
 
         if not self.v_client:
@@ -159,7 +156,7 @@ The stars for event has been added.
             if user.voice.channel.guild.id == 432379300684103699:
                 # Only redirect people if in official server
                 if user.voice.channel.id != 731813919638945802:
-                    await self.update_log(f"Hey {user.name}, please go to Music 2 channel then click <:KokoroYay:727683024526770222> again")
+                    await self.update_log(f"Hey {user.name}, please go to Music 2 channel then click <:RASLogo:727683816755560550> again")
                     return
             try:
                 # Tries to connect
@@ -183,7 +180,7 @@ The stars for event has been added.
             # Connected to wrong one, but do not change channel in official server
             if user.voice.channel.guild.id == 432379300684103699:
                 if user.voice.channel.id != 731813919638945802:
-                    await self.update_log(f"Hey {user.name}, please go to Music 2 channel then click <:KokoroYay:727683024526770222> again")
+                    await self.update_log(f"Hey {user.name}, please go to Music 2 channel then click <:RASLogo:727683816755560550> again")
                     return
             await self.v_client.move_to(voice_channel)
             self.v_channel = voice_channel
@@ -194,9 +191,6 @@ The stars for event has been added.
             return
         else:
             self.song = Song()
-
-        # Try to save data
-        await self.save_data()
 
         # Start the player to play a song
         def load_success():
@@ -214,8 +208,7 @@ The stars for event has been added.
         self.display_eng = "?"
         self.display_jp = "?"
         self.display_band = "?"
-        self.display_expert = "?"
-        self.display_special = "?"
+        self.display_easy = self.display_normal = self.display_hard = self.display_expert = self.display_special = "?"
         # self.display_type = "?"
         self.skip_vote = []
         self.correct_list = []
@@ -250,6 +243,9 @@ The stars for event has been added.
         hint_text = "".join(hint_list)
 
         # self.display_type = self.song.type
+        self.display_easy = self.song.easy
+        self.display_normal = self.song.normal
+        self.display_hard = self.song.hard
         self.display_expert = self.song.expert
         self.display_special = self.song.special
 
@@ -262,8 +258,12 @@ The stars for event has been added.
         self.display_eng = self.song.song_name
         self.display_jp = self.song.name_jp
         self.display_band = self.song.band_name
+        self.display_easy = self.song.easy
+        self.display_normal = self.song.normal
+        self.display_hard = self.song.hard
         self.display_expert = self.song.expert
         self.display_special = self.song.special
+
         # self.display_type = self.song.type
         await self.update_log(f"Time's up, the song was {self.song.song_name}")
         del self.answer_timer
@@ -286,12 +286,16 @@ The stars for event has been added.
         if user.id not in [user.id for user in self.v_channel.members]:
             await self.update_log(f"Hey {user.name}, you are not listening to this song")
             return
+        # Return if the user is ignored
+        if user.id in self.ignore_list:
+            await self.update_log(f"Hey {user.name}, you are in the ignore list therefore cannot vote, type `-ignore` to undo")
+            return
         # See if everyone agreed
         if user.id not in self.skip_vote:
             self.skip_vote.append(user.id)
         else:
             pass
-        vc_member_list = [user.id for user in self.v_channel.members if user.id != bot.user.id]
+        vc_member_list = [user.id for user in self.v_channel.members if (user.id != bot.user.id) and (user.id not in self.ignore_list)]
         if len(self.skip_vote) / len(vc_member_list) > 0.85:
             pass
         else:
@@ -299,9 +303,24 @@ The stars for event has been added.
             return
 
         # Actually skip the song
-        await self.update_log(f"{user.name} casted the final skip vote, will play another song soon")
+        await self.update_log(f"{user.name} skipped {self.song.song_name}, will play another soon")
         self.skip_vote = []
         # Stop all timers
+        await self.cancel_all_timers()
+
+        # Stop the song then play the next one in 7 seconds
+        self.v_client.stop()
+        await asyncio.sleep(7)
+        await self.play_song(user)
+
+
+    async def toggle_autoplay(self, user):
+        """toggle and announce autoplay"""
+        self.auto_play = not self.auto_play
+        await self.update_log(f"auto play is set to {self.auto_play} by {user.name}")
+
+
+    async def cancel_all_timers(self):
         try:
             self.answer_timer.cancel()
         except:
@@ -314,16 +333,6 @@ The stars for event has been added.
             self.next_timer.cancel()
         except:
             pass
-        # Stop the song then play the next one in 7 seconds
-        self.v_client.stop()
-        await asyncio.sleep(7)
-        await self.play_song(user)
-
-
-    async def toggle_autoplay(self, user):
-        """toggle and announce autoplay"""
-        self.auto_play = not self.auto_play
-        await self.update_log(f"auto play is set to {self.auto_play} by {user.name}")
 
 
     async def check_star(self, user):
@@ -372,27 +381,7 @@ The stars for event has been added.
             self.v_client = None
             self.v_channel = "voice channel"
         # Cancel all timers and set it to default value
-        try:
-            self.hint_timer.cancel()
-            self.hint_timer = "timer object"
-        except:
-            pass
-        try:
-            self.answer_timer.cancel()
-            self.answer_timer = "timer object"
-        except:
-            pass
-        try:
-            self.next_timer.cancel()
-            self.next_timer = "timer object"
-        except:
-            pass
-
-
-    async def save_data(self):
-        """Save the data"""
-        utils.json.write_data(song_id_data, "song_usage_data")
-        return
+        await self.cancel_all_timers()
 
 
     async def update_log(self, event):
@@ -521,7 +510,10 @@ class Song:
         if "translation" in details:
             self.translation = details["translation"]
         else:
-            self.translation = "no translation"
+            if "english" in details:
+                self.translation = details["english"]
+            else:
+                self.translation = "no translation"
 
         self.band_name = details["artist"]
 
@@ -533,10 +525,11 @@ class Song:
         if "Special" in details:
             self.special = int(details['Special']['level'])
         else:
-            self.special = "No"
+            self.special = "-"
 
         self.servers = details['server_list']
         self.lyrics_dict = details['lyric_dict']
+        self.thumbnails_list = details['image']
 
 
     def __del__(self):
@@ -704,8 +697,8 @@ async def process_message(message):
 
 # The function to deal with reactions and know what to do
 react_dict={
-"<:KokoroYay:727683024526770222>": MusicQuiz.play_song,
-"<:AyaPointUp:727496890693976066>": MusicQuiz.skip_song,
+"<:RASLogo:727683816755560550>": MusicQuiz.play_song,
+"<:skip:749807101232152606>": MusicQuiz.skip_song,
 "<:StarGem:727683091337838633>": MusicQuiz.check_star,
 }
 
@@ -810,8 +803,6 @@ class QuizGUI(commands.Cog):
                     await main_dict[715226997562802227].update_log("TheBandoriBot" + ": " + str(message.content))
                 except:
                     pass
-
-        if isinstance(message.channel, discord.channel.DMChannel):
             return
 
         if message.channel.name != "bangdream":
@@ -844,6 +835,7 @@ async def musicgui(message):
 
 
 async def resend_message(message):
+    # todo This is not working
     if message.channel.name == "bangdream":
         # Try if resending the message helps, first delete it
         try:
@@ -861,11 +853,44 @@ async def resend_message(message):
         except:
             pass
 
+async def toggle_ignore(message):
+    try:
+        if message.author.id not in main_dict[message.guild.id].ignore_list:
+            main_dict[message.guild.id].ignore_list.append(message.author.id)
+            if message.author.id in main_dict[message.guild.id].skip_vote:
+                main_dict[message.guild.id].skip_vote.remove(message.author.id)
+            await main_dict[message.guild.id].update_log(f"{message.author.name} will now be ignored when voting skip, use `ignore` one more time to undo")
+        else:
+            main_dict[message.guild.id].ignore_list.remove(message.author.id)
+            await main_dict[message.guild.id].update_log(f"{message.author.name} will no longer be ignored when voting skip")
+    except:
+        pass
+
+async def dm_info(message):
+    quiz = main_dict[message.guild.id]
+    if not quiz:
+        return
+    if not quiz.song:
+        await message.author.send("There are no songs right now so we cannot get info")
+        return
+
+    info_message = f'''**{quiz.song.song_name}**'s info
+Server: {quiz.song.servers}
+'''
+    await message.author.send(info_message)
+
+    for key, value in quiz.song.lyrics_dict.items():
+        lyric_message = ''
+        lyric_message += f'{key}:\n'
+        lyric_message += value
+        await message.author.send(lyric_message)
 
 
 command_dict = {
-"music": musicgui,
-"reloadgame": resend_message
+    "music": musicgui,
+    "reloadgame": resend_message,
+    "ignore": toggle_ignore,
+    "info": dm_info
 }
 
 

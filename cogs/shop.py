@@ -29,13 +29,12 @@ prefix_dict = {
     'TW': 25,
     'EN': 50,
     'JP': 75,
-    # 'Dr.': 50,
-    # 'Gt.': 50,
-    # 'Vo.': 50,
-    # 'Key': 50,
-    # 'Ba.': 50,
-    # 'DJ': 50,
-    'You can suggest what prefix you want': 9999,
+    'Dr.': 50,
+    'Gt.': 50,
+    'Vo.': 50,
+    'Key': 50,
+    'Ba.': 50,
+    'DJ': 50
 }
 
 del_time = 20 # how long will the message stay before being deleted
