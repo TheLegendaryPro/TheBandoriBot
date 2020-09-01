@@ -96,7 +96,6 @@ class MusicQuiz:
         self.answer_timer = "timer object"
         self.auto_play = False
         self.next_timer = "timer object"
-        self.servers = "all"
         self.skip_vote = []
         self.correct_list = []
         self.guessed_band = []
@@ -133,8 +132,9 @@ Get help by typing `-help` inside #bot-commands
 
         #todo make it display at correct time
         if self.display_eng != "?":
-            if self.v_client.is_playing():
-                embed.set_thumbnail(url=random.choice(self.song.thumbnails_list))
+            if self.v_client:
+                if self.v_client.is_playing():
+                    embed.set_thumbnail(url=random.choice(self.song.thumbnails_list))
 
         return embed
 
@@ -150,7 +150,6 @@ Get help by typing `-help` inside #bot-commands
 
     async def play_song(self, user):
         """check channel, then client, the play song, set up times"""
-
         try:
             # See if the user is in a voice channel, if not, return
             voice_channel = user.voice.channel
@@ -232,7 +231,7 @@ Get help by typing `-help` inside #bot-commands
             pass
 
         # Setup timer for answer and next song
-        with audioread.audio_open(f'song_id_files/{self.song.song_name}.ogg') as f:
+        with audioread.audio_open(f'song_id_files/{self.song.song_id}.ogg') as f:
             self.answer_timer = Timer(int(f.duration) - 30, MusicQuiz.show_answer, self)
             if self.auto_play:
                 parameters = (self, user)
@@ -260,7 +259,7 @@ Get help by typing `-help` inside #bot-commands
         del self.hint_timer
 
 
-    async def show_answer(self):
+    async def show_answer(self, timeout = True):
         """show the answer"""
         self.display_eng = self.song.song_name
         self.display_jp = self.song.name_jp
@@ -272,8 +271,9 @@ Get help by typing `-help` inside #bot-commands
         self.display_special = self.song.special
 
         # self.display_type = self.song.type
-        await self.update_log('timeout_answer', self.song.song_name)
-        del self.answer_timer
+        if timeout:
+            await self.update_log('timeout_answer', self.song.song_name)
+            del self.answer_timer
 
 
     async def next_song(parameters):
@@ -285,7 +285,9 @@ Get help by typing `-help` inside #bot-commands
     async def skip_song(self, user):
         # See if the voice client is playing anything
         try:
-            self.v_client.is_playing()
+            if not self.v_client.is_playing():
+                await self.update_log('cannot_skip_no_song_playing')
+                return
         except:
             await self.update_log('cannot_skip_no_song_playing')
             return
@@ -310,6 +312,7 @@ Get help by typing `-help` inside #bot-commands
             return
 
         # Actually skip the song
+        await self.show_answer(timeout=False)
         await self.update_log('success_vote_skip', (user.name, self.song.song_name))
         self.skip_vote = []
         # Stop all timers
@@ -451,7 +454,7 @@ Get help by typing `-help` inside #bot-commands
                 self.display_log.append(q_setting['correct_song_also'].format(name=name_list[-1]))
             else:
                 need_to_append_log = False
-                self.display_log[-1] == q_setting['correct_song_also'].format(name=', '.join(name_list))
+                self.display_log[-1] = q_setting['correct_song_also'].format(name=', '.join(name_list))
         elif event == 'correct_song_again':
             name = parameters
             if not self.log[-1][0] == 'correct_song_again':
@@ -474,7 +477,7 @@ Get help by typing `-help` inside #bot-commands
                 self.display_log.append(q_setting['answer_band_again'].format(name=name))
             else:
                 need_to_append_log = False
-                self.display_log[-1] == q_setting['answer_band_again'].format(name=name)
+                self.display_log[-1] = q_setting['answer_band_again'].format(name=name)
         elif event == 'ignore_on':
             name = parameters
             self.display_log.append(q_setting['ignore_on'].format(name=name))
@@ -483,12 +486,11 @@ Get help by typing `-help` inside #bot-commands
             self.display_log.append(q_setting['ignore_off'].format(name=name))
 
 
-
-
         if need_to_append_log:
             self.log.append((event, parameters))
         else:
             self.log[-1] = (event, parameters)
+
 
         if len(self.display_log) > 7:
             self.display_log.pop(0)
@@ -982,8 +984,10 @@ async def dm_info(message):
     if not quiz:
         return
     if not quiz.song:
-        await message.author.send('chat', "There are no songs right now so we cannot get info")
+        await message.author.send("There are no songs right now so we cannot get info")
         return
+    if quiz.display_eng == "?":
+        await message.author.send("We can only send you the information if the answer is shown")
 
     info_message = f'''**{quiz.song.song_name}**'s info
 Server: {quiz.song.servers}
