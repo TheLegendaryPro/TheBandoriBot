@@ -11,6 +11,11 @@ import datetime
 from pathlib import Path
 # from tinydb import TinyDB, Query
 # from tinydb.operations import add, set
+import configparser
+
+setting = configparser.ConfigParser()
+setting.read('bot_config/setting.ini')
+q_setting = setting['quizgui']
 
 # Set up the logger
 logger = logging.getLogger(__name__)
@@ -85,7 +90,8 @@ class MusicQuiz:
         self.message = "message object"
         self.t_channel = ctx.channel
         self.v_channel = "voice channel"
-        self.log = ["React <:RASLogo:727683816755560550> to start! Type the answer in chat below <:SayoYay:732208214166470677>"]
+        self.log = [('welcome', None)]
+        self.display_log = [q_setting['welcome']]
         self.hint_timer = "timer object"
         self.answer_timer = "timer object"
         self.auto_play = False
@@ -113,11 +119,11 @@ Get help by typing `-help` inside #bot-commands
         embed.add_field(name="Difficulty", value=difficulty_value)
 
         log_msg = ""
-        for num in range(len(self.log)):
-            if num < len(self.log) - 1:
-                log_msg += self.log[num]
+        for num in range(len(self.display_log)):
+            if num < len(self.display_log) - 1:
+                log_msg += self.display_log[num]
             else:
-                log_msg += "**" + self.log[num] + "**"
+                log_msg += "**" + self.display_log[num] + "**"
             log_msg += "\n"
         log_msg = log_msg[:-1]
         embed.add_field(inline=False, name='Log: ', value=log_msg)
@@ -125,6 +131,7 @@ Get help by typing `-help` inside #bot-commands
         embed.set_footer(text = "Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
         embed.set_author(name = "Made by TheLegendaryPro#6018", icon_url = bot.get_user(bot.owner_id).avatar_url)
 
+        #todo make it display at correct time
         if self.display_eng != "?":
             if self.v_client.is_playing():
                 embed.set_thumbnail(url=random.choice(self.song.thumbnails_list))
@@ -148,7 +155,7 @@ Get help by typing `-help` inside #bot-commands
             # See if the user is in a voice channel, if not, return
             voice_channel = user.voice.channel
         except:
-            await self.update_log(f"Hey {user.name}, get into voice channel first then click <:RASLogo:727683816755560550> again")
+            await self.update_log('not_in_channel', user.name)
             return
 
         if not self.v_client:
@@ -156,7 +163,7 @@ Get help by typing `-help` inside #bot-commands
             if user.voice.channel.guild.id == 432379300684103699:
                 # Only redirect people if in official server
                 if user.voice.channel.id != 731813919638945802:
-                    await self.update_log(f"Hey {user.name}, please go to Music 2 channel then click <:RASLogo:727683816755560550> again")
+                    await self.update_log('wrong_channel', (user.name, 'Music 2'))
                     return
             try:
                 # Tries to connect
@@ -180,7 +187,7 @@ Get help by typing `-help` inside #bot-commands
             # Connected to wrong one, but do not change channel in official server
             if user.voice.channel.guild.id == 432379300684103699:
                 if user.voice.channel.id != 731813919638945802:
-                    await self.update_log(f"Hey {user.name}, please go to Music 2 channel then click <:RASLogo:727683816755560550> again")
+                    await self.update_log('wrong_channel', (user.name, 'Music 2'))
                     return
             await self.v_client.move_to(voice_channel)
             self.v_channel = voice_channel
@@ -202,7 +209,7 @@ Get help by typing `-help` inside #bot-commands
             self.v_client.source = discord.PCMVolumeTransformer(self.v_client.source)
             self.v_client.source.volume = 0.14
         except Exception as e:
-            await self.update_log('Some error happened, Code: {c}, it says: {m}, hopefully it helps'.format(c = type(e).__name__, m = str(e)))
+            await self.update_log('chat', 'Some error happened, Code: {c}, it says: {m}, hopefully it helps'.format(c = type(e).__name__, m = str(e)))
 
         # Update the display
         self.display_eng = "?"
@@ -213,7 +220,7 @@ Get help by typing `-help` inside #bot-commands
         self.skip_vote = []
         self.correct_list = []
         self.guessed_band = []
-        await self.update_log("<:RASLogo:727683816755560550> Started playing a song")
+        await self.update_log('start_song')
 
         # Setup timer for hint
         self.hint_timer = Timer(30, MusicQuiz.give_hint, self)
@@ -249,7 +256,7 @@ Get help by typing `-help` inside #bot-commands
         self.display_expert = self.song.expert
         self.display_special = self.song.special
 
-        await self.update_log(f"<:AyaEh:727684305802756166> Hint: the song name is {hint_text}")
+        await self.update_log('hint', hint_text)
         del self.hint_timer
 
 
@@ -265,7 +272,7 @@ Get help by typing `-help` inside #bot-commands
         self.display_special = self.song.special
 
         # self.display_type = self.song.type
-        await self.update_log(f"Time's up, the song was {self.song.song_name}")
+        await self.update_log('timeout_answer', self.song.song_name)
         del self.answer_timer
 
 
@@ -280,15 +287,15 @@ Get help by typing `-help` inside #bot-commands
         try:
             self.v_client.is_playing()
         except:
-            await self.update_log("Cannot skip because no song is playing")
+            await self.update_log('cannot_skip_no_song_playing')
             return
         # Return if the user is not inside the voice channel
         if user.id not in [user.id for user in self.v_channel.members]:
-            await self.update_log(f"Hey {user.name}, you are not listening to this song")
+            await self.update_log('cannot_skip_not_in_channel', user.name)
             return
         # Return if the user is ignored
         if user.id in self.ignore_list:
-            await self.update_log(f"Hey {user.name}, you are in the ignore list therefore cannot vote, type `-ignore` to undo")
+            await self.update_log('cannot_skip_ignored', user.name)
             return
         # See if everyone agreed
         if user.id not in self.skip_vote:
@@ -299,11 +306,11 @@ Get help by typing `-help` inside #bot-commands
         if len(self.skip_vote) / len(vc_member_list) > 0.85:
             pass
         else:
-            await self.update_log(f"({len(self.skip_vote)}/{len(vc_member_list)}) {user.name} voted to skip, but not everyone agreed")
+            await self.update_log('vote_skip_not_passed', (user.name, self.skip_vote, len(vc_member_list)))
             return
 
         # Actually skip the song
-        await self.update_log(f"{user.name} skipped {self.song.song_name}, will play another soon")
+        await self.update_log('success_vote_skip', (user.name, self.song.song_name))
         self.skip_vote = []
         # Stop all timers
         await self.cancel_all_timers()
@@ -317,7 +324,7 @@ Get help by typing `-help` inside #bot-commands
     async def toggle_autoplay(self, user):
         """toggle and announce autoplay"""
         self.auto_play = not self.auto_play
-        await self.update_log(f"auto play is set to {self.auto_play} by {user.name}")
+        await self.update_log('toggle_autoplay', (user.name, self.auto_play))
 
 
     async def cancel_all_timers(self):
@@ -341,9 +348,9 @@ Get help by typing `-help` inside #bot-commands
             result = await bot.user_db.find(user.id)
             if not result:
                 # not result means the result list is empty, then tell the user
-                await self.update_log(f"Hey {user.name}, you don't have any <:StarGem:727683091337838633> yet, try answer songs correctly")
+                await self.update_log('check_star_empty', user.name)
             elif 'stars' in result:
-                await self.update_log(f"Hi {user.name}, you have {result['stars']} <:StarGem:727683091337838633>, congratulation!")
+                await self.update_log('check_star', (user.name, result['stars']))
             else:
                 #todo the database contains his name but have no field for stars, let's take it as he has no stars
                 # may upsert data, or just add the star field later
@@ -384,24 +391,128 @@ Get help by typing `-help` inside #bot-commands
         await self.cancel_all_timers()
 
 
-    async def update_log(self, event):
+
+    async def update_log(self, event, parameters = None):
         """Function for processing the log"""
-        #todo improve it
-        if len(self.log) >= 7:
-            del self.log[0]
-        need_append = True
-        # change last message if stacking
-        if self.log[-1].endswith('got it correct too, earning <:StarGem:727683091337838633>'):
-            if event.endswith('got it correct too, earning <:StarGem:727683091337838633>'):
-                self.log[-1] = self.log[-1][:-57] + 'and ' + event[:-57] + 'got it correct too, earning <:StarGem:727683091337838633>'
-                need_append = False
-        # another stack
-        if self.log[-1].endswith('voted to skip, but not everyone agreed'):
-            if event.endswith('voted to skip, but not everyone agreed'):
-                self.log[-1] = event[0:6] + self.log[-1][6:-38] + 'and ' + event[6:-38] + 'voted to skip, but not everyone agreed'
-                need_append = False
-        if need_append:
-            self.log.append(event)
+
+        need_to_append_log = True
+        if event == 'chat':
+            chat_message = parameters
+            self.display_log.append(chat_message)
+        elif event == 'welcome':
+            self.display_log.append(q_setting['welcome'])
+        elif event == 'not_in_channel':
+            name = parameters
+            self.display_log.append(q_setting['not_in_channel'].format(name=name))
+        elif event == 'wrong_channel':
+            name, channel_name = parameters
+            self.display_log.append(q_setting['wrong_channel'].format(name=name, channel_name=channel_name))
+        elif event == 'start_song':
+            self.display_log.append(q_setting['start_song'])
+        elif event == 'cannot_skip_no_song_playing':
+            self.display_log.append(q_setting['cannot_skip_no_song_playing'])
+        elif event == 'cannot_skip_not_in_channel':
+            name = parameters
+            self.display_log.append(q_setting['cannot_skip_not_in_channel'].format(name=name))
+        elif event == 'cannot_skip_ignored':
+            name = parameters
+            self.display_log.append(q_setting['cannot_skip_ignored'].format(name=name))
+        elif event == 'vote_skip_not_passed':
+            name, for_users, user_count = parameters
+            if not self.log[-1][0] == 'vote_skip_not_passed':
+                self.display_log.append(q_setting['vote_skip_not_passed'].format(
+                    name=name, for_count=len(for_users), user_count=user_count
+                ))
+            else:
+                need_to_append_log = False
+                self.display_log[-1] = q_setting['vote_skip_not_passed'].format(
+                    name=', '.join(for_users), for_count=len(for_users), user_count=user_count
+                )
+        elif event == 'success_vote_skip':
+            name, song_name = parameters
+            self.display_log.append(q_setting['success_vote_skip'].format(
+                name=name, song_name=song_name
+            ))
+        elif event == 'toggle_autoplay':
+            name, value = parameters
+            self.display_log.append(q_setting['toggle_autoplay'].format(name=name, value=value))
+        elif event == 'check_star_empty':
+            name = parameters
+            self.display_log.append(q_setting['check_star_empty'].format(name=name))
+        elif event == 'check_star':
+            name, value = parameters
+            self.display_log.append(q_setting['check_stars'].format(name=name, value=value))
+        elif event == 'correct_song_first':
+            name = parameters
+            self.display_log.append(q_setting['correct_song_first'].format(name=name))
+        elif event == 'correct_song_also':
+            name_list = parameters
+            if not self.log[-1][0] == 'correct_song_also':
+                self.display_log.append(q_setting['correct_song_also'].format(name=name_list[-1]))
+            else:
+                need_to_append_log = False
+                self.display_log[-1] == q_setting['correct_song_also'].format(name=', '.join(name_list))
+        elif event == 'correct_song_again':
+            name = parameters
+            if not self.log[-1][0] == 'correct_song_again':
+                self.display_log.append(q_setting['correct_song_again'].format(name=name))
+            else:
+                need_to_append_log = False
+                self.display_log[-1] = q_setting['correct_song_again'].format(name=name)
+        elif event == 'correct_band':
+            name = parameters
+            self.display_log.append(q_setting['correct_band'].format(name=name))
+        elif event == 'hint':
+            hint = parameters
+            self.display_log.append(q_setting['hint'].format(hint=hint))
+        elif event == 'timeout_answer':
+            answer = parameters
+            self.display_log.append(q_setting['timeout_answer'].format(answer=answer))
+        elif event == 'answer_band_again':
+            name = parameters
+            if not self.log[-1][0] == 'answer_band_again':
+                self.display_log.append(q_setting['answer_band_again'].format(name=name))
+            else:
+                need_to_append_log = False
+                self.display_log[-1] == q_setting['answer_band_again'].format(name=name)
+        elif event == 'ignore_on':
+            name = parameters
+            self.display_log.append(q_setting['ignore_on'].format(name=name))
+        elif event == 'ignore_off':
+            name = parameters
+            self.display_log.append(q_setting['ignore_off'].format(name=name))
+
+
+
+
+        if need_to_append_log:
+            self.log.append((event, parameters))
+        else:
+            self.log[-1] = (event, parameters)
+
+        if len(self.display_log) > 7:
+            self.display_log.pop(0)
+            self.log.pop(0)
+
+
+        # def switch(event, parameters):
+        #     return {
+        #         'chat': parameters
+        #     }.get(event, 'Error in switch')
+
+        # need_append = True
+        # # change last message if stacking
+        # if self.log[-1].endswith('got it correct too, earning <:StarGem:727683091337838633>'):
+        #     if event.endswith('got it correct too, earning <:StarGem:727683091337838633>'):
+        #         self.log[-1] = self.log[-1][:-57] + 'and ' + event[:-57] + 'got it correct too, earning <:StarGem:727683091337838633>'
+        #         need_append = False
+        # # another stack
+        # if self.log[-1].endswith('voted to skip, but not everyone agreed'):
+        #     if event.endswith('voted to skip, but not everyone agreed'):
+        #         self.log[-1] = event[0:6] + self.log[-1][6:-38] + 'and ' + event[6:-38] + 'voted to skip, but not everyone agreed'
+        #         need_append = False
+        # if need_append:
+        #     self.log.append(event)
         await self.update_message()
 
 
@@ -419,20 +530,20 @@ Get help by typing `-help` inside #bot-commands
             if self.correct_list.index(user.id) == 0:
                 # Check index so no double first hopefully
                 await self.add_points(user, 2)
-                await self.update_log(f"{user.name} was first to guess the song name, earning <:StarGem:727683091337838633><:StarGem:727683091337838633>")
+                await self.update_log('correct_song_first', user.name)
             else:
                 await self.add_points(user, 1)
-                await self.update_log(f"{user.name} got it correct too, earning <:StarGem:727683091337838633>")
+                await self.update_log('correct_song_also', self.correct_list[1:])
         else:
             # Don't allow multiple correct answer
-            await self.update_log(f"{user.name}, you already answered, why would you answer again?")
+            await self.update_log('correct_song_again', user.name)
 
 
     async def correct_band(self, user):
         """Called when the user got the band correct"""
         await self.add_points(user, 1)
         self.display_band = self.song.band_name
-        await self.update_log(f"{user.name} got the band right and earned <:StarGem:727683091337838633>")
+        await self.update_log('correct_band', user.name)
 
 
     async def add_points(self, user, amount):
@@ -632,7 +743,7 @@ async def process_message(message):
             for item in all_bands_list:
                 if is_similar(message.content.lower(), item.lower()):
                     if message.author.id in quiz.guessed_band:
-                        await quiz.update_log(f"Hey {message.author.name}, you guessed a time already")
+                        await quiz.update_log('answer_band_again', message.author.name)
                         return
                     quiz.guessed_band.append(message.author.id)
             if is_similar(message.content.lower(),quiz.song.band_name.lower()):
@@ -692,7 +803,7 @@ async def process_message(message):
 
     with open("bot_data/chatlog.txt", "a", encoding="UTF-8") as f:
         f.write(f"\n{datetime.datetime.now()} {str(message.author)}: {no_new_line}")
-    await quiz.update_log(f"{await get_name(message.author)}: {get_msg(no_new_line)}")
+    await quiz.update_log('chat', f"{await get_name(message.author)}: {get_msg(no_new_line)}")
 
 
 # The function to deal with reactions and know what to do
@@ -795,12 +906,12 @@ class QuizGUI(commands.Cog):
         if isinstance(message.channel, discord.channel.DMChannel):
             if message.author.id == 298986102495248386:
                 try:
-                    await main_dict[715226997562802227].update_log(str(message.content))
+                    await main_dict[715226997562802227].update_log('chat', str(message.content))
                 except:
                     pass
             elif message.author.id == 520283742720491522:
                 try:
-                    await main_dict[715226997562802227].update_log("TheBandoriBot" + ": " + str(message.content))
+                    await main_dict[715226997562802227].update_log('chat', "TheBandoriBot" + ": " + str(message.content))
                 except:
                     pass
             return
@@ -859,10 +970,10 @@ async def toggle_ignore(message):
             main_dict[message.guild.id].ignore_list.append(message.author.id)
             if message.author.id in main_dict[message.guild.id].skip_vote:
                 main_dict[message.guild.id].skip_vote.remove(message.author.id)
-            await main_dict[message.guild.id].update_log(f"{message.author.name} will now be ignored when voting skip, use `ignore` one more time to undo")
+            await main_dict[message.guild.id].update_log('ignore_on', message.author.name)
         else:
             main_dict[message.guild.id].ignore_list.remove(message.author.id)
-            await main_dict[message.guild.id].update_log(f"{message.author.name} will no longer be ignored when voting skip")
+            await main_dict[message.guild.id].update_log('ignore_off', message.author.name)
     except:
         pass
 
@@ -871,19 +982,23 @@ async def dm_info(message):
     if not quiz:
         return
     if not quiz.song:
-        await message.author.send("There are no songs right now so we cannot get info")
+        await message.author.send('chat', "There are no songs right now so we cannot get info")
         return
 
     info_message = f'''**{quiz.song.song_name}**'s info
 Server: {quiz.song.servers}
+
 '''
-    await message.author.send(info_message)
 
     for key, value in quiz.song.lyrics_dict.items():
-        lyric_message = ''
-        lyric_message += f'{key}:\n'
-        lyric_message += value
-        await message.author.send(lyric_message)
+        info_message += f'-----\n{key}:\n'
+        info_message += value
+        info_message += '\n'
+
+    string = info_message
+    length = 1999
+    for part in [string[i:length+i] for i in range(0, len(string), length)]:
+        await message.author.send(part)
 
 
 command_dict = {
