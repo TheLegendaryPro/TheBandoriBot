@@ -867,6 +867,7 @@ class QuizGUI(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"{self.__class__.__name__} Cog has been loaded\n-----")
+        await initiate_message()
 
 
     @commands.Cog.listener()
@@ -1019,6 +1020,20 @@ command_dict = {
     "ignore": toggle_ignore,
     "info": dm_info
 }
+
+
+async def initiate_message():
+    await asyncio.sleep(10)
+    for guild in bot.guilds:
+        for text_channel in guild.text_channels:
+            if text_channel.name == 'bangdream':
+                try:
+                    message = await text_channel.send('Starting bot...')
+                    await musicgui(message)
+                except discord.errors.Forbidden:
+                    pass
+                except Exception as e:
+                    logger.log(f'failed to initiate message because {e}')
 
 
 def setup(bot):
