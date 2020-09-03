@@ -452,7 +452,7 @@ Get help by typing `-help` inside #bot-commands
             self.display_log.append(q_setting['check_star_empty'].format(name=name))
         elif event == 'check_star':
             name, value = parameters
-            self.display_log.append(q_setting['check_stars'].format(name=name, value=value))
+            self.display_log.append(q_setting['check_star'].format(name=name, value=value))
         elif event == 'correct_song_first':
             name = parameters
             self.display_log.append(q_setting['correct_song_first'].format(name=name))
@@ -997,6 +997,7 @@ async def dm_info(message):
         return
     if quiz.display_eng == "?":
         await message.author.send("We can only send you the information if the answer is shown")
+        return
 
     info_message = f'''**{quiz.song.song_name}**'s info
 Server: {quiz.song.servers}
@@ -1023,7 +1024,7 @@ command_dict = {
 
 
 async def initiate_message():
-    await asyncio.sleep(10)
+    await asyncio.sleep(3)
     for guild in bot.guilds:
         for text_channel in guild.text_channels:
             if text_channel.name == 'bangdream':
