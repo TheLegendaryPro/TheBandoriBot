@@ -53,85 +53,97 @@ class Commands(commands.Cog):
         await self.bot.logout()
 
 
-    @commands.command()
-    async def blacklist(self, ctx, user: discord.Member):
-        """
-        Blacklist someone from the bot
-        """
-        # Only for those who have permission
-        if ctx.author.id not in self.bot.bangdream_admins:
-            return
-        if user.id == self.bot.owner_id:
-            await ctx.send("Hey, you cannot blacklist the owner!")
-            return
-        if ctx.message.author.id == user.id:
-            await ctx.send("Hey, you cannot blacklist yourself!")
-            return
+    # @commands.command()
+    # async def blacklist(self, ctx, user: discord.Member):
+    #     """
+    #     Blacklist someone from the bot
+    #     """
+    #     # Only for those who have permission
+    #     if ctx.author.id not in self.bot.bangdream_admins:
+    #         return
+    #     if user.id == self.bot.owner_id:
+    #         await ctx.send("Hey, you cannot blacklist the owner!")
+    #         return
+    #     if ctx.message.author.id == user.id:
+    #         await ctx.send("Hey, you cannot blacklist yourself!")
+    #         return
+    #
+    #     self.bot.blacklisted_users.append(user.id)
+    #     data = utils.json.read_json("user_role")
+    #     data["blacklistedUsers"].append(user.id)
+    #     utils.json.write_json(data, "user_role")
+    #     await ctx.send(f"Hey, I have blacklisted {user.name} for you.")
+    #
+    # @commands.command()
+    # async def unblacklist(self, ctx, user: discord.Member):
+    #     """
+    #     Unblacklist someone from the bot
+    #     """
+    #     if ctx.author.id not in self.bot.bangdream_admins:
+    #         return
+    #     self.bot.blacklisted_users.remove(user.id)
+    #     data = utils.json.read_json("user_role")
+    #     data["blacklistedUsers"].remove(user.id)
+    #     utils.json.write_json(data, "user_role")
+    #     await ctx.send(f"Hey, I have unblacklisted {user.name} for you.")
 
-        self.bot.blacklisted_users.append(user.id)
-        data = utils.json.read_json("user_role")
-        data["blacklistedUsers"].append(user.id)
-        utils.json.write_json(data, "user_role")
-        await ctx.send(f"Hey, I have blacklisted {user.name} for you.")
-
     @commands.command()
-    async def unblacklist(self, ctx, user: discord.Member):
-        """
-        Unblacklist someone from the bot
-        """
-        if ctx.author.id not in self.bot.bangdream_admins:
-            return
-        self.bot.blacklisted_users.remove(user.id)
-        data = utils.json.read_json("user_role")
-        data["blacklistedUsers"].remove(user.id)
-        utils.json.write_json(data, "user_role")
-        await ctx.send(f"Hey, I have unblacklisted {user.name} for you.")
-
-    @commands.command()
-    @commands.has_permissions(administrator=True)
+    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
     @commands.cooldown(1, 5, commands.BucketType.guild)
     async def prefix(self, ctx, *, prefix='-'):
         """
         Set a custom prefix for a guild
         """
-        await self.bot.server_config.upsert({"_id": ctx.guild.id, "prefix": prefix})
+        guild_data = await self.bot.server_config.find(ctx.guild.id)
+        if not guild_data:
+            guild_data = {"_id": ctx.guild.id}
+        guild_data['prefix'] = prefix
+        await self.bot.server_config.upsert(guild_data)
+        for item in self.bot.cached_setting:
+            if item['_id'] == ctx.guild.id:
+                item['prefix'] = prefix
         await ctx.send(f"The guild prefix has been set to `{prefix}`. Use `{prefix}prefix <prefix>` to change it again!")
+
+        # await self.bot.server_config.upsert({"_id": ctx.guild.id, "prefix": prefix})
         # data = utils.json.read_json('prefixes')
         # data[str(ctx.message.guild.id)] = pre
         # utils.json.write_json(data, 'prefixes')
         # await ctx.send(f"The guild prefix has been set to `{pre}`. Use `{pre}prefix <prefix>` to change it again!")
 
-    @commands.command()
-    @commands.is_owner()
-    async def addadmin(self, ctx, user: discord.Member):
-        if user.id not in self.bot.bangdream_admins:
-            self.bot.bangdream_admins.append(user.id)
-            data = utils.json.read_json("user_role")
-            data["bangdream_admins"].append(user.id)
-            utils.json.write_json(data, "user_role")
-            await ctx.send(f"Hey, {user.name} is now a admin for bangdream")
-
-    @commands.command()
-    @commands.is_owner()
-    async def removeadmin(self, ctx, user: discord.Member):
-        if user.id in self.bot.bangdream_admins:
-            self.bot.bangdream_admins.remove(user.id)
-            data = utils.json.read_json("user_role")
-            data["bangdream_admins"].remove(user.id)
-            utils.json.write_json(data, "user_role")
-            await ctx.send(f"Hey, {user.name} is no longer a admin for bangdream")\
 
 
-    @commands.command(aliases=['ZAWARUDO'])
-    async def reloadgame(self, ctx):
-        """
-        Reload the game in case it crashes
-        """
-        if ctx.author.id not in self.bot.bangdream_admins:
-            return
-        await ctx.send("About to reload BanG Dream Quiz, if it is successful, you will see another message")
-        self.bot.reload_extension("cogs.quizgui")
-        await ctx.send("You just saw another message, please type -start in bangdream channel to see if it works")
+
+    # @commands.command()
+    # @commands.is_owner()
+    # async def addadmin(self, ctx, user: discord.Member):
+    #     if user.id not in self.bot.bangdream_admins:
+    #         self.bot.bangdream_admins.append(user.id)
+    #         data = utils.json.read_json("user_role")
+    #         data["bangdream_admins"].append(user.id)
+    #         utils.json.write_json(data, "user_role")
+    #         await ctx.send(f"Hey, {user.name} is now a admin for bangdream")
+    #
+    # @commands.command()
+    # @commands.is_owner()
+    # async def removeadmin(self, ctx, user: discord.Member):
+    #     if user.id in self.bot.bangdream_admins:
+    #         self.bot.bangdream_admins.remove(user.id)
+    #         data = utils.json.read_json("user_role")
+    #         data["bangdream_admins"].remove(user.id)
+    #         utils.json.write_json(data, "user_role")
+    #         await ctx.send(f"Hey, {user.name} is no longer a admin for bangdream")
+
+
+    # @commands.command(aliases=['ZAWARUDO'])
+    # async def reloadgame(self, ctx):
+    #     """
+    #     Reload the game in case it crashes
+    #     """
+    #     if ctx.author.id not in self.bot.bangdream_admins:
+    #         return
+    #     await ctx.send("About to reload BanG Dream Quiz, if it is successful, you will see another message")
+    #     self.bot.reload_extension("cogs.quizgui")
+    #     await ctx.send("You just saw another message, please type -start in bangdream channel to see if it works")
 
 
     @commands.command(name="help")
@@ -168,10 +180,25 @@ If you need any help, want to suggest anything or want to praise the bot creator
             })
         await ctx.send(f"added {amount}")
 
+
     @commands.command()
-    async def testget(self, ctx):
-        data = await self.bot.user_db.find(ctx.author.id)
-        await ctx.send(f"data: {data}")
+    @commands.check_any(commands.is_owner(), commands.has_permissions(manage_channels=True))
+    async def setchannel(self, ctx, v_channel_id=None):
+        if not v_channel_id:
+            await ctx.send('This command is used to set the voice channel that this bot can connect to:'
+                           '\nFor example, `-setchannel 740497127221755924`')
+            return
+        v_channel_id = int(v_channel_id)
+        if self.bot.get_channel(v_channel_id):
+            guild_data = await self.bot.server_config.find(ctx.guild.id)
+            if not guild_data:
+                guild_data = {"_id": ctx.guild.id}
+            guild_data['v_channel'] = v_channel_id
+            await self.bot.server_config.upsert(guild_data)
+            for item in self.bot.cached_setting:
+                if item['_id'] == ctx.guild.id:
+                    item['v_channel'] = v_channel_id
+            await ctx.send(f'The voice channel that I connect to has changed to {str(self.bot.get_channel(v_channel_id))}')
 
 
 

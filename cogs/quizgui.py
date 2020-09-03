@@ -31,6 +31,7 @@ logger.addHandler(ch)
 cwd = Path(__file__).parents[1]
 cwd = str(cwd)
 
+
 # Setup the database
 # db = TinyDB(cwd + '/bot_data/user_db.json', indent=4)
 
@@ -159,11 +160,18 @@ Get help by typing `-help` inside #bot-commands
 
         if not self.v_client:
             # If the voice channel is not defined yet
-            if user.voice.channel.guild.id == 432379300684103699:
-                # Only redirect people if in official server
-                if user.voice.channel.id != 731813919638945802:
-                    await self.update_log('wrong_channel', (user.name, 'Music 2'))
-                    return
+            for item in bot.cached_setting:
+                if item['_id'] == user.voice.channel.guild.id:
+                    if 'v_channel' in item:
+                        if user.voice.channel.id != item['v_channel']:
+                            await self.update_log('wrong_channel', (user.name, str(bot.get_channel(item['v_channel']))))
+                            return
+
+            # if user.voice.channel.guild.id == 432379300684103699:
+            #     # Only redirect people if in official server
+            #     if user.voice.channel.id != 731813919638945802:
+            #         await self.update_log('wrong_channel', (user.name, 'Music 2'))
+            #         return
             try:
                 # Tries to connect
                 self.v_client = await voice_channel.connect()
@@ -811,7 +819,7 @@ async def process_message(message):
 # The function to deal with reactions and know what to do
 react_dict={
 "<:RASLogo:727683816755560550>": MusicQuiz.play_song,
-"<:skip:749807101232152606>": MusicQuiz.skip_song,
+"<:AyaPointUp:727496890693976066>": MusicQuiz.skip_song,
 "<:StarGem:727683091337838633>": MusicQuiz.check_star,
 }
 

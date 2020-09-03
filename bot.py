@@ -41,7 +41,10 @@ async def get_prefix(bot, message):
     # return commands.when_mentioned_or(data[str(message.guild.id)])(bot, message)
 
     try:
-        data = await bot.server_config.find(message.guild.id)
+        # data = await bot.server_config.find(message.guild.id)
+        for item in bot.cached_setting:
+            if item['_id'] == message.guild.id:
+                data = item
 
         # Make sure we have a useable prefix
         if not data or "prefix" not in data:
@@ -112,6 +115,8 @@ async def on_ready():
     bot.mongo = motor.motor_asyncio.AsyncIOMotorClient(str(bot.connection_url))
     bot.db = bot.mongo["TheBandoriBot"]
     bot.server_config = Document(bot.db, "server_config")
+    await set_up_server_config(bot)
+    # todo cache the settings, to minimize data useage
     bot.user_db = Document(bot.db, "user_db")
     print("Initialized Database\n-----")
 
@@ -158,6 +163,22 @@ async def on_message(message):
     #     prefixMsg = await message.channel.send(f"My prefix here is `{prefix}`")
 
     await bot.process_commands(message)
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
+    raise error
+
+
+async def set_up_server_config(bot):
+    bot.cached_setting = await bot.server_config.get_all()
+
+    # Wanted to do monkey-patching to update database cache, too lazy
+    # @classmethod
+    # async def update_cached_settings(cls, bot):
+    #
 
 
 if __name__ == '__main__':
