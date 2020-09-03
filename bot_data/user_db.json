@@ -16,7 +16,7 @@
         },
         "4": {
             "user_id": 298986102495248386,
-            "stars": 628,
+            "stars": 631,
             "username": "TheLegendaryPro",
             "discriminator": "6018",
             "inventory": [
@@ -39,7 +39,7 @@
         },
         "8": {
             "user_id": 421747509354823690,
-            "stars": 502,
+            "stars": 516,
             "username": "vityfinin_sarsalad",
             "discriminator": "7511",
             "inventory": [
@@ -154,7 +154,7 @@
         },
         "25": {
             "user_id": 520283742720491522,
-            "stars": 6132,
+            "stars": 6147,
             "username": "Moca\u2019s bun",
             "discriminator": "4664",
             "prefix": "EN",
@@ -406,7 +406,7 @@
         },
         "63": {
             "user_id": 385054594398683138,
-            "stars": 620,
+            "stars": 635,
             "username": "Snes",
             "discriminator": "2689",
             "inventory": [
@@ -475,7 +475,7 @@
         },
         "73": {
             "user_id": 350637437191585792,
-            "stars": 1172,
+            "stars": 1219,
             "username": "Jellybean",
             "discriminator": "7131",
             "inventory": [
@@ -811,7 +811,7 @@
         },
         "122": {
             "user_id": 665645998588035102,
-            "stars": 1097,
+            "stars": 1222,
             "username": "Sakura_DeZu",
             "discriminator": "3661",
             "inventory": [
@@ -828,7 +828,7 @@
         },
         "124": {
             "user_id": 206357836437913601,
-            "stars": 15873,
+            "stars": 17073,
             "username": "Chisato",
             "discriminator": "7578",
             "inventory": [
@@ -903,7 +903,7 @@
         },
         "135": {
             "user_id": 432185534086119434,
-            "stars": 191,
+            "stars": 249,
             "username": "Yinkie66",
             "discriminator": "6282",
             "inventory": [
@@ -992,7 +992,7 @@
         },
         "149": {
             "user_id": 437781738341531648,
-            "stars": 72,
+            "stars": 100,
             "username": "HifumiChan",
             "discriminator": "6406"
         },
@@ -1005,7 +1005,7 @@
         },
         "151": {
             "user_id": 455608165371871233,
-            "stars": 846,
+            "stars": 1015,
             "username": "Kyun~ | Blessed by Babanbo-sama",
             "discriminator": "7250",
             "inventory": [
@@ -1051,7 +1051,7 @@
         },
         "158": {
             "user_id": 349615497807003649,
-            "stars": 4,
+            "stars": 34,
             "username": "Izzy",
             "discriminator": "5281"
         },
@@ -1095,7 +1095,7 @@
         },
         "165": {
             "user_id": 702701195805851668,
-            "stars": 114,
+            "stars": 164,
             "username": "\u30b3\u30b3\u30ed\u30f3",
             "discriminator": "9584",
             "inventory": [
@@ -1172,7 +1172,7 @@
         },
         "177": {
             "user_id": 532025411354230784,
-            "stars": 18,
+            "stars": 54,
             "username": "\u5343\u79cb",
             "discriminator": "5725"
         },
@@ -1185,6 +1185,69 @@
                 "EN"
             ],
             "prefix": "EN"
+        },
+        "179": {
+            "user_id": 693940986975486042,
+            "stars": 115,
+            "username": "Makoto x Aoi",
+            "discriminator": "8182"
+        },
+        "180": {
+            "user_id": 368075950186954752,
+            "stars": 10,
+            "username": "spookypuff",
+            "discriminator": "5947",
+            "inventory": []
+        },
+        "181": {
+            "user_id": 685861153137492013,
+            "stars": 95,
+            "username": "D N E W",
+            "discriminator": "3975",
+            "inventory": [
+                "JP"
+            ],
+            "prefix": "JP"
+        },
+        "182": {
+            "user_id": 263714619422408704,
+            "stars": 14,
+            "username": "giraty",
+            "discriminator": "9215"
+        },
+        "183": {
+            "user_id": 725343064159289404,
+            "stars": 760,
+            "username": "Mew ;3",
+            "discriminator": "3962",
+            "inventory": [
+                "EN"
+            ],
+            "prefix": "EN"
+        },
+        "184": {
+            "user_id": 703268655739437147,
+            "stars": 8,
+            "username": "Xycown",
+            "discriminator": "7568"
+        },
+        "185": {
+            "user_id": 232177521427349505,
+            "stars": 37,
+            "username": "JonyAC",
+            "discriminator": "7804"
+        },
+        "186": {
+            "user_id": 412902099588874241,
+            "stars": 28,
+            "username": "I'mMitMit",
+            "discriminator": "5086"
+        },
+        "187": {
+            "user_id": 741723606350036993,
+            "stars": 13,
+            "username": "Flower4689",
+            "discriminator": "7524"
         }
     }
 }
