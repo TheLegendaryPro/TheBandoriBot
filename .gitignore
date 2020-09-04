@@ -6,7 +6,7 @@
 song_files/*
 audio_file/*
 extra_data/*
-__pycache__/*
+**/__pycache__/*
 .idea/*
 song_id_files/*
 

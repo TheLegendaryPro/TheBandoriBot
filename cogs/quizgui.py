@@ -327,7 +327,7 @@ Get help by typing `-help` inside #bot-commands
         await self.cancel_all_timers()
 
         # Stop the song then play the next one in 7 seconds
-        self.v_client.stop()
+        self.v_client.stop() #todo could not skip
         await asyncio.sleep(7)
         await self.play_song(user)
 
@@ -437,7 +437,7 @@ Get help by typing `-help` inside #bot-commands
             else:
                 need_to_append_log = False
                 self.display_log[-1] = q_setting['vote_skip_not_passed'].format(
-                    name=', '.join(for_users), for_count=len(for_users), user_count=user_count
+                    name=', '.join([bot.get_user(id).name for id in for_users]), for_count=len(for_users), user_count=user_count
                 )
         elif event == 'success_vote_skip':
             name, song_name = parameters
@@ -459,10 +459,10 @@ Get help by typing `-help` inside #bot-commands
         elif event == 'correct_song_also':
             name_list = parameters
             if not self.log[-1][0] == 'correct_song_also':
-                self.display_log.append(q_setting['correct_song_also'].format(name=name_list[-1]))
+                self.display_log.append(q_setting['correct_song_also'].format(name=bot.get_user(name_list[-1]).name))
             else:
                 need_to_append_log = False
-                self.display_log[-1] = q_setting['correct_song_also'].format(name=', '.join(name_list))
+                self.display_log[-1] = q_setting['correct_song_also'].format(name=', '.join([bot.get_user(id).name for id in name_list]))
         elif event == 'correct_song_again':
             name = parameters
             if not self.log[-1][0] == 'correct_song_again':
@@ -995,8 +995,8 @@ async def dm_info(message):
     if not quiz.song:
         await message.author.send("There are no songs right now so we cannot get info")
         return
-    if quiz.display_eng == "?":
-        await message.author.send("We can only send you the information if the answer is shown")
+    if quiz.display_eng == "?" and message.author.id not in quiz.correct_list:
+        await message.author.send("We can only send you the information if the answer is shown or you answered correctly")
         return
 
     info_message = f'''**{quiz.song.song_name}**'s info
