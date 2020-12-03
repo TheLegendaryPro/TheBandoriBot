@@ -129,7 +129,7 @@ Get help by typing `-help` inside #bot-commands
         embed.add_field(inline=False, name='Log: ', value=log_msg)
 
         embed.set_footer(text = "Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
-        embed.set_author(name = "Made by TheLegendaryPro#6018", icon_url = bot.get_user(bot.owner_id).avatar_url)
+        embed.set_author(name = "Made by TheLegendaryPro#6018", icon_url = "https://cdn.discordapp.com/avatars/298986102495248386/c36840dfbed5e0e27253ada30eb1dedf.png?size=128")
 
         #todo make it display at correct time
         if self.display_eng != "?":
