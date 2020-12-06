@@ -63,8 +63,9 @@ def find_game_version(path):
 def copy_file(game_version_path, data):
     for item in data:
         if item['id'] == game_version_path.parent.name:
-            if 'Beautiful Birthday' in item['id']:
-                print(item['id'])
+            # I think this is to check if new songs are imported
+            # if 'Beautiful Birthday' in item['id']:
+            #     print(item['id'])
 
             if Path('song_id_files/' + item['id'] + '.ogg').is_file():
                 return
