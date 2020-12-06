@@ -7,7 +7,7 @@ import shutil
 logger = logging.getLogger('update_songs')
 logger.setLevel(logging.INFO)
 # create file handler which logs even debug messages
-fh = logging.FileHandler('update_songs.log')
+fh = logging.FileHandler('update_songs.log', encoding='utf-8')
 fh.setLevel(logging.INFO)
 # create console handler with a higher log level
 ch = logging.StreamHandler()
