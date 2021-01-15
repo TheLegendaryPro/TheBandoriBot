@@ -168,6 +168,7 @@ If you need any help, want to suggest anything or want to praise the bot creator
         embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
         await ctx.send(content='', embed=embed)
 
+    # A function to test if the database is working by adding a point to the owner
     @commands.command()
     @commands.is_owner()
     async def testadd(self, ctx, amount=1):
@@ -180,7 +181,7 @@ If you need any help, want to suggest anything or want to praise the bot creator
             })
         await ctx.send(f"added {amount}")
 
-
+    # Change to channel that the bot connects to
     @commands.command()
     @commands.check_any(commands.is_owner(), commands.has_permissions(manage_channels=True))
     async def setchannel(self, ctx, v_channel_id=None):

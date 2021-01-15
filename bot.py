@@ -54,7 +54,7 @@ async def get_prefix(bot, message):
         return commands.when_mentioned_or("-")(bot, message)
 
 
-# Defining a few things
+# Defining bot token, database key and owner id
 secret_file = json.load(open(cwd+'/bot_config/secrets.json'))
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, owner_id=secret_file['owner_id'])
 bot.config_token = secret_file['token']
@@ -80,7 +80,7 @@ bot.bangdream_admins = utils.json.read_json("user_role")["bangdream_admins"]
 
 
 bot.cwd = cwd
-bot.version = '3.1.3'
+bot.version = '3.1.4'
 bot.colors = {
   'WHITE': 0xFFFFFF,
   'AQUA': 0x1ABC9C,

@@ -39,6 +39,7 @@ prefix_dict = {
 
 del_time = 20 # how long will the message stay before being deleted
 
+# get the data from the db, if not, tell the user
 async def get_db(ctx):
     try:
         result = await bot.user_db.find(ctx.author.id)
@@ -61,6 +62,8 @@ async def get_db(ctx):
     # else:
     #     return result[0]
 
+
+# upsert a property to the db
 async def set_db(user_id, attribute, value):
     try:
         await bot.user_db.upsert({
@@ -72,6 +75,8 @@ async def set_db(user_id, attribute, value):
         return
     # db.update(set(attribute, value), Query().user_id == user_id)
 
+
+# increase a property to the db
 async def add_db(user_id, attribute = 'stars', amount = 0):
     # print("add_db", user_id, attribute, amount)
     try:
@@ -94,6 +99,7 @@ class Shop(commands.Cog):
         bot = self.bot
         logger.info(f'Set bot for {__name__}')
 
+    # Show what the user can buy
     @commands.command()
     async def shop(self, ctx):
         embed = discord.Embed(title=f'Hi {ctx.author.name}!', description='''Welcome to the shop<:KokoroYes:733655959934861333>, you can buy prefixes and nicknames here''')
@@ -121,7 +127,7 @@ class Shop(commands.Cog):
         embed.add_field(name='Prefixes: ', value=await get_prefix_text(ctx.author))
         await ctx.send(content='Welcome to my shop, grab something', embed=embed, delete_after = del_time)
 
-
+    # Decrease the currency and give user the item
     @commands.command()
     async def buy(self, ctx, item):
         item = str(item)
@@ -164,7 +170,7 @@ class Shop(commands.Cog):
 
         pass
 
-
+    # Change user's active item
     @commands.command()
     async def equip(self, ctx, item=None):
         if item == None:
@@ -182,7 +188,7 @@ class Shop(commands.Cog):
                 await set_db(ctx.author.id, "prefix", item)
                 await ctx.send(f"Success, your prefix has been changed to {item}\nYou can do `-equip` without prefix to remove prefix")
 
-
+    # For owner to check a player's data
     @commands.command()
     @commands.is_owner()
     async def printdb(self, ctx):
@@ -192,7 +198,7 @@ class Shop(commands.Cog):
         # result = db.search(Query().user_id == ctx.author.id)
         # await ctx.send(result)
 
-
+    # Show the leaderboard of stars
     @commands.command()
     async def leaderboard(self, ctx, top=None):
         db_result = await bot.user_db.get_all()
@@ -260,7 +266,7 @@ class Shop(commands.Cog):
                 message = "You have not played this game yet"
         await ctx.send(message)
 
-
+    # For owner to add stars to users
     @commands.command()
     @commands.is_owner()
     async def addstars(self, ctx, id, amount):
@@ -269,7 +275,16 @@ class Shop(commands.Cog):
             # db.update(add("stars", int(amount)), Query().user_id == int(id))
             await ctx.send(f"Added {int(amount)} stars to {self.bot.get_user(int(id)).name}")
 
+    # For owner to remove faulty data in db
+    @commands.command()
+    @commands.is_owner()
+    async def cleandatabase(self, ctx):
+        db_result = await bot.user_db.get_all()
+        for item in db_result:
+            if 'stars' not in item:
+                await bot.user_db.delete_by_id(item['_id'])
 
+    # Wip command to randomly draw items
     @commands.command()
     async def gacha(self, ctx):
         await ctx.send("Sorry, the gacha function is still under development", delete_after=del_time)

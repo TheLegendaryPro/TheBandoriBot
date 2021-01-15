@@ -50,8 +50,9 @@ replace_dict = {
     "×": "x"
 }
 
+
+# To check if the input from user is similar to the song name (answer)
 def is_similar(input, answer):
-    # to check if the input from user is similar to the song name (answer)
     # Replace special characters
     for key, value in replace_dict.items():
         if key in answer:
@@ -150,7 +151,7 @@ Get help by typing `-help` inside #bot-commands
 
 
     async def play_song(self, user):
-        """check channel, then client, the play song, set up times"""
+        """check channel, then client, then play song, set up timers"""
         try:
             # See if the user is in a voice channel, if not, return
             voice_channel = user.voice.channel
@@ -291,6 +292,7 @@ Get help by typing `-help` inside #bot-commands
 
 
     async def skip_song(self, user):
+        """check for votes, then skip the song"""
         # See if the voice client is playing anything
         try:
             if not self.v_client.is_playing():
@@ -339,6 +341,7 @@ Get help by typing `-help` inside #bot-commands
 
 
     async def cancel_all_timers(self):
+        """cancel all timers on a guild"""
         try:
             self.answer_timer.cancel()
         except:
@@ -392,7 +395,7 @@ Get help by typing `-help` inside #bot-commands
 
 
     async def leave_channel(self, user):
-        """leave the channel"""
+        """leave the voice channel"""
         if not isinstance(self.v_client, str):
             # Disconnet and reset some variables
             await self.v_client.disconnect()
@@ -700,7 +703,6 @@ class Timer:
 async def call_gui(message):
     """When have to initiate the game"""
     global main_dict
-    '''when recieve musicgui command'''
     if message.guild.id in main_dict:
         pass
     else:
@@ -838,7 +840,7 @@ async def start_cooldown(key):
 
 
 async def process_reaction(reaction, user):
-
+    """react to reactions"""
     if reaction.message.id == main_dict[reaction.message.guild.id].message.id:
         if reaction.count > 2:
             await reaction.remove(user)
@@ -872,7 +874,7 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
-
+        """check if have to react, then call process_reaction"""
         if reaction.message.channel.name == "bangdream":
             if user.id != bot.user.id:
                 if user.id in self.bot.blacklisted_users:
@@ -883,6 +885,7 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_resumed(self):
+        """apparently things break when discord resumes, so we restart when it resumes"""
         logger.error("on resumed is triggered")
         for key in main_dict.keys():
             if key == "guild_id":
@@ -899,6 +902,7 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
+        """check if need to leave whenever someone leave or join"""
         if before.channel != None:
             if before.channel.guild.id in main_dict:
                 if main_dict[before.channel.guild.id].v_client:
@@ -914,6 +918,7 @@ class QuizGUI(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        """check if we have to process the message, then process it"""
         if isinstance(message.channel, discord.channel.DMChannel):
             if message.author.id == 298986102495248386:
                 try:
