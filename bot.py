@@ -60,18 +60,15 @@ bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, owner_id=se
 bot.config_token = secret_file['token']
 bot.connection_url = secret_file['mongo']
 
+
 # Set up logging and logger
-logging.basicConfig(level=logging.INFO,
-                    filename='bot_data/log.txt',
-                    format='%(asctime)s:%(levelname)s:%(name)s: %(message)s',
-                    filemode='w')
+fh = logging.FileHandler(filename='bot_data/log.txt', encoding='utf-8', mode='a')
+fh.setLevel(logging.WARNING)
+fh.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    datefmt="%Y-%m-%d %H:%M:%S", handlers=[fh, logging.StreamHandler()])
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+
 
 
 # Read the black list and adins
@@ -119,6 +116,7 @@ async def on_ready():
     # todo cache the settings, to minimize data useage
     bot.user_db = Document(bot.db, "user_db")
     print("Initialized Database\n-----")
+    logger.warning("the discord bot is ready")
 
 
 @bot.event

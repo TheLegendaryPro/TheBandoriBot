@@ -4,6 +4,8 @@ import platform
 
 import utils.json
 
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Commands(commands.Cog):

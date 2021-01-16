@@ -73,3 +73,22 @@ resend_message: supposed to solve the problem on_resume solved
 toggle_ignore: to toggle whether skip vote is ignored for a player
 dm_info: to send the current song's info
 initiate_message: to send the first message
+
+### How QuizGUI runs:
+1. set_bot()
+2. on_ready() -> initiate_message()
+3. go to each guild and call musicgui() there
+4. check channel name and call call_gui()
+5. create MusicQuiz init(), then add it to main_dict, and call create_message()
+6. call get_embed() to get the embed, then send the message, then react to it
+7. then it just listens...
+Where there is a new message being sent:
+1. on_message() triggers
+2. if in command_dict, call invoke()
+3. else call process_message()
+4. if need to check answer, check song name of all lang
+5. then check band
+6. get prefix and name, and update_log() the message
+Where there is a new reaction being given:
+1. call process_reaction() on it
+2. call the function corresponding to the function

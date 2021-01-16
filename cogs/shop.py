@@ -9,15 +9,8 @@ import logging
 # from tinydb import TinyDB, Query
 # from tinydb.operations import add, set
 
-
 # Set up the logger
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
 
 
 cwd = Path(__file__).parents[1]
