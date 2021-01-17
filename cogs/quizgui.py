@@ -190,7 +190,7 @@ Get help by typing `-help` inside #bot-commands
 
         try:
             # Setup timer for answer and next song
-            with audioread.audio_open(f'song_id_files/{self.song.song_id}.ogg') as f:
+            with audioread.audio_open(f'game_ver/{self.song.song_id}.ogg') as f:
                 # Set up seek time
                 max_seconds = int(f.duration) - 40
                 seek_seconds = random.randint(0, max_seconds)
