@@ -865,8 +865,6 @@ async def dm_info(message):
         return
 
     info_message = f'''**{quiz.song.song_name}**'s info
-Server: {quiz.song.servers}
-
 '''
 
     for key, value in quiz.song.lyrics_dict.items():
