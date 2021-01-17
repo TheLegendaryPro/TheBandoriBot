@@ -1,5 +1,4 @@
 import discord
-# import pytz
 from discord.ext import commands
 import asyncio
 import utils.json
@@ -9,8 +8,6 @@ import audioread
 import logging
 import datetime
 from pathlib import Path
-# from tinydb import TinyDB, Query
-# from tinydb.operations import add, set
 import configparser
 
 setting = configparser.ConfigParser()
@@ -20,18 +17,13 @@ q_setting = setting['quizgui']
 # Set up the logger
 logger = logging.getLogger(__name__)
 
-
 # Set up the current working directory
 cwd = Path(__file__).parents[1]
 cwd = str(cwd)
 
-
-# Setup the database
-# db = TinyDB(cwd + '/bot_data/user_db.json', indent=4)
-
 # This is the content inside main_dict
 main_dict = {
-"guild_id": "MusicQuiz object"
+    "guild_id": "MusicQuiz object"
 }
 
 # Dictionary to change some special characters inside song names
@@ -54,7 +46,7 @@ def is_similar(input, answer):
 
     '''check if input is similar to the answer'''
     if jellyfish.jaro_winkler_similarity(input, answer) > 0.88:
-        if (abs(len(input)-len(answer)) / max(len(input), len(answer))) < 0.3:
+        if (abs(len(input) - len(answer)) / max(len(input), len(answer))) < 0.3:
             return True
     return False
 
@@ -74,11 +66,10 @@ all_bands_list = [
 # The quiz object
 class MusicQuiz:
 
-
     def __init__(self, ctx):
         # Initialize the values inside the object
-        self.v_client = None #"voice client object"
-        self.song = None #"song object"
+        self.v_client = None  # "voice client object"
+        self.song = None  # "song object"
         self.display_eng = "?"
         self.display_jp = "?"
         self.display_band = "?"
@@ -97,7 +88,6 @@ class MusicQuiz:
         self.guessed_band = []
         self.ignore_list = []
 
-
     def get_embed(self):
         """create the embed object and return it"""
 
@@ -106,27 +96,26 @@ class MusicQuiz:
 Get help by typing `-help` inside #bot-commands
 ''')
 
-        embed.add_field(name="Song Name: ", value=f'''{self.display_eng}
-{self.display_jp}''')
+        embed.add_field(name="Song Name: ", value=f'{self.display_eng}\n{self.display_jp}')
         embed.add_field(name='Band: ', value=self.display_band)
-        # embed.add_field(name="Difficulty", value=f"Expert: {self.display_expert} - Special: {self.display_special}")
-        difficulty_value = f'Easy:{self.display_easy} Normal:{self.display_normal} Hard:{self.display_hard} Expert:{self.display_expert} Special:{self.display_special}'
+        difficulty_value = f'Easy:{self.display_easy} Normal:{self.display_normal} Hard:{self.display_hard} ' \
+                           f'Expert:{self.display_expert} Special:{self.display_special}'
         embed.add_field(name="Difficulty", value=difficulty_value)
 
         log_msg = ""
         for num in range(len(self.display_log)):
             if num < len(self.display_log) - 1:
                 log_msg += self.display_log[num]
+                log_msg += "\n"
             else:
                 log_msg += "**" + self.display_log[num] + "**"
-            log_msg += "\n"
-        log_msg = log_msg[:-1]
         embed.add_field(inline=False, name='Log: ', value=log_msg)
 
-        embed.set_footer(text = "Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
-        embed.set_author(name = "Made by TheLegendaryPro#6018", icon_url = "https://cdn.discordapp.com/avatars/298986102495248386/c36840dfbed5e0e27253ada30eb1dedf.png?size=128")
+        embed.set_footer(text="Join my server at https://discord.gg/wv9SAXn to give comments/suggestions")
+        embed.set_author(name="Made by TheLegendaryPro#6018",
+                         icon_url="https://cdn.discordapp.com/avatars/298986102495248386/c36840dfbed5e0e27253ada30eb1dedf.png?size=128")
 
-        #todo make it display at correct time
+        # todo make a state variable for this class
         if self.display_eng != "?":
             if self.v_client:
                 if self.v_client.is_playing():
@@ -134,15 +123,13 @@ Get help by typing `-help` inside #bot-commands
 
         return embed
 
-
     async def create_message(self):
         """send the message"""
         msg_cont = "Welcome to BanG Dream Music Quiz"
         embed = self.get_embed()
         self.message = await self.t_channel.send(content=msg_cont, embed=embed)
-        for item in react_dict.keys():
-            await self.message.add_reaction(item)
-
+        for reaction in react_dict.keys():
+            await self.message.add_reaction(reaction)
 
     async def play_song(self, user):
         """check channel, then client, then play song, set up timers"""
@@ -151,6 +138,7 @@ Get help by typing `-help` inside #bot-commands
             voice_channel = user.voice.channel
         except:
             await self.update_log('not_in_channel', user.name)
+            logger.exception("not in channel exception")
             return
 
         if not self.v_client:
@@ -162,18 +150,14 @@ Get help by typing `-help` inside #bot-commands
                             await self.update_log('wrong_channel', (user.name, str(bot.get_channel(item['v_channel']))))
                             return
 
-            # if user.voice.channel.guild.id == 432379300684103699:
-            #     # Only redirect people if in official server
-            #     if user.voice.channel.id != 731813919638945802:
-            #         await self.update_log('wrong_channel', (user.name, 'Music 2'))
-            #         return
             try:
                 # Tries to connect
                 self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
-            except Exception as e:
+            except:
                 # Cannot connect, maybe it is already connected but something went wrong and it isn't in the music quiz object?
                 # Find the voice clients by looping through all voice clients
+                logger.exception("failed to connect to voice channel at play_song")
                 for client in bot.voice_clients:
                     # If the client is in this guild
                     if client.guild.id == self.message.channel.guild.id:
@@ -181,7 +165,7 @@ Get help by typing `-help` inside #bot-commands
                 try:
                     await self.v_client.disconnect()
                 except:
-                    pass
+                    logger.exception("failed to disconnect from voice channel at play_song")
                 self.v_client = await voice_channel.connect()
                 self.v_channel = voice_channel
 
@@ -202,23 +186,21 @@ Get help by typing `-help` inside #bot-commands
             self.song = Song()
 
         # Start the player to play a song
-        def load_success():
-            # This is called when the song is loaded and ready to play
-            pass
         try:
             # Some complicated code to play the song then decrease it's volume
-            self.v_client.play(discord.FFmpegPCMAudio(f'song_id_files/{self.song.song_id}.ogg'), after=load_success())
+            self.v_client.play(discord.FFmpegPCMAudio(f'song_id_files/{self.song.song_id}.ogg'))
             self.v_client.source = discord.PCMVolumeTransformer(self.v_client.source)
             self.v_client.source.volume = 0.14
         except Exception as e:
-            await self.update_log('chat', 'Some error happened, Code: {c}, it says: {m}, hopefully it helps'.format(c = type(e).__name__, m = str(e)))
+            logger.exception("failed to play audio in play_song")
+            await self.update_log('chat', 'Some error happened, Code: {c}, it says: {m}, hopefully it helps'.format(
+                c=type(e).__name__, m=str(e)))
 
         # Update the display
         self.display_eng = "?"
         self.display_jp = "?"
         self.display_band = "?"
         self.display_easy = self.display_normal = self.display_hard = self.display_expert = self.display_special = "?"
-        # self.display_type = "?"
         self.skip_vote = []
         self.correct_list = []
         self.guessed_band = []
@@ -240,11 +222,10 @@ Get help by typing `-help` inside #bot-commands
                 parameters = (self, user)
                 self.next_timer = Timer(int(f.duration) + 15, MusicQuiz.next_song, parameters)
 
-
     async def give_hint(self):
         """generate a hint and send it"""
-        amount = int(len(self.song.song_name)/1.25) - 1
-        hint_list = list("-"*len(self.song.song_name))
+        amount = int(len(self.song.song_name) / 1.25) - 1
+        hint_list = list("-" * len(self.song.song_name))
 
         for i in range(amount):
             num = random.randrange(1, len(self.song.song_name))
@@ -261,8 +242,7 @@ Get help by typing `-help` inside #bot-commands
         await self.update_log('hint', hint_text)
         del self.hint_timer
 
-
-    async def show_answer(self, timeout = True):
+    async def show_answer(self, timeout=True):
         """show the answer"""
         self.display_eng = self.song.song_name
         self.display_jp = self.song.name_jp
@@ -273,17 +253,14 @@ Get help by typing `-help` inside #bot-commands
         self.display_expert = self.song.expert
         self.display_special = self.song.special
 
-        # self.display_type = self.song.type
         if timeout:
             await self.update_log('timeout_answer', self.song.song_name)
             del self.answer_timer
-
 
     async def next_song(parameters):
         """the callback for next timer"""
         self, user = parameters
         await self.play_song(user)
-
 
     async def skip_song(self, user):
         """check for votes, then skip the song"""
@@ -293,6 +270,7 @@ Get help by typing `-help` inside #bot-commands
                 await self.update_log('cannot_skip_no_song_playing')
                 return
         except:
+            logger.exception("skip_song cannot get voice client")
             await self.update_log('cannot_skip_no_song_playing')
             return
         # Return if the user is not inside the voice channel
@@ -308,7 +286,8 @@ Get help by typing `-help` inside #bot-commands
             self.skip_vote.append(user.id)
         else:
             pass
-        vc_member_list = [user.id for user in self.v_channel.members if (user.id != bot.user.id) and (user.id not in self.ignore_list)]
+        vc_member_list = [user.id for user in self.v_channel.members if
+                          (user.id != bot.user.id) and (user.id not in self.ignore_list)]
         if len(self.skip_vote) / len(vc_member_list) > 0.85:
             pass
         else:
@@ -323,16 +302,14 @@ Get help by typing `-help` inside #bot-commands
         await self.cancel_all_timers()
 
         # Stop the song then play the next one in 7 seconds
-        self.v_client.stop() #todo could not skip
+        self.v_client.stop()
         await asyncio.sleep(7)
         await self.play_song(user)
-
 
     async def toggle_autoplay(self, user):
         """toggle and announce autoplay"""
         self.auto_play = not self.auto_play
         await self.update_log('toggle_autoplay', (user.name, self.auto_play))
-
 
     async def cancel_all_timers(self):
         """cancel all timers on a guild"""
@@ -349,7 +326,6 @@ Get help by typing `-help` inside #bot-commands
         except:
             pass
 
-
     async def check_star(self, user):
         """tell the user how much star he have"""
         try:
@@ -360,33 +336,12 @@ Get help by typing `-help` inside #bot-commands
             elif 'stars' in result:
                 await self.update_log('check_star', (user.name, result['stars']))
             else:
-                #todo the database contains his name but have no field for stars, let's take it as he has no stars
-                # may upsert data, or just add the star field later
-                # make here check if username changed as well
+                await bot.user_db.upsert({'_id': user.id, 'stars': 0})
+                # todo make here check if username changed as well
                 pass
-        except Exception as e:
-            logger.error(f"Error when check star, user: {user.id}, Error: {e}")
-
-        # try:
-        #     # Add 0 stars to the user to refresh the database
-        #     db.update(add("stars", 0), Query().user_id == user.id)
-        #     result = db.search(Query().user_id == user.id)
-        #     if not result:
-        #         # not result means the result list is empty, then tell the user
-        #         await self.update_log(f"Hey {user.name}, you don't have any <:StarGem:727683091337838633> yet, try answer songs correctly")
-        #     elif len(result) == 1:
-        #         # Only have one result, which is the way it is supposed to be
-        #         star = result[0]['stars']
-        #         await self.update_log(f"Hi {user.name}, you have {star} <:StarGem:727683091337838633>, congratulation!")
-        #     else:
-        #         # Should never have multiple results, raise this error
-        #         logger.error(f"{user.id}, have multiple query results, {str(result)}")
-        #         await self.update_log(f"The database seems to be broken, please report to @TheLegendaryPro#6018")
-        # except:
-        #     logger.error(f"query failed! user id is {user.id}")
-        #     await self.update_log(f"The database seems to be broken 2, please report to @TheLegendaryPro#6018")
+        except:
+            logger.exception(f"Error when check star, user: {user.id}")
         return
-
 
     async def leave_channel(self, user):
         """leave the voice channel"""
@@ -398,9 +353,7 @@ Get help by typing `-help` inside #bot-commands
         # Cancel all timers and set it to default value
         await self.cancel_all_timers()
 
-
-
-    async def update_log(self, event, parameters = None):
+    async def update_log(self, event, parameters=None):
         """Function for processing the log"""
 
         need_to_append_log = True
@@ -434,7 +387,8 @@ Get help by typing `-help` inside #bot-commands
             else:
                 need_to_append_log = False
                 self.display_log[-1] = q_setting['vote_skip_not_passed'].format(
-                    name=', '.join([bot.get_user(id).name for id in for_users]), for_count=len(for_users), user_count=user_count
+                    name=', '.join([bot.get_user(id).name for id in for_users]), for_count=len(for_users),
+                    user_count=user_count
                 )
         elif event == 'success_vote_skip':
             name, song_name = parameters
@@ -459,7 +413,8 @@ Get help by typing `-help` inside #bot-commands
                 self.display_log.append(q_setting['correct_song_also'].format(name=bot.get_user(name_list[-1]).name))
             else:
                 need_to_append_log = False
-                self.display_log[-1] = q_setting['correct_song_also'].format(name=', '.join([bot.get_user(id).name for id in name_list]))
+                self.display_log[-1] = q_setting['correct_song_also'].format(
+                    name=', '.join([bot.get_user(id).name for id in name_list]))
         elif event == 'correct_song_again':
             name = parameters
             if not self.log[-1][0] == 'correct_song_again':
@@ -489,45 +444,24 @@ Get help by typing `-help` inside #bot-commands
         elif event == 'ignore_off':
             name = parameters
             self.display_log.append(q_setting['ignore_off'].format(name=name))
-
+        elif event == 'leave_channel':
+            self.display_log.append(q_setting['leave_channel'])
 
         if need_to_append_log:
             self.log.append((event, parameters))
         else:
             self.log[-1] = (event, parameters)
 
-
         if len(self.display_log) > 7:
             self.display_log.pop(0)
             self.log.pop(0)
 
-
-        # def switch(event, parameters):
-        #     return {
-        #         'chat': parameters
-        #     }.get(event, 'Error in switch')
-
-        # need_append = True
-        # # change last message if stacking
-        # if self.log[-1].endswith('got it correct too, earning <:StarGem:727683091337838633>'):
-        #     if event.endswith('got it correct too, earning <:StarGem:727683091337838633>'):
-        #         self.log[-1] = self.log[-1][:-57] + 'and ' + event[:-57] + 'got it correct too, earning <:StarGem:727683091337838633>'
-        #         need_append = False
-        # # another stack
-        # if self.log[-1].endswith('voted to skip, but not everyone agreed'):
-        #     if event.endswith('voted to skip, but not everyone agreed'):
-        #         self.log[-1] = event[0:6] + self.log[-1][6:-38] + 'and ' + event[6:-38] + 'voted to skip, but not everyone agreed'
-        #         need_append = False
-        # if need_append:
-        #     self.log.append(event)
         await self.update_message()
-
 
     async def update_message(self):
         """Simple function to reload the message"""
         embed = self.get_embed()
-        await self.message.edit(embed = embed)
-
+        await self.message.edit(embed=embed)
 
     async def correct_song(self, user):
         """Called when the answer is correct, add the stars"""
@@ -545,63 +479,28 @@ Get help by typing `-help` inside #bot-commands
             # Don't allow multiple correct answer
             await self.update_log('correct_song_again', user.name)
 
-
     async def correct_band(self, user):
         """Called when the user got the band correct"""
         await self.add_points(user, 1)
         self.display_band = self.song.band_name
         await self.update_log('correct_band', user.name)
 
-
     async def add_points(self, user, amount):
         """To add points to a user"""
         try:
             if not await bot.user_db.increment(user.id, amount, 'stars'):
-                print('not success')
                 await bot.user_db.upsert({
                     "_id": user.id,
                     "stars": amount,
                     "username": str(user.name),
                     "discriminator": str(user.discriminator)
                 })
-        except Exception as e:
-            logger.error(f"failed adding {amount} to {user.id}, problem: {e}")
-        # try:
-        #     result = db.search(Query().user_id == user.id)
-        #     if not result:
-        #         # result is empty list, first time create data
-        #         db.insert({
-        #             "user_id": user.id,
-        #             "stars": int(amount),
-        #             "username": str(user.name),
-        #             "discriminator": str(user.discriminator)
-        #         })
-        #         # Actually adding stars
-        #     elif len(result) == 1:
-        #         # Add 0 stars to update the database
-        #         db.update(add("stars", amount), Query().user_id == user.id)
-        #         if "username" not in result[0]:
-        #             db.update(set('username', str(user.name)), Query().user_id == user.id)
-        #         if "discriminator" not in result[0]:
-        #             db.update(set('discriminator', str(user.discriminator)), Query().user_id == user.id)
-        #     else:
-        #         logger.error(f"failed adding {amount} to {user.id}, too many result")
-        # except:
-        #     logger.error(f"failed adding {amount} to {user.id}, unable to query or add")
-
+        except:
+            logger.exception(f"failed adding {amount} to {user.id}")
         return
 
 
-    def __del__(self):
-#        print(f"A MusicQuiz object has been destroyed, it is form {ascii(self.v_client.guild.name)}")
-        pass
-
-
-
-
-
 class Song:
-
 
     def __init__(self):
         # Reset song_id_data if all songs are played
@@ -650,15 +549,7 @@ class Song:
         self.thumbnails_list = details['image']
 
 
-    def __del__(self):
-        pass
-#        print(f"A Song object is destroyed, the song name is {ascii(self.song_name)}")
-
-
-
 # Get song data
-# song_id_data = cogs._json.read_data("song_usage_data") #todo
-
 song_id_data_raw = utils.json.read_data("song_id_data")
 song_id_data = {
     "not_played": [],
@@ -676,22 +567,13 @@ class Timer:
         self._callback = callback
         self._task = asyncio.ensure_future(self._job(parameters))
 
-
     async def _job(self, parameters):
         await asyncio.sleep(self._timeout)
         await self._callback(parameters)
         return
 
-
     def cancel(self):
         self._task.cancel()
-
-
-    def __del__(self):
-        pass
-#        print(f"A Timer object is destroyed, it's callback is {self._callback}")
-
-
 
 
 async def call_gui(message):
@@ -734,13 +616,15 @@ async def process_message(message):
     if need_check_ans:
         if quiz.display_eng == "?":
 
-            if is_similar(message.content.lower(),quiz.song.song_name.lower()):
+            if is_similar(message.content.lower(), quiz.song.song_name.lower()):
                 await quiz.correct_song(message.author)
                 return
-            if is_similar(message.content.lower(),quiz.song.name_jp.lower()) and quiz.song.name_jp != "same as english name":
+            if is_similar(message.content.lower(),
+                          quiz.song.name_jp.lower()) and quiz.song.name_jp != "same as english name":
                 await quiz.correct_song(message.author)
                 return
-            if is_similar(message.content.lower(),quiz.song.translation.lower()) and quiz.song.translation != "no translation":
+            if is_similar(message.content.lower(),
+                          quiz.song.translation.lower()) and quiz.song.translation != "no translation":
                 await quiz.correct_song(message.author)
                 return
 
@@ -752,9 +636,10 @@ async def process_message(message):
                         await quiz.update_log('answer_band_again', message.author.name)
                         return
                     quiz.guessed_band.append(message.author.id)
-            if is_similar(message.content.lower(),quiz.song.band_name.lower()):
+            if is_similar(message.content.lower(), quiz.song.band_name.lower()):
                 await quiz.correct_band(message.author)
                 return
+
     # A function within process message
     async def get_name(author):
         # Get the name from the database
@@ -776,25 +661,6 @@ async def process_message(message):
                     prefix = ""
         except Exception as e:
             logger.error(f"failed to get_name for {author.id}, Error: {e}")
-        # db.update(add("stars", 0), Query().user_id == author.id)
-        # result = db.search(Query().user_id == author.id)
-        # if result == []:
-        #     name = author.name
-        #     prefix = ""
-        # elif len(result) == 1:
-        #     if 'nickname' in result[0]:
-        #         name = result[0]['nickname']
-        #     else:
-        #         name = author.name
-        #
-        #     if 'prefix' in result[0]:
-        #         prefix = result[0]['prefix']
-        #     else:
-        #         prefix = ""
-        # else:
-        #     name = author.name
-        #     prefix = ""
-        #     logger.error(f"get name failed, it is {author.name}, too much result {result}")
 
         if prefix != "":
             prefix = "[" + prefix + "]"
@@ -802,6 +668,7 @@ async def process_message(message):
 
     # Get rid of new line
     no_new_line = message.content.replace('\n', '')
+
     def get_msg(content):
         content = content.replace(':GW', '')
         content = content.replace('**', '')
@@ -813,24 +680,11 @@ async def process_message(message):
 
 
 # The function to deal with reactions and know what to do
-react_dict={
-"<:RASLogo:727683816755560550>": MusicQuiz.play_song,
-"<:AyaPointUp:727496890693976066>": MusicQuiz.skip_song,
-"<:StarGem:727683091337838633>": MusicQuiz.check_star,
+react_dict = {
+    "<:RASLogo:727683816755560550>": MusicQuiz.play_song,
+    "<:AyaPointUp:727496890693976066>": MusicQuiz.skip_song,
+    "<:StarGem:727683091337838633>": MusicQuiz.check_star,
 }
-
-
-#todo left off 30/7/2020
-
-
-# A dict for reaction cooldown
-cooldown_dict = {
-"key": "random int"
-}
-
-
-async def start_cooldown(key):
-    del cooldown_dict[key]
 
 
 async def process_reaction(reaction, user):
@@ -846,25 +700,21 @@ async def process_reaction(reaction, user):
         await reaction.remove(user)
 
 
-
 class QuizGUI(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
         self.set_bot()
 
-
     def set_bot(self):
         global bot
         bot = self.bot
         logger.info(f'Set bot for {__name__}')
 
-
     @commands.Cog.listener()
     async def on_ready(self):
         print(f"{self.__class__.__name__} Cog has been loaded\n-----")
         await initiate_message()
-
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
@@ -876,7 +726,6 @@ class QuizGUI(commands.Cog):
                     return
                 await process_reaction(reaction, user)
 
-
     @commands.Cog.listener()
     async def on_resumed(self):
         """apparently things break when discord resumes, so we restart when it resumes"""
@@ -886,13 +735,12 @@ class QuizGUI(commands.Cog):
                 continue
             try:
                 await main_dict[key].message.delete()
-            except Exception as e:
-                logger.error(f"failed to delete message in {key} because of {type(e).__name__}, {str(e)}")
+            except:
+                logger.exception(f"failed to delete message in {key}")
             try:
                 await main_dict[key].create_message()
-            except Exception as e:
-                logger.error(f"failed to create message in {key} because of {type(e).__name__}, {str(e)}")
-
+            except:
+                logger.exception(f"failed to create message in {key}")
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
@@ -905,10 +753,7 @@ class QuizGUI(commands.Cog):
                             await asyncio.sleep(10)
                             if len(before.channel.members) == 1:
                                 await main_dict[before.channel.guild.id].leave_channel(member)
-                                await main_dict[before.channel.guild.id].update_log("I left the channel because I felt lonely <:RinkoHide:727683091182649457>")
-
-
-
+                                await main_dict[before.channel.guild.id].update_log("leave_channel")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -921,7 +766,8 @@ class QuizGUI(commands.Cog):
                     pass
             elif message.author.id == 520283742720491522:
                 try:
-                    await main_dict[715226997562802227].update_log('chat', "TheBandoriBot" + ": " + str(message.content))
+                    await main_dict[715226997562802227].update_log('chat',
+                                                                   "TheBandoriBot" + ": " + str(message.content))
                 except:
                     pass
             return
@@ -955,25 +801,6 @@ async def musicgui(message):
         await call_gui(message)
 
 
-async def resend_message(message):
-    # todo This is not working
-    if message.channel.name == "bangdream":
-        # Try if resending the message helps, first delete it
-        try:
-            for client in bot.voice_clients:
-                # If the client is in this guild
-                if client.guild.id == message.channel.guild.id:
-                    v_client = client
-            await v_client.disconnect()
-        except:
-            pass
-        try:
-            await main_dict[message.guild.id].message.delete()
-            await main_dict[message.guild.id].create_message()
-            await message.delete()
-        except:
-            pass
-
 async def toggle_ignore(message):
     try:
         if message.author.id not in main_dict[message.guild.id].ignore_list:
@@ -987,6 +814,7 @@ async def toggle_ignore(message):
     except:
         pass
 
+
 async def dm_info(message):
     quiz = main_dict[message.guild.id]
     if not quiz:
@@ -995,7 +823,8 @@ async def dm_info(message):
         await message.author.send("There are no songs right now so we cannot get info")
         return
     if quiz.display_eng == "?" and message.author.id not in quiz.correct_list:
-        await message.author.send("We can only send you the information if the answer is shown or you answered correctly")
+        await message.author.send(
+            "We can only send you the information if the answer is shown or you answered correctly")
         return
 
     info_message = f'''**{quiz.song.song_name}**'s info
@@ -1010,13 +839,12 @@ Server: {quiz.song.servers}
 
     string = info_message
     length = 1999
-    for part in [string[i:length+i] for i in range(0, len(string), length)]:
+    for part in [string[i:length + i] for i in range(0, len(string), length)]:
         await message.author.send(part)
 
 
 command_dict = {
     "music": musicgui,
-    "reloadgame": resend_message,
     "ignore": toggle_ignore,
     "info": dm_info
 }
@@ -1032,8 +860,8 @@ async def initiate_message():
                     await musicgui(message)
                 except discord.errors.Forbidden:
                     pass
-                except Exception as e:
-                    logger.log(f'failed to initiate message because {e}')
+                except:
+                    logger.exception(f'failed to initiate message')
 
 
 def setup(bot):

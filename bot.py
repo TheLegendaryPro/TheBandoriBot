@@ -23,6 +23,7 @@ from utils.mongo import Document
 #-
 #--
 
+
 # Get the path
 cwd = Path(__file__).parents[0]
 cwd = str(cwd)
@@ -78,28 +79,6 @@ bot.bangdream_admins = utils.json.read_json("user_role")["bangdream_admins"]
 
 bot.cwd = cwd
 bot.version = '3.1.4'
-bot.colors = {
-  'WHITE': 0xFFFFFF,
-  'AQUA': 0x1ABC9C,
-  'GREEN': 0x2ECC71,
-  'BLUE': 0x3498DB,
-  'PURPLE': 0x9B59B6,
-  'LUMINOUS_VIVID_PINK': 0xE91E63,
-  'GOLD': 0xF1C40F,
-  'ORANGE': 0xE67E22,
-  'RED': 0xE74C3C,
-  'NAVY': 0x34495E,
-  'DARK_AQUA': 0x11806A,
-  'DARK_GREEN': 0x1F8B4C,
-  'DARK_BLUE': 0x206694,
-  'DARK_PURPLE': 0x71368A,
-  'DARK_VIVID_PINK': 0xAD1457,
-  'DARK_GOLD': 0xC27C0E,
-  'DARK_ORANGE': 0xA84300,
-  'DARK_RED': 0x992D22,
-  'DARK_NAVY': 0x2C3E50
-}
-bot.color_list = [c for c in bot.colors.values()]
 
 
 @bot.event
@@ -116,7 +95,7 @@ async def on_ready():
     # todo cache the settings, to minimize data useage
     bot.user_db = Document(bot.db, "user_db")
     print("Initialized Database\n-----")
-    logger.warning("the discord bot is ready")
+    logger.warning("The discord bot is ready")
 
 
 @bot.event
@@ -125,24 +104,20 @@ async def on_message(message):
     if message.author.id == bot.user.id:
         return
 
-
     # Do not precess message from Direct Message channels
     if isinstance(message.channel, discord.channel.DMChannel):
         return
-
 
     # Because of the cog doesn't have attribute problem, will have to set up two listener for on messages
     # So will return if the channel is 'bangdream'
     if message.channel.name == "bangdream":
         return
 
-
-    #A way to blacklist users from the bot by not processing commands if the author is in the blacklisted_users list
+    # A way to blacklist users from the bot by not processing commands if the author is in the blacklisted_users list
     if message.author.id in bot.blacklisted_users:
         return
 
-
-    #Whenever the bot is tagged, respond with its prefix
+    # Whenever the bot is tagged, respond with its prefix
     if f"<@!{bot.user.id}>" in message.content:
 
         data = await bot.server_config.get_by_id(message.guild.id)
@@ -151,7 +126,6 @@ async def on_message(message):
         else:
             prefix = data["prefix"]
         await message.channel.send(f"My prefix here is `{prefix}`", delete_after=15)
-    
 
     #     data = utils.json.read_json('prefixes')
     #     if str(message.guild.id) in data:
