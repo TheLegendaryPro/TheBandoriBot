@@ -555,21 +555,18 @@ class Song:
             self.song_name = details["title"]
         # Might not have kanji name
         if "kanji" in details:
-            self.name_jp = details["kanji"]
+            self.name_jp = list_to_str(details["kanji"])
         else:
             self.name_jp = "same as english name"
         if "english" in details:
-            self.translation = details["english"]
+            self.translation = list_to_str(details["english"])
         else:
             if "translation" in details:
-                self.translation = details["translation"]
+                self.translation = list_to_str(details["translation"])
             else:
                 self.translation = "no translation"
 
-        if isinstance(details["artist"], str):
-            self.band_name = details["artist"]
-        else:
-            self.band_name = "".join(details["artist"])
+        self.band_name = list_to_str(details["artist"])
         self.easy = int(details['Easy']['level'])
         self.normal = int(details['Normal']['level'])
         self.hard = int(details['Hard']['level'])
@@ -582,6 +579,10 @@ class Song:
 
         self.lyrics_dict = details['lyric_dict']
         self.thumbnails_list = details['song_images']
+
+
+def list_to_str(list):
+    return "".join(list)
 
 
 # Get song data
