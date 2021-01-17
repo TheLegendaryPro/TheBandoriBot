@@ -188,6 +188,12 @@ Get help by typing `-help` inside #bot-commands
         else:
             self.song = Song()
 
+        # try to cancel next timer
+        try:
+            self.next_timer.cancel()
+        except:
+            pass
+
         try:
             # Setup timer for answer and next song
             with audioread.audio_open(f'game_ver/{self.song.song_id}.ogg') as f:
@@ -199,7 +205,7 @@ Get help by typing `-help` inside #bot-commands
                 self.answer_timer = Timer(int(f.duration)-seek_seconds, MusicQuiz.show_answer, self)
                 if self.auto_play:
                     parameters = (self, user)
-                    self.next_timer = Timer(int(f.duration)-seek_seconds+15, MusicQuiz.next_song, parameters)
+                    self.next_timer = Timer(int(f.duration)-seek_seconds+10, MusicQuiz.next_song, parameters)
         except Exception as e:
             logger.exception("failed to read audio in play_song")
             await self.update_log('chat','Some error happened, Code: {c}, it says: {m}, hopefully it helps'.format(
@@ -226,11 +232,6 @@ Get help by typing `-help` inside #bot-commands
         self.guessed_band = []
         await self.update_log('start_song')
 
-        # try to cancel next timer
-        try:
-            self.next_timer.cancel()
-        except:
-            pass
 
     async def give_hint(self):
         """generate a hint and send it"""
@@ -565,7 +566,10 @@ class Song:
             else:
                 self.translation = "no translation"
 
-        self.band_name = details["artist"]
+        if isinstance(details["artist"], str):
+            self.band_name = details["artist"]
+        else:
+            self.band_name = "".join(details["artist"])
         self.easy = int(details['Easy']['level'])
         self.normal = int(details['Normal']['level'])
         self.hard = int(details['Hard']['level'])
