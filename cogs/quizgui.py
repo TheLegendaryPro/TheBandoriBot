@@ -1,3 +1,5 @@
+import json
+
 import discord
 from discord.ext import commands
 import asyncio
@@ -94,6 +96,7 @@ class MusicQuiz:
         # The description / announcement string for the embed
         embed = discord.Embed(title='Press <:RASLogo:727683816755560550> to start!', description=f'''\
 Get help by typing `-help` inside #bot-commands
+<:HagumiXD:733655960433721415> If you like the new feature, else <:NotLikeTsugu:744169674182492171>
 ''')
 
         embed.add_field(name="Song Name: ", value=f'{self.display_eng}\n{self.display_jp}')
@@ -185,10 +188,27 @@ Get help by typing `-help` inside #bot-commands
         else:
             self.song = Song()
 
+        try:
+            # Setup timer for answer and next song
+            with audioread.audio_open(f'song_id_files/{self.song.song_id}.ogg') as f:
+                # Set up seek time
+                max_seconds = int(f.duration) - 40
+                seek_seconds = random.randint(0, max_seconds)
+                # Setup timer for hint
+                self.hint_timer = Timer(20, MusicQuiz.give_hint, self)
+                self.answer_timer = Timer(int(f.duration)-seek_seconds, MusicQuiz.show_answer, self)
+                if self.auto_play:
+                    parameters = (self, user)
+                    self.next_timer = Timer(int(f.duration)-seek_seconds+15, MusicQuiz.next_song, parameters)
+        except Exception as e:
+            logger.exception("failed to read audio in play_song")
+            await self.update_log('chat','Some error happened, Code: {c}, it says: {m}, hopefully it helps'.format(
+                                      c=type(e).__name__, m=str(e)))
+
         # Start the player to play a song
         try:
             # Some complicated code to play the song then decrease it's volume
-            self.v_client.play(discord.FFmpegPCMAudio(f'song_id_files/{self.song.song_id}.ogg'))
+            self.v_client.play(discord.FFmpegPCMAudio(f'game_ver/{self.song.song_id}.ogg', before_options=f"-ss {seek_seconds}"))
             self.v_client.source = discord.PCMVolumeTransformer(self.v_client.source)
             self.v_client.source.volume = 0.14
         except Exception as e:
@@ -206,21 +226,11 @@ Get help by typing `-help` inside #bot-commands
         self.guessed_band = []
         await self.update_log('start_song')
 
-        # Setup timer for hint
-        self.hint_timer = Timer(30, MusicQuiz.give_hint, self)
-
         # try to cancel next timer
         try:
             self.next_timer.cancel()
         except:
             pass
-
-        # Setup timer for answer and next song
-        with audioread.audio_open(f'song_id_files/{self.song.song_id}.ogg') as f:
-            self.answer_timer = Timer(int(f.duration) - 30, MusicQuiz.show_answer, self)
-            if self.auto_play:
-                parameters = (self, user)
-                self.next_timer = Timer(int(f.duration) + 15, MusicQuiz.next_song, parameters)
 
     async def give_hint(self):
         """generate a hint and send it"""
@@ -342,6 +352,29 @@ Get help by typing `-help` inside #bot-commands
         except:
             logger.exception(f"Error when check star, user: {user.id}")
         return
+
+    async def like_feature(self, user):
+        with open('bot_data/like_dislike.json', 'r') as f:
+            like_dislike = json.load(f)
+        if user.name not in like_dislike['like']:
+            if user.name in like_dislike['dislike']:
+                like_dislike['dislike'].remove(user.name)
+            like_dislike['like'].append(user.name)
+        with open('bot_data/like_dislike.json', 'w') as f:
+            json.dump(like_dislike, f, indent=4)
+        await self.update_log('chat', f"I am glad that you liked this new feature ({len(like_dislike['like'])})")
+
+    async def dislike_feature(self, user):
+        with open('bot_data/like_dislike.json', 'r') as f:
+            like_dislike = json.load(f)
+        if user.name not in like_dislike['dislike']:
+            if user.name in like_dislike['like']:
+                like_dislike['like'].remove(user.name)
+            like_dislike['dislike'].append(user.name)
+        with open('bot_data/like_dislike.json', 'w') as f:
+            json.dump(like_dislike, f, indent=4)
+        await self.update_log('chat', f"That is unfortunate, you can leave a suggestion in the suggestion section"
+                                      f" ({len(like_dislike['dislike'])})")
 
     async def leave_channel(self, user):
         """leave the voice channel"""
@@ -524,16 +557,15 @@ class Song:
             self.name_jp = details["kanji"]
         else:
             self.name_jp = "same as english name"
-        if "translation" in details:
-            self.translation = details["translation"]
+        if "english" in details:
+            self.translation = details["english"]
         else:
-            if "english" in details:
-                self.translation = details["english"]
+            if "translation" in details:
+                self.translation = details["translation"]
             else:
                 self.translation = "no translation"
 
         self.band_name = details["artist"]
-
         self.easy = int(details['Easy']['level'])
         self.normal = int(details['Normal']['level'])
         self.hard = int(details['Hard']['level'])
@@ -544,13 +576,12 @@ class Song:
         else:
             self.special = "-"
 
-        self.servers = details['server_list']
         self.lyrics_dict = details['lyric_dict']
-        self.thumbnails_list = details['image']
+        self.thumbnails_list = details['song_images']
 
 
 # Get song data
-song_id_data_raw = utils.json.read_data("song_id_data")
+song_id_data_raw = utils.json.read_data("new_id_data")
 song_id_data = {
     "not_played": [],
     "played": []
@@ -684,6 +715,8 @@ react_dict = {
     "<:RASLogo:727683816755560550>": MusicQuiz.play_song,
     "<:AyaPointUp:727496890693976066>": MusicQuiz.skip_song,
     "<:StarGem:727683091337838633>": MusicQuiz.check_star,
+    "<:HagumiXD:733655960433721415>": MusicQuiz.like_feature,
+    "<:NotLikeTsugu:744169674182492171>": MusicQuiz.dislike_feature,
 }
 
 

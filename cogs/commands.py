@@ -161,7 +161,6 @@ Then there are a few commands you can use inside #bot-commands:
 `-equip`: Equip a prefix you already own
 `-leaderboard`: Show the star leader board of the game
 `-help`: Yes, you are here
-`-gacha`: Still work in progress gacha function
 `-info`: (only in bangdream) DM you info about the song
 `-ignore`: (only in bangdream) toggle ignore mode for skip
 If you need any help, want to suggest anything or want to praise the bot creator, find <@298986102495248386>
